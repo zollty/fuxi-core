@@ -1,0 +1,18 @@
+
+# 设为 "auto" 会自动检测(会有警告)，也可手动设定为 "cuda","mps","cpu","xpu" 其中之一。
+[device]
+llm_device = "auto"
+embedding_device = "auto"
+
+[embed]
+device = "cuda"
+
+[reranker]
+top_n = 20
+#max_length = 1024
+#model_path = ""
+#batch_size = 32
+
+[reranker.model]
+"bge-reranker-large" = "/ai/models/BAAI_bge-reranker-large"
+"bge-reranker-base" = "BAAI/bge-reranker-base"
