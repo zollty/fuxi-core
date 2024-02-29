@@ -27,11 +27,12 @@ class LangchainReranker(BaseDocumentCompressor):
 
     def __init__(self, cfg: Cfg):
         top_n: int = cfg.get("reranker.top_n", 3)
-        batch_size: int = 32,
-        num_workers: int = 0,
+        batch_size: int = 32
+        num_workers: int = 0
         model_name_or_path = cfg.get("reranker.model.bce-reranker-base_v1")
         max_length: int = cfg.get("reranker.max_length", 1024)
         device = cfg.get("embed.device", "cuda")
+        print(f"-------------------------ba: {batch_size}")
         # show_progress_bar: bool = None,
         # activation_fct = None,
         # apply_softmax = False,
