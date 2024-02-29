@@ -11,10 +11,11 @@ LOCAL_RERANK_MODEL_NAME = 'rerank'
 LOCAL_RERANK_MAX_LENGTH = 512
 LOCAL_RERANK_BATCH = 16
 RERANK_OVERLAP_TOKENS_DEFAULT = 80
+LOCAL_RERANK_TOKENIZER_PATH = '/workspace/qanything_local/qanything_kernel/dependent_server/rerank_for_local_serve/reranker_model_yd_1225'
 
 class LocalRerankBackend:
     def __init__(self, cfg: Cfg = None):
-        tokenizer_path = 'qanything_kernel/dependent_server/rerank_for_local_serve/reranker_model_yd_1225'
+        tokenizer_path = LOCAL_RERANK_TOKENIZER_PATH
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
         self.overlap_tokens = RERANK_OVERLAP_TOKENS_DEFAULT
         self.spe_id = self.tokenizer.sep_token_id
