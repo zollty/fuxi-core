@@ -40,4 +40,5 @@ if __name__ == "__main__":
 
     print("---------after rerank------------------")
     print(result_data)
+    print(type(result_data))
     

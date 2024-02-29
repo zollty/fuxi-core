@@ -35,4 +35,5 @@ if __name__ == "__main__":
 
     print("---------after rerank------------------")
     print(docs)
+    print(type(docs))
     
