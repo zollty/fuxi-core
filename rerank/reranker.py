@@ -65,7 +65,7 @@ class LangchainReranker(BaseDocumentCompressor):
                                       num_workers=self.num_workers,
                                       #  activation_fct=self.activation_fct,
                                       #  apply_softmax=self.apply_softmax,
-                                      convert_to_tensor=True
+                                      convert_to_tensor=False
                                       )
 
     def compress_documents(
