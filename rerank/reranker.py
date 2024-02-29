@@ -51,10 +51,28 @@ class LangchainReranker(BaseDocumentCompressor):
             # apply_softmax=apply_softmax
         )
 
+    def simple_predict(
+            self,
+            query: str,
+            passages: List[str],
+    ):
+        if len(passages) == 0:  # to avoid empty api call
+            return []
+        sentence_pairs = [[query, _doc] for _doc in passages]
+        return self._model.predict(sentences=sentence_pairs,
+                                      batch_size=self.batch_size,
+                                      #  show_progress_bar=self.show_progress_bar,
+                                      num_workers=self.num_workers,
+                                      #  activation_fct=self.activation_fct,
+                                      #  apply_softmax=self.apply_softmax,
+                                      convert_to_tensor=True
+                                      )
+
     def compress_documents(
             self,
-            documents: Sequence[Document],
             query: str,
+            documents: Sequence[Document],
+            top_n: Optional[int] = None,
             callbacks: Optional[Callbacks] = None,
     ) -> Sequence[Document]:
         """
@@ -81,7 +99,9 @@ class LangchainReranker(BaseDocumentCompressor):
                                       #  apply_softmax=self.apply_softmax,
                                       convert_to_tensor=True
                                       )
-        top_k = self.top_n if self.top_n < len(results) else len(results)
+        if top_n is None:
+            top_n = self.top_n
+        top_k = top_n if top_n < len(results) else len(results)
 
         values, indices = results.topk(top_k)
         final_results = []

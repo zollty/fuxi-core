@@ -28,7 +28,7 @@ if __name__ == "__main__":
     
     start_time = time.time()
     for i in range(1, 100, 1):
-        docs = reranker_model.compress_documents(documents=docs, query=query)
+        docs = reranker_model.simple_predict(query, passages)
     end_time = time.time()
     run_time = end_time - start_time
     print("运行时间：", run_time, "秒")
