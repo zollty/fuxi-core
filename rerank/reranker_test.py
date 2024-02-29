@@ -17,18 +17,19 @@ if __name__ == "__main__":
     query = "有哪些美国园林？"
     print(docs)
 
-    from common.conf import Cfg
-    from common.utils import RUNTIME_ROOT_DIR
-    from rerank.reranker import LangchainReranker
+    # from common.conf import Cfg
+    # from common.utils import RUNTIME_ROOT_DIR
+    # from rerank.reranker import LangchainReranker
     import time
 
-    print(RUNTIME_ROOT_DIR)
-    cfg = Cfg(RUNTIME_ROOT_DIR + "/conf.toml")
-    reranker_model = LangchainReranker(cfg)
+    # print(RUNTIME_ROOT_DIR)
+    # cfg = Cfg(RUNTIME_ROOT_DIR + "/conf.toml")
+    # reranker_model = LangchainReranker(cfg)
+    from rerank.reranker import simple_predict
     
     start_time = time.time()
     for i in range(1, 100, 1):
-        docs = reranker_model.simple_predict(query, passages)
+        docs = simple_predict(query, passages)
     end_time = time.time()
     run_time = end_time - start_time
     print("运行时间：", run_time, "秒")
