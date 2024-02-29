@@ -24,10 +24,10 @@ if __name__ == "__main__":
 
     print(RUNTIME_ROOT_DIR)
     cfg = Cfg(RUNTIME_ROOT_DIR + "/conf.toml")
+    reranker_model = LangchainReranker(cfg)
     
     start_time = time.time()
     for i in range(1, 100, 1):
-        reranker_model = LangchainReranker(cfg)
         docs = reranker_model.compress_documents(documents=docs, query=query)
     end_time = time.time()
     run_time = end_time - start_time
