@@ -26,6 +26,7 @@ if __name__ == "__main__":
     # cfg = Cfg(RUNTIME_ROOT_DIR + "/conf.toml")
     # reranker_model = LangchainReranker(cfg)
     from rerank.reranker import reranker
+    reranker.init()
     
     start_time = time.time()
     for i in range(1, 100, 1):
