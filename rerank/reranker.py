@@ -8,6 +8,7 @@ from langchain_core.documents import Document
 from langchain.callbacks.manager import Callbacks
 from langchain.retrievers.document_compressors.base import BaseDocumentCompressor
 from pydantic import Field, PrivateAttr
+from common.conf import Cfg
 
 
 class LangchainReranker(BaseDocumentCompressor):
@@ -24,26 +25,16 @@ class LangchainReranker(BaseDocumentCompressor):
     # activation_fct = None
     # apply_softmax = False
 
-    def __init__(self,
-                 model_name_or_path: str,
-                 top_n: int = 3,
-                 device: str = "cuda",
-                 max_length: int = 1024,
-                 batch_size: int = 32,
-                 # show_progress_bar: bool = None,
-                 num_workers: int = 0,
-                 # activation_fct = None,
-                 # apply_softmax = False,
-                 ):
-        # self.top_n=top_n
-        # self.model_name_or_path=model_name_or_path
-        # self.device=device
-        # self.max_length=max_length
-        # self.batch_size=batch_size
-        # self.show_progress_bar=show_progress_bar
-        # self.num_workers=num_workers
-        # self.activation_fct=activation_fct
-        # self.apply_softmax=apply_softmax
+    def __init__(self, cfg: Cfg):
+        top_n: int = cfg.get("reranker.top_n", 3)
+        batch_size: int = 32,
+        num_workers: int = 0,
+        model_name_or_path = cfg.get("reranker.model.bce-reranker-base_v1")
+        max_length: int = cfg.get("reranker.max_length", 1024)
+        device = cfg.get("embed.device", "cuda")
+        # show_progress_bar: bool = None,
+        # activation_fct = None,
+        # apply_softmax = False,
 
         self._model = CrossEncoder(model_name=model_name_or_path, max_length=max_length, device=device)
         super().__init__(

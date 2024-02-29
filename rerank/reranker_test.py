@@ -22,14 +22,8 @@ if __name__ == "__main__":
 
     print(RUNTIME_ROOT_DIR)
     cfg = Cfg(RUNTIME_ROOT_DIR + "/conf.toml")
-    reranker_model_path = cfg.get("reranker.model.bce-reranker-base_v1")
-    print("-----------------model path------------------")
-    print(reranker_model_path)
-    reranker_model = LangchainReranker(top_n = cfg.get("reranker.top_n"),
-                                    device = (cfg.embedding_device),
-                                    max_length = cfg.get("reranker.max_length"),
-                                    model_name_or_path = reranker_model_path
-                                    )
+    reranker_model = LangchainReranker(cfg)
+    
     print(docs)
     docs = reranker_model.compress_documents(documents=docs,
                                                 query=query)

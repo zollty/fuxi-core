@@ -4,9 +4,11 @@ from common.utils import detect_device
 from typing import (Any)
 
 class Cfg():
+    '''
+    llm.device
+    embed.device
+    '''
     toml_dict: dict[str, Any]
-    llm_device: str
-    embedding_device: str
 
     def __init__(self, conf_path: str):
         with open(conf_path, "rb") as f:
@@ -16,15 +18,22 @@ class Cfg():
             except tomli.TOMLDecodeError:
                 print("Yep, definitely not valid.")
        
-        self.embedding_device = self.get("embed.device")
-        self.llm_device = self.get("llm.device")
-        if self.llm_device == "auto" or self.embedding_device == "auto":
+        if self.get("llm.device") == "auto":
             _auto = detect_device()
-            if self.llm_device == "auto":
-                self.llm_device = _auto
-            if  self.embedding_device == "auto":
-                self.embedding_device = _auto
+            self.set("llm.device", _auto)
 
+        if self.get("embed.device") == "auto":
+            if _auto is None:
+                _auto = detect_device()
+            self.set("embed.device", _auto)
+
+    def embedding_device(self, default_val = None):
+        if self.embedding_device is None:
+            return default_val
+        return self.embedding_device
+    
+    def set(self, key: str, val = None):
+        self.toml_dict[key] = val
 
     def get(self, key: str, default_val = None):
         sv = key.split(".")
