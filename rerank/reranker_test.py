@@ -25,11 +25,11 @@ if __name__ == "__main__":
     # print(RUNTIME_ROOT_DIR)
     # cfg = Cfg(RUNTIME_ROOT_DIR + "/conf.toml")
     # reranker_model = LangchainReranker(cfg)
-    from rerank.reranker import simple_predict
+    from rerank.reranker import reranker
     
     start_time = time.time()
     for i in range(1, 100, 1):
-        docs = simple_predict(query, passages)
+        docs = reranker.simple_predict(query, passages)
     end_time = time.time()
     run_time = end_time - start_time
     print("运行时间：", run_time, "秒")
