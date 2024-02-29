@@ -10,6 +10,8 @@ from langchain.retrievers.document_compressors.base import BaseDocumentCompresso
 from pydantic import Field, PrivateAttr
 from common.conf import Cfg
 
+RERANK_MAX_LENGTH_DEFAULT = 1024
+RERANK_BATCH_SIZE_DEFAULT = 32
 
 class LangchainReranker(BaseDocumentCompressor):
     """Document compressor that uses `Cohere Rerank API`."""
@@ -21,16 +23,15 @@ class LangchainReranker(BaseDocumentCompressor):
     batch_size: int = Field()
     # show_progress_bar: bool = None
     num_workers: int = Field()
-
     # activation_fct = None
     # apply_softmax = False
 
     def __init__(self, cfg: Cfg):
         top_n: int = cfg.get("reranker.top_n", 3)
-        batch_size: int = 32
+        batch_size: int = RERANK_BATCH_SIZE_DEFAULT
         num_workers: int = 0
         model_name_or_path = cfg.get("reranker.model.bce-reranker-base_v1")
-        max_length: int = cfg.get("reranker.max_length", 1024)
+        max_length: int = cfg.get("reranker.max_length", RERANK_MAX_LENGTH_DEFAULT)
         device = cfg.get("embed.device", "cuda")
         print(f"-------------------------ba: {batch_size}")
         # show_progress_bar: bool = None,

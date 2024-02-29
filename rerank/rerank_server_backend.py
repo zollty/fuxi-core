@@ -3,15 +3,20 @@ from transformers import AutoTokenizer
 from copy import deepcopy
 from typing import List
 from tritonclient import grpc as grpcclient
-from qanything_kernel.configs.model_config import LOCAL_RERANK_SERVICE_URL, LOCAL_RERANK_MAX_LENGTH, LOCAL_RERANK_MODEL_NAME, \
-    LOCAL_RERANK_BATCH
+from common.conf import Cfg
 
+RERANK_PORT = "8001"
+LOCAL_RERANK_SERVICE_URL = f"localhost:{RERANK_PORT}"
+LOCAL_RERANK_MODEL_NAME = 'rerank'
+LOCAL_RERANK_MAX_LENGTH = 512
+LOCAL_RERANK_BATCH = 16
+RERANK_OVERLAP_TOKENS_DEFAULT = 80
 
 class LocalRerankBackend:
-    def __init__(self):
+    def __init__(self, cfg: Cfg = None):
         tokenizer_path = 'qanything_kernel/dependent_server/rerank_for_local_serve/reranker_model_yd_1225'
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
-        self.overlap_tokens = 80
+        self.overlap_tokens = RERANK_OVERLAP_TOKENS_DEFAULT
         self.spe_id = self.tokenizer.sep_token_id
 
         self.batch_size = LOCAL_RERANK_BATCH
