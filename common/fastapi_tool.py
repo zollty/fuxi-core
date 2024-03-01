@@ -18,7 +18,7 @@ from typing import (
 import httpx
 import os
 
-from common.utils import logger
+from common.utils import logger, LOG_VERBOSE
 
 # httpx 请求默认超时时间（秒）。如果加载模型或对话较慢，出现超时错误，可以适当加大该值。
 HTTPX_DEFAULT_TIMEOUT = 60.0
