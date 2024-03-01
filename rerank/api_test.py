@@ -20,13 +20,13 @@ if __name__ == "__main__":
     query = "有哪些美国园林？"
 
     data = {
-        "passages": passages,
         "query": query,
+        "passages": passages,
     }
 
     response = api.post(
         "/rerank/simple_predict",
         data=data
     )
-    ret = api.get_response_value(response, as_json=True)
+    ret = api.get_response_value(response, as_json=False)
     print(ret)
