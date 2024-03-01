@@ -133,7 +133,7 @@ def get_httpx_client(
     # construct Client
     kwargs.update(timeout=timeout, proxies=default_proxies)
 
-    if log_verbose:
+    if LOG_VERBOSE:
         logger.info(f'{get_httpx_client.__class__.__name__}:kwargs: {kwargs}')
 
     if use_async:
