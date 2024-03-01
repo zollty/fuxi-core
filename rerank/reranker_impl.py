@@ -13,6 +13,7 @@ from common.conf import Cfg
 RERANK_MAX_LENGTH_DEFAULT = 1024
 RERANK_BATCH_SIZE_DEFAULT = 32
 
+
 class LangchainReranker(BaseDocumentCompressor):
     """Document compressor that uses `Cohere Rerank API`."""
     model_name_or_path: str = Field()
@@ -23,6 +24,7 @@ class LangchainReranker(BaseDocumentCompressor):
     batch_size: int = Field()
     # show_progress_bar: bool = None
     num_workers: int = Field()
+
     # activation_fct = None
     # apply_softmax = False
 
@@ -59,13 +61,13 @@ class LangchainReranker(BaseDocumentCompressor):
             return []
         sentence_pairs = [[query, _doc] for _doc in passages]
         return self._model.predict(sentences=sentence_pairs,
-                                      batch_size=self.batch_size,
-                                      #  show_progress_bar=self.show_progress_bar,
-                                      num_workers=self.num_workers,
-                                      #  activation_fct=self.activation_fct,
-                                      #  apply_softmax=self.apply_softmax,
-                                      convert_to_tensor=False
-                                      ).tolist()
+                                   batch_size=self.batch_size,
+                                   #  show_progress_bar=self.show_progress_bar,
+                                   num_workers=self.num_workers,
+                                   #  activation_fct=self.activation_fct,
+                                   #  apply_softmax=self.apply_softmax,
+                                   convert_to_tensor=False
+                                   ).tolist()
 
     def compress_documents(
             self,
@@ -80,6 +82,7 @@ class LangchainReranker(BaseDocumentCompressor):
         Args:
             documents: A sequence of documents to compress.
             query: The query to use for compressing the documents.
+            top_n: limit the result len
             callbacks: Callbacks to run during the compression process.
 
         Returns:

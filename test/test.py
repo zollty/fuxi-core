@@ -6,7 +6,7 @@ __current_script_path = os.path.abspath(__file__)
 # 将项目根目录添加到sys.path
 RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
-
+print(RUNTIME_ROOT_DIR)
 
 import numpy as np
 
@@ -29,7 +29,7 @@ number = 27
 
 
 
-with open("./test/config.toml", "rb") as f:
+with open("./config.toml", "rb") as f:
     try:
         toml_dict = tomli.load(f)
     except tomli.TOMLDecodeError:
