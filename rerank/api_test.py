@@ -29,5 +29,5 @@ if __name__ == "__main__":
         json=data
     )
     print(response)
-    ret = api.get_response_value(response, as_json=False)
+    ret = api.get_response_value(response, as_json=True)
     print(ret)
