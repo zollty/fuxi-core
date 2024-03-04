@@ -26,7 +26,7 @@ if __name__ == "__main__":
     print("start to post---------------------------------")
     response = api.post(
         "/rerank/simple_predict",
-        data=data
+        json=data
     )
     print(response)
     ret = api.get_response_value(response, as_json=False)
