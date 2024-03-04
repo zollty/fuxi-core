@@ -23,10 +23,11 @@ if __name__ == "__main__":
         "query": query,
         "passages": passages,
     }
-
+    print("start to post---------------------------------")
     response = api.post(
         "/rerank/simple_predict",
         data=data
     )
+    print(response)
     ret = api.get_response_value(response, as_json=False)
     print(ret)

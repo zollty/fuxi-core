@@ -8,6 +8,7 @@ def mount_reranker_routes(app: FastAPI):
     def simple_predict(query: str = Body(..., description="query str"),
                        passages: List[str] = Body(..., description="List[str] to query"),
                        ) -> BaseResponse:
+        print(f"--------------------------------do predict-----q:{query}")
         data = reranker.simple_predict(query, passages)
         return BaseResponse(data=data)
 
