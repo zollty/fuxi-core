@@ -11,6 +11,5 @@ top_n = 20
 
 [reranker.model]
 "bge-reranker-large" = "/ai/models/BAAI_bge-reranker-large"
-"bge-reranker-base" = "BAAI/bge-reranker-base"
-bce-reranker-base_v1 = "G:/50-TEMP/models/embed/bce-reranker-base_v1"
+bce-reranker-base_v1 = "/ai/models/bce-reranker-base_v1"
 
