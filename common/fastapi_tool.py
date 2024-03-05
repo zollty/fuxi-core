@@ -81,7 +81,6 @@ def set_httpx_config(
     urllib.request.getproxies = _get_proxies
 
 
-
 def get_httpx_client(
         use_async: bool = False,
         proxies: Union[str, Dict] = None,
@@ -246,15 +245,30 @@ def create_app(mount_fns: List[Any],
 
 
 def run_api(app, host, port, **kwargs):
+    import sys
     MakeFastAPIOffline(app)
+
+    if kwargs.get("log_level", "").lower() == "error":
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
 
     if kwargs.get("ssl_keyfile") and kwargs.get("ssl_certfile"):
         uvicorn.run(app,
                     host=host,
                     port=port,
-                    log_level=kwargs.get("log_level", "info"),
+                    log_level=kwargs.get("log_level", "info").lower(),
                     ssl_keyfile=kwargs.get("ssl_keyfile"),
                     ssl_certfile=kwargs.get("ssl_certfile"),
                     )
     else:
-        uvicorn.run(app, host=host, port=port, log_level=kwargs.get("log_level", "info"))
+        uvicorn.run(app, host=host, port=port, log_level=kwargs.get("log_level", "info").lower())
+
+
+import multiprocessing as mp
+
+
+def set_app_event(app: FastAPI, started_event: mp.Event = None):
+    @app.on_event("startup")
+    async def on_startup():
+        if started_event is not None:
+            started_event.set()
