@@ -16,3 +16,13 @@ top_n = 20
 "bge-reranker-large" = "/ai/models/BAAI_bge-reranker-large"
 "bge-reranker-base" = "BAAI/bge-reranker-base"
 bce-reranker-base_v1 = "G:/50-TEMP/models/embed/bce-reranker-base_v1"
+
+
+[controller]
+host = "0.0.0.0"
+port = 21001
+dispatch-method = "shortest_queue"
+
+[worker]
+host = "0.0.0.0"
+port = 21002

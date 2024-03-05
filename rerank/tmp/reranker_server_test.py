@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
     from common.conf import Cfg
     from common.utils import RUNTIME_ROOT_DIR
-    from rerank.rerank_server_backend import LocalRerankBackend
+    from rerank.tmp.rerank_server_backend import LocalRerankBackend
     import time
 
     print(RUNTIME_ROOT_DIR)

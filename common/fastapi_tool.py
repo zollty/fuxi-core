@@ -240,6 +240,8 @@ def create_app(mount_fns: List[Any],
 
     for fn in mount_fns:
         fn(app)
+
+    set_httpx_config()
     return app
 
 
@@ -250,8 +252,9 @@ def run_api(app, host, port, **kwargs):
         uvicorn.run(app,
                     host=host,
                     port=port,
+                    log_level=kwargs.get("log_level", "info"),
                     ssl_keyfile=kwargs.get("ssl_keyfile"),
                     ssl_certfile=kwargs.get("ssl_certfile"),
                     )
     else:
-        uvicorn.run(app, host=host, port=port)
+        uvicorn.run(app, host=host, port=port, log_level=kwargs.get("log_level", "info"))

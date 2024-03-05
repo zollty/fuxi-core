@@ -17,6 +17,16 @@ __current_script_path = os.path.abspath(__file__)
 # 将项目根目录添加到sys.path
 RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 
+# 日志存储路径
+DEFAULT_LOG_PATH = os.path.join(RUNTIME_ROOT_DIR, "logs")
+if not os.path.exists(DEFAULT_LOG_PATH):
+    os.mkdir(DEFAULT_LOG_PATH)
+
+VERSION = "1.0.0"
+OPEN_CROSS_DOMAIN = True
+SSL_KEYFILE = os.environ["SSL_KEYFILE"]
+SSL_CERTFILE = os.environ["SSL_CERTFILE"]
+
 import logging
 
 # 日志格式

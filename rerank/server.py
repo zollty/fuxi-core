@@ -28,9 +28,8 @@ if __name__ == "__main__":
     args_dict = vars(args)
 
     from rerank.api import mount_reranker_routes
-    from common.fastapi_tool import set_httpx_config
-
-    set_httpx_config()
+    # from common.fastapi_tool import set_httpx_config
+    # set_httpx_config()
 
     app = create_app([mount_reranker_routes], version=VERSION, title="FenghouAI Reranker API Server")
 

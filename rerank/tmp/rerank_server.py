@@ -12,7 +12,7 @@ print(root_dir)
 
 from sanic import Sanic
 from sanic.response import json
-from .rerank_server_backend import LocalRerankBackend
+from rerank.tmp.rerank_server_backend import LocalRerankBackend
 
 app = Sanic("rerank_server")
 
