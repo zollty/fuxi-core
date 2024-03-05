@@ -7,25 +7,21 @@ __current_script_path = os.path.abspath(__file__)
 RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
-if __name__ == "__main__":
-    from common.conf import Cfg
-    from common.utils import RUNTIME_ROOT_DIR, DEFAULT_LOG_PATH, VERSION, OPEN_CROSS_DOMAIN
-    from fastapi.middleware.cors import CORSMiddleware
-    from common.fastapi_tool import run_api, set_httpx_config, MakeFastAPIOffline
+from common.conf import Cfg
+
+
+def create_controller_app(cfg: Cfg):
+    from common.utils import DEFAULT_LOG_PATH, VERSION, OPEN_CROSS_DOMAIN
+    from common.fastapi_tool import set_httpx_config, MakeFastAPIOffline
     import sys
-
-    print(RUNTIME_ROOT_DIR)
-    cfg = Cfg(RUNTIME_ROOT_DIR + "/conf_llm_model.toml")
-
     import fastchat.constants
+    from fastchat.serve.controller import app, Controller, logger
+    from fastapi.middleware.cors import CORSMiddleware
 
     fastchat.constants.LOGDIR = DEFAULT_LOG_PATH
-    from fastchat.serve.controller import app, Controller, logger
-
     log_level = cfg.get("controller.log_level", "info")
     logger.setLevel(log_level.upper())
-    host = cfg.get("controller.host", "0.0.0.0")
-    port = cfg.get("controller.port", 21001)
+
     dispatch_method = cfg.get("controller.dispatch_method", "shortest_queue")
     cross_domain = cfg.get("controller.cross_domain", OPEN_CROSS_DOMAIN)
 
@@ -48,6 +44,22 @@ if __name__ == "__main__":
     sys.modules["fastchat.serve.controller"].controller = controller
     app._controller = controller
     MakeFastAPIOffline(app)
+
+    return app
+
+
+if __name__ == "__main__":
+    from common.utils import RUNTIME_ROOT_DIR
+    from common.fastapi_tool import run_api
+
+    print(RUNTIME_ROOT_DIR)
+    cfg = Cfg(RUNTIME_ROOT_DIR + "/conf_llm_model.toml")
+
+    log_level = cfg.get("controller.log_level", "info")
+    host = cfg.get("controller.host", "0.0.0.0")
+    port = cfg.get("controller.port", 21001)
+
+    app = create_controller_app(cfg)
 
     run_api(
         app,
