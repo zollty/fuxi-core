@@ -16,7 +16,7 @@ if __name__ == "__main__":
     log_level = cfg.get("controller.log_level", "info")
     logger.setLevel(log_level)
     host = cfg.get("controller.host", "0.0.0.0")
-    port = cfg.get("controller.port", 21101)
+    port = cfg.get("controller.port", 21001)
     dispatch_method = cfg.get("controller.dispatch_method", "shortest_queue")
     cross_domain = cfg.get("controller.cross_domain", OPEN_CROSS_DOMAIN)
 
