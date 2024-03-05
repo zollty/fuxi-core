@@ -12,25 +12,28 @@ import multiprocessing as mp
 from common.fastapi_tool import set_app_event
 
 
-def create_controller_app(cfg: Cfg):
-    from common.utils import DEFAULT_LOG_PATH, VERSION, OPEN_CROSS_DOMAIN
+def create_openai_api_server_app(cfg: Cfg):
+    from fastapi.middleware.cors import CORSMiddleware
+    from common.utils import DEFAULT_LOG_PATH, OPEN_CROSS_DOMAIN
     from common.fastapi_tool import set_httpx_config, MakeFastAPIOffline
     import sys
-    import fastchat
     import fastchat.constants
-    from fastchat.serve.controller import app, Controller, logger
-    from fastapi.middleware.cors import CORSMiddleware
-
     fastchat.constants.LOGDIR = DEFAULT_LOG_PATH
+    from fastchat.serve.openai_api_server import app, app_settings
+    from fastchat.utils import build_logger
+    logger = build_logger("openai_api", "openai_api.log")
+    sys.modules["fastchat.serve.openai_api_server"].logger = logger
+
     log_level = cfg.get("controller.log_level", "info")
     logger.setLevel(log_level.upper())
 
-    dispatch_method = cfg.get("controller.dispatch_method", "shortest_queue")
+    controller_address = cfg.get("openai_api_server.controller_address", "")
     cross_domain = cfg.get("controller.cross_domain", OPEN_CROSS_DOMAIN)
 
-    controller = Controller(dispatch_method)
+    app_settings.controller_address = controller_address
+    app_settings.api_keys = cfg.get("controller.api_keys", "")
 
-    app.title = "FastChat Controller"
+    app.title = "FastChat OpeanAI API Server"
     app.version = fastchat.__version__
 
     if cross_domain:
@@ -44,26 +47,23 @@ def create_controller_app(cfg: Cfg):
 
     set_httpx_config()
 
-    sys.modules["fastchat.serve.controller"].controller = controller
-    app._controller = controller
     MakeFastAPIOffline(app)
 
     return app
 
 
-def run_controller(started_event: mp.Event = None):
+def run_openai_api_server():
     from common.utils import RUNTIME_ROOT_DIR
     from common.fastapi_tool import run_api
 
     print(RUNTIME_ROOT_DIR)
     cfg = Cfg(RUNTIME_ROOT_DIR + "/conf_llm_model.toml")
 
-    log_level = cfg.get("controller.log_level", "info")
-    host = cfg.get("controller.host", "0.0.0.0")
-    port = cfg.get("controller.port", 21001)
+    log_level = cfg.get("openai_api_server.log_level", "info")
+    host = cfg.get("openai_api_server.host", "0.0.0.0")
+    port = cfg.get("openai_api_server.port", 8000)
 
-    app = create_controller_app(cfg)
-    set_app_event(app, started_event)
+    app = create_openai_api_server_app(cfg)
 
     run_api(
         app,
@@ -76,4 +76,4 @@ def run_controller(started_event: mp.Event = None):
 
 
 if __name__ == "__main__":
-    run_controller()
+    run_openai_api_server()

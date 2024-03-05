@@ -95,6 +95,7 @@ async def start_main_server():
     import time
     import signal
     from llm_model.fschat_controller_launcher import run_controller
+    from llm_model.fschat_openai_api_server_launcher import run_openai_api_server
 
     def handler(signalname):
         """
@@ -143,6 +144,13 @@ async def start_main_server():
         )
         processes["controller"] = process
 
+        process = Process(
+            target=run_openai_api_server,
+            name=f"openai_api",
+            daemon=True,
+        )
+        processes["openai_api"] = process
+
         # process = Process(
         #     target=run_openai_api,
         #     name=f"openai_api",
@@ -159,6 +167,10 @@ async def start_main_server():
                 p.start()
                 p.name = f"{p.name} ({p.pid})"
                 controller_started.wait()  # 等待controller启动完成
+
+            if p := processes.get("openai_api"):
+                p.start()
+                p.name = f"{p.name} ({p.pid})"
 
             # for process in processes.get("model_worker", {}).values():
             #     process.join()
