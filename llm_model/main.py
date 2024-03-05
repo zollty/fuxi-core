@@ -71,6 +71,20 @@ def parse_args() -> argparse.ArgumentParser:
         help="增加log信息",
         dest="verbose",
     )
+    parser.add_argument(
+        "-fs",
+        "--fastchat",
+        action="store_true",
+        help="run fastchat's controller/openai_api servers",
+        dest="fastchat",
+    )
+    parser.add_argument(
+        "-w",
+        "--worker",
+        action="store_true",
+        help="run fastchat's worker servers",
+        dest="worker",
+    )
     args = parser.parse_args()
     logger.info(f"args: {args}")
 
