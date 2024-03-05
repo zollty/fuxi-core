@@ -55,9 +55,6 @@ def create_controller_app22(cfg: Cfg):
     from fastchat.serve.controller import app, Controller, logger
 
     dispatch_method = cfg.get("controller.dispatch_method", "shortest_queue")
-    cross_domain = cfg.get("controller.cross_domain", OPEN_CROSS_DOMAIN)
-
-    controller = Controller(dispatch_method)
 
     app.title = "FastChat Controller"
     app.version = VERSION
