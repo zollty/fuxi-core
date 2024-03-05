@@ -134,7 +134,7 @@ async def start_main_server():
         log_level = "ERROR"
 
     controller_started = manager.Event()
-    if args.openai_api:
+    if args.fastchat:
         process = Process(
             target=run_controller,
             name=f"controller",
