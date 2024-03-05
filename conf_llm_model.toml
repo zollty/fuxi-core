@@ -30,6 +30,6 @@ port = 21002
 
 [openai_api_server]
 host = "0.0.0.0"
-port = 8000
+port = 8880
 controller_address = "http://localhost:21101"
 api_keys = "EMPTY"
