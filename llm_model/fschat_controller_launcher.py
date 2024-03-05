@@ -9,7 +9,7 @@ sys.path.append(RUNTIME_ROOT_DIR)
 
 if __name__ == "__main__":
     from common.conf import Cfg
-    from common.utils import RUNTIME_ROOT_DIR, DEFAULT_LOG_PATH, VERSION, OPEN_CROSS_DOMAIN, SSL_KEYFILE, SSL_CERTFILE
+    from common.utils import RUNTIME_ROOT_DIR, DEFAULT_LOG_PATH, VERSION, OPEN_CROSS_DOMAIN
     from fastapi.middleware.cors import CORSMiddleware
     from common.fastapi_tool import run_api, set_httpx_config, MakeFastAPIOffline
     import sys
@@ -54,6 +54,6 @@ if __name__ == "__main__":
         host=host,
         port=port,
         log_level=log_level,
-        ssl_keyfile=SSL_KEYFILE,
-        ssl_certfile=SSL_CERTFILE,
+        ssl_keyfile=cfg.get("controller.ssl_keyfile"),
+        ssl_certfile=cfg.get("controller.ssl_certfile"),
     )
