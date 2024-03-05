@@ -23,6 +23,8 @@ if not os.path.exists(DEFAULT_LOG_PATH):
     os.mkdir(DEFAULT_LOG_PATH)
 
 VERSION = "1.0.0"
+# API 是否开启跨域，默认为False，如果需要开启，请设置为True
+# is open cross domain
 OPEN_CROSS_DOMAIN = True
 SSL_KEYFILE = os.environ["SSL_KEYFILE"]
 SSL_CERTFILE = os.environ["SSL_CERTFILE"]

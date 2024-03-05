@@ -7,15 +7,11 @@ __current_script_path = os.path.abspath(__file__)
 RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
-import argparse
-from common.fastapi_tool import create_app, run_api
-
-VERSION = "1.0.0"
-# API 是否开启跨域，默认为False，如果需要开启，请设置为True
-# is open cross domain
-OPEN_CROSS_DOMAIN = True
-
 if __name__ == "__main__":
+    import argparse
+    from common.fastapi_tool import create_app, run_api
+    from common.utils import VERSION
+
     parser = argparse.ArgumentParser(prog='Fenghou-AI',
                                      description='About FenghouAI, local knowledge QA'
                                                  ' ｜ 基于本地知识库的问答')
@@ -28,6 +24,7 @@ if __name__ == "__main__":
     args_dict = vars(args)
 
     from rerank.api import mount_reranker_routes
+
     # from common.fastapi_tool import set_httpx_config
     # set_httpx_config()
 
