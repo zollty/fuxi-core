@@ -48,6 +48,25 @@ def create_controller_app(cfg: Cfg):
     return app
 
 
+def create_controller_app22(cfg: Cfg):
+    from common.utils import DEFAULT_LOG_PATH, VERSION, OPEN_CROSS_DOMAIN
+    from common.fastapi_tool import set_httpx_config, MakeFastAPIOffline
+
+    from fastchat.serve.controller import app, Controller, logger
+
+    dispatch_method = cfg.get("controller.dispatch_method", "shortest_queue")
+    cross_domain = cfg.get("controller.cross_domain", OPEN_CROSS_DOMAIN)
+
+    controller = Controller(dispatch_method)
+
+    app.title = "FastChat Controller"
+    app.version = VERSION
+
+    MakeFastAPIOffline(app)
+
+    return app
+
+
 if __name__ == "__main__":
     from common.utils import RUNTIME_ROOT_DIR
     from common.fastapi_tool import run_api
@@ -59,7 +78,7 @@ if __name__ == "__main__":
     host = cfg.get("controller.host", "0.0.0.0")
     port = cfg.get("controller.port", 21001)
 
-    app = create_controller_app(cfg)
+    app = create_controller_app22(cfg)
 
     run_api(
         app,
