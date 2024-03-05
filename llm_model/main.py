@@ -172,6 +172,11 @@ async def start_main_server():
             #                 work_process.join()
             #         else:
             #             process.join()
+            while True:
+                cmd = queue.get()  # 收到切换模型的消息
+                e = manager.Event()
+                logger.info("收到消息", cmd)
+
         except Exception as e:
             logger.error(e)
             logger.warning("Caught KeyboardInterrupt! Setting stop event...")
