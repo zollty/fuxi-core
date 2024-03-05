@@ -64,6 +64,13 @@ def parse_args() -> argparse.ArgumentParser:
         default=False,
         help="Enable SSL. Requires OS Environment variables 'SSL_KEYFILE' and 'SSL_CERTFILE'.",
     )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="增加log信息",
+        dest="verbose",
+    )
     args = parser.parse_args()
     logger.info(f"args: {args}")
 
@@ -107,10 +114,10 @@ async def start_main_server():
     def process_count():
         return len(processes) + len(processes["online_api"]) + len(processes["model_worker"]) - 2
 
-    if args.quiet or not LOG_VERBOSE:
-        log_level = "ERROR"
-    else:
+    if args.verbose or LOG_VERBOSE:
         log_level = "INFO"
+    else:
+        log_level = "ERROR"
 
     controller_started = manager.Event()
     if args.openai_api:
