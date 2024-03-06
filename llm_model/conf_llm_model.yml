@@ -62,7 +62,7 @@ llm:
       revision: null
       seed: 0
       swap_space: 4
-      tensor_parallel_size: 2
+      tensor_parallel_size: 1
       tokenizer_mode: auto
       tokenizer_revision: null
       worker_use_ray: false
@@ -106,7 +106,7 @@ llm:
     chatglm3-6b-32k:
       infer_turbo: vllm
       #num_gpus: 3
-      gpus: 1,2,3,4
+      gpus: 1,2,3
       max_gpu_memory: 16GiB
       path: /ai/models/chatglm3-6b-32k
     Chinese-Alpaca-2-7B:
