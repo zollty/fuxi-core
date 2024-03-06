@@ -66,6 +66,8 @@ llm:
       tokenizer_mode: auto
       tokenizer_revision: null
       worker_use_ray: false
+      max_parallel_loading_workers: null
+      enable_prefix_caching: false
   default_model_cfg:
     host: 127.0.0.1
     port: 20002
