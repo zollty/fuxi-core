@@ -10,7 +10,7 @@ llm:
     controller_address: http://localhost:21101
     api_keys: EMPTY
   worker:
-    host: 127.0.0.1
+    host: 0.0.0.0
     start_port: 21105
     #log_level: null
     #cross_domain: true

@@ -9,7 +9,6 @@ sys.path.append(RUNTIME_ROOT_DIR)
 
 from dynaconf import Dynaconf
 import multiprocessing as mp
-from common.fastapi_tool import set_app_event
 from fastapi import FastAPI
 
 
@@ -197,7 +196,7 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
 
 def run_worker(model_name, started_event: mp.Event = None):
     from common.utils import RUNTIME_ROOT_DIR
-    from common.fastapi_tool import run_api
+    from common.fastapi_tool import run_api, set_app_event
 
     print(RUNTIME_ROOT_DIR)
 
@@ -234,4 +233,4 @@ def run_worker(model_name, started_event: mp.Event = None):
 
 if __name__ == "__main__":
     run_worker("langchain_model")
-    #run_worker("Qwen-7B-Chat")
+    # run_worker("Qwen-7B-Chat")
