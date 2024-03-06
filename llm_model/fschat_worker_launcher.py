@@ -38,7 +38,9 @@ def create_vllm_worker(cfg: Dynaconf, model_worker_config, log_level):
     from vllm.engine.arg_utils import AsyncEngineArgs
     import argparse
 
-    vllm_args = cfg.get("llm.worker.vllm") + cfg.get("llm.worker.base")
+    vllm_args = cfg.get("llm.worker.base") + cfg.get("llm.worker.vllm")
+    if model_worker_config.get("vllm"):
+        vllm_args = vllm_args + model_worker_config.get("vllm")
     set_common_args(vllm_args, model_worker_config)
 
     vllm_args["tokenizer"] = vllm_args["model_path"]
@@ -77,7 +79,9 @@ def create_vllm_worker(cfg: Dynaconf, model_worker_config, log_level):
 def create_plain_worker(cfg: Dynaconf, model_worker_config, log_level):
     from fastchat.serve.model_worker import app, GptqConfig, AWQConfig, ModelWorker, worker_id
 
-    args = cfg.get("llm.worker.plain") + cfg.get("llm.worker.base")
+    args = cfg.get("llm.worker.base") + cfg.get("llm.worker.plain")
+    if model_worker_config.get("worker"):
+        args = args + model_worker_config.get("worker")
     set_common_args(args, model_worker_config)
 
     gptq_config = None
