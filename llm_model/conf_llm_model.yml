@@ -103,7 +103,7 @@ llm:
         max_gpu_memory: 12GiB
       vllm:
         #max_model_len:
-        gpu_memory_utilization: 0.9
+        gpu_memory_utilization: 1.0
     chatglm3-6b:
       infer_turbo: vllm
       path: /ai/models/chatglm3-6b

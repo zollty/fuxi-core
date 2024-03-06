@@ -12,6 +12,7 @@ import multiprocessing as mp
 from fastapi import FastAPI
 from common.utils import detect_device
 
+from common.utils import logger
 
 def set_common_args(args):
     if args["device"] == "auto":
@@ -49,6 +50,9 @@ def create_vllm_worker(cfg: Dynaconf, model_worker_config, log_level):
     args = parser.parse_args([])
     for k, v in vllm_args.items():
         setattr(args, k, v)
+    logger.info("---------------------vllm_args------------------------")
+    logger.info(vllm_args)
+    logger.info("---------------------vllm_args------------------------")
 
     engine_args = AsyncEngineArgs.from_cli_args(args)
     engine = AsyncLLMEngine.from_engine_args(engine_args)
@@ -81,6 +85,8 @@ def create_plain_worker(cfg: Dynaconf, model_worker_config, log_level):
         gptq_args = model_worker_config["plain"]["gptq"]
         awq_args = model_worker_config["plain"]["awq"]
     set_common_args(args)
+    logger.info("---------------------worker_args------------------------")
+    logger.info(args)
 
     if not gptq_args:
         gptq_args = cfg.get("llm.worker.plain.gptq")
@@ -88,6 +94,8 @@ def create_plain_worker(cfg: Dynaconf, model_worker_config, log_level):
         gptq_args = cfg.get("llm.worker.plain.gptq") + gptq_args
     gptq_config = None
     if gptq_args:
+        logger.info("---------------------gptq_args------------------------")
+        logger.info(gptq_args)
         gptq_config = GptqConfig(
             ckpt=gptq_args.gptq_ckpt or args.model_path,
             wbits=gptq_args.gptq_wbits,
@@ -101,6 +109,8 @@ def create_plain_worker(cfg: Dynaconf, model_worker_config, log_level):
         awq_args = cfg.get("llm.worker.plain.awq") + awq_args
     awq_config = None
     if awq_args:
+        logger.info("---------------------awq_args------------------------")
+        logger.info(awq_args)
         awq_config = AWQConfig(
             ckpt=awq_args.awq_ckpt or args.model_path,
             wbits=awq_args.awq_wbits,
@@ -157,7 +167,7 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     from common.fastapi_tool import set_httpx_config, MakeFastAPIOffline
     import sys
     import fastchat.constants
-    from fastchat.serve.controller import app, Controller, logger
+    from fastchat.serve.model_worker import logger
     from fastapi.middleware.cors import CORSMiddleware
 
     fastchat.constants.LOGDIR = DEFAULT_LOG_PATH
