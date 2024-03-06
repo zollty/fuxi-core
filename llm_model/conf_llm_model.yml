@@ -68,6 +68,19 @@ llm:
       worker_use_ray: false
       max_parallel_loading_workers: null
       enable_prefix_caching: false
+      enforce_eager: false
+      max_context_len_to_capture: 8192
+      kv_cache_dtype: 'auto'
+      max_logprobs: 5  # OpenAI default value
+      code_revision: null
+      disable_custom_all_reduce: false
+      enable_lora: false
+      max_loras: 1
+      max_lora_rank: 16
+      lora_extra_vocab_size: 256
+      lora_dtype: 'auto'
+      max_cpu_loras: null
+      ray_workers_use_nsight: false
   default_model_cfg:
     host: 127.0.0.1
     port: 20002
