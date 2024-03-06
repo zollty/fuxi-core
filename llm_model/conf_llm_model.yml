@@ -1,0 +1,144 @@
+llm:
+  device: auto
+  controller:
+    host: 0.0.0.0
+    port: 21101
+    dispatch-method: shortest_queue
+  openai_api_server:
+    host: 0.0.0.0
+    port: 8880
+    controller_address: http://localhost:21101
+    api_keys: EMPTY
+  worker:
+    host: 127.0.0.1
+    start_port: 21105
+    #log_level: null
+    #cross_domain: true
+    base:
+      controller_addr: http://localhost:21101
+      #worker_address
+      limit_worker_concurrency: 100
+      #conv_template: null
+      no_register: false
+      device: auto
+      num_gpus: 1
+      max_gpu_memory: 10GB
+      #model_path: null
+      #model_names: null
+      trust_remote_code: true
+    plain: # see: fastchat\serve\model_worker.py
+      #load_8bit: false
+      #stream_interval: 2
+      #cpu_offloading: null
+      #embed_in_truncate: false
+      #awq_ckpt: null
+      #awq_groupsize: -1
+      #awq_wbits: 16
+      #gptq_act_order: false
+      #gptq_ckpt: null
+      #gptq_groupsize: -1
+      #gptq_wbits: 16
+      debug: true
+      #dtype: null
+      #seed: null
+    vllm: # see: https://github.com/vllm-project/vllm/blob/main/vllm/engine/arg_utils.py
+      #block_size: 16
+      #disable_log_requests: false
+      #disable_log_stats: false
+      #download_dir: null
+      dtype: auto
+      #engine_use_ray: false
+      #gpu_memory_utilization: 0.9
+      #load_format: auto
+      #max_log_len: null
+      #max_model_len: null
+      #max_num_batched_tokens: null
+      #max_num_seqs: 256
+      #max_paddings: 256
+      #pipeline_parallel_size: 1
+      #quantization: null
+      #revision: null
+      #seed: 0
+      #swap_space: 4
+      #tensor_parallel_size: 1
+      tokenizer_mode: auto
+      #tokenizer_revision: null
+      #worker_use_ray: false
+  default_model_cfg:
+    host: 127.0.0.1
+    port: 20002
+    device: cuda
+    #infer_turbo: null
+  model_cfg:
+    Qwen-7B-Chat:
+      infer_turbo: vllm
+      #num_gpus: 3
+      gpus: 1,2,3,4
+      max_gpu_memory: 12GiB
+      path: /ai/models/Qwen-7B-Chat
+    Qwen1.5-7B-Chat:
+      infer_turbo: vllm
+      num_gpus: 4
+      max_gpu_memory: 12GiB
+      path: /ai/models/Qwen1.5-7B-Chat
+    chatglm3-6b:
+      infer_turbo: vllm
+      num_gpus: 5
+      max_gpu_memory: 4GiB
+      path: /ai/models/chatglm3-6b
+    chatglm3-6b-32k:
+      infer_turbo: vllm
+      num_gpus: 3
+      max_gpu_memory: 16GiB
+      path: /ai/models/chatglm3-6b-32k
+    Chinese-Alpaca-2-7B:
+      infer_turbo: vllm
+      num_gpus: 5
+      max_gpu_memory: 5GiB
+      path: /ai/models/chinese-alpaca-2-7b-hf
+    Chinese-Alpaca-2-13B:
+      infer_turbo: vllm
+      num_gpus: 5
+      max_gpu_memory: 6GiB
+      path: /ai/models/chinese-alpaca-2-13b-16k-hf
+    Llama2-Chinese-13b-Chat:
+      infer_turbo: vllm
+      num_gpus: 5
+      max_gpu_memory: 6GiB
+      path: /ai/models/Llama2-Chinese-13b-Chat
+    Qwen-14B-Chat:
+      infer_turbo: vllm
+      num_gpus: 4
+      max_gpu_memory: 10GiB
+      path: /ai/models/Qwen-14B-Chat-Int8
+      quantize: int8
+    Qwen-1.8B-Chat:
+      infer_turbo: vllm
+      num_gpus: 3
+      max_gpu_memory: 4GiB
+      path: /ai/models/Qwen-1_8B-Chat-Int8
+      quantize: int8
+    Yi-34B-Chat-8bits:
+      infer_turbo: vllm
+      num_gpus: 5
+      max_gpu_memory: 16GiB
+      path: /ai/models/Yi-34B-Chat-8bits
+      quantize: int8
+    Qwen-72B-Chat-Int8:
+      infer_turbo: vllm
+      num_gpus: 4
+      max_gpu_memory: 22GiB
+      path: /ai/models/Qwen-72B-Chat-Int8
+      quantize: int8
+
+embed:
+  device: cuda
+reranker:
+  top_n: 20
+  model:
+    bge-reranker-large: /ai/models/BAAI_bge-reranker-large
+    bge-reranker-base: BAAI/bge-reranker-base
+    bce-reranker-base_v1: G:/50-TEMP/models/embed/bce-reranker-base_v1
+
+test-aa:
+  key-bb: 555

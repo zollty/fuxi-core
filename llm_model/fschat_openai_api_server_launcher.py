@@ -24,14 +24,14 @@ def create_openai_api_server_app(cfg: Cfg):
     logger = build_logger("openai_api", "openai_api.log")
     sys.modules["fastchat.serve.openai_api_server"].logger = logger
 
-    log_level = cfg.get("controller.log_level", "info")
+    log_level = cfg.get("llm.controller.log_level", "info")
     logger.setLevel(log_level.upper())
 
-    controller_address = cfg.get("openai_api_server.controller_address", "")
-    cross_domain = cfg.get("controller.cross_domain", OPEN_CROSS_DOMAIN)
+    controller_address = cfg.get("llm.openai_api_server.controller_address", "")
+    cross_domain = cfg.get("llm.openai_api_server.cross_domain", OPEN_CROSS_DOMAIN)
 
     app_settings.controller_address = controller_address
-    app_settings.api_keys = cfg.get("controller.api_keys", "")
+    app_settings.api_keys = cfg.get("llm.openai_api_server.api_keys", "")
 
     app.title = "FastChat OpeanAI API Server"
     app.version = fastchat.__version__
@@ -59,9 +59,9 @@ def run_openai_api_server():
     print(RUNTIME_ROOT_DIR)
     cfg = Cfg(RUNTIME_ROOT_DIR + "/conf_llm_model.toml")
 
-    log_level = cfg.get("openai_api_server.log_level", "info")
-    host = cfg.get("openai_api_server.host", "0.0.0.0")
-    port = cfg.get("openai_api_server.port", 8000)
+    log_level = cfg.get("llm.openai_api_server.log_level", "info")
+    host = cfg.get("llm.openai_api_server.host", "0.0.0.0")
+    port = cfg.get("llm.openai_api_server.port", 8000)
 
     app = create_openai_api_server_app(cfg)
 
@@ -70,8 +70,8 @@ def run_openai_api_server():
         host=host,
         port=port,
         log_level=log_level,
-        ssl_keyfile=cfg.get("controller.ssl_keyfile"),
-        ssl_certfile=cfg.get("controller.ssl_certfile"),
+        ssl_keyfile=cfg.get("llm.openai_api_server.ssl_keyfile"),
+        ssl_certfile=cfg.get("llm.openai_api_server.ssl_certfile"),
     )
 
 

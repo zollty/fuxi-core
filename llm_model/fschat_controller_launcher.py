@@ -22,11 +22,11 @@ def create_controller_app(cfg: Cfg):
     from fastapi.middleware.cors import CORSMiddleware
 
     fastchat.constants.LOGDIR = DEFAULT_LOG_PATH
-    log_level = cfg.get("controller.log_level", "info")
+    log_level = cfg.get("llm.controller.log_level", "info")
     logger.setLevel(log_level.upper())
 
-    dispatch_method = cfg.get("controller.dispatch_method", "shortest_queue")
-    cross_domain = cfg.get("controller.cross_domain", OPEN_CROSS_DOMAIN)
+    dispatch_method = cfg.get("llm.controller.dispatch_method", "shortest_queue")
+    cross_domain = cfg.get("llm.controller.cross_domain", OPEN_CROSS_DOMAIN)
 
     controller = Controller(dispatch_method)
 
@@ -58,9 +58,9 @@ def run_controller(started_event: mp.Event = None):
     print(RUNTIME_ROOT_DIR)
     cfg = Cfg(RUNTIME_ROOT_DIR + "/conf_llm_model.toml")
 
-    log_level = cfg.get("controller.log_level", "info")
-    host = cfg.get("controller.host", "0.0.0.0")
-    port = cfg.get("controller.port", 21001)
+    log_level = cfg.get("llm.controller.log_level", "info")
+    host = cfg.get("llm.controller.host", "0.0.0.0")
+    port = cfg.get("llm.controller.port", 21001)
 
     app = create_controller_app(cfg)
     set_app_event(app, started_event)
