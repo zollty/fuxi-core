@@ -88,7 +88,7 @@ llm:
     #infer_turbo: null
   model_cfg:
     Qwen-7B-Chat:
-      infer_turbo: vllm
+      #infer_turbo: vllm
       #num_gpus: 3
       gpus: 1,2,3,4
       max_gpu_memory: 12GiB
