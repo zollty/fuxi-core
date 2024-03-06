@@ -10,6 +10,7 @@ sys.path.append(RUNTIME_ROOT_DIR)
 from dynaconf import Dynaconf
 import multiprocessing as mp
 from fastapi import FastAPI
+from common.utils import detect_device
 
 
 def set_common_args(args, model_worker_config):
@@ -18,6 +19,8 @@ def set_common_args(args, model_worker_config):
     args["model_path"] = model_worker_config.get("path")
     args["gpus"] = model_worker_config.get("gpus")
     args["num_gpus"] = model_worker_config.get("num_gpus")
+    if args["device"] == "auto":
+        args.set("device", detect_device())
 
     if args.gpus:
         if args.num_gpus is None:
@@ -238,5 +241,5 @@ def run_worker(model_name, started_event: mp.Event = None):
 
 
 if __name__ == "__main__":
-    #run_worker("langchain_model")
+    # run_worker("langchain_model")
     run_worker("Qwen-7B-Chat")
