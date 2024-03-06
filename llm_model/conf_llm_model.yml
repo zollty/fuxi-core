@@ -102,7 +102,7 @@ llm:
         gpus: 1,2,3,4
         max_gpu_memory: 12GiB
       vllm:
-        max_model_len: 6016
+        #max_model_len: 6016
         gpu_memory_utilization: 0.8
         tensor_parallel_size: 4
     chatglm3-6b:
