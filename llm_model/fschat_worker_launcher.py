@@ -20,7 +20,7 @@ def set_common_args(args, model_worker_config):
     args["gpus"] = model_worker_config.get("gpus")
     args["num_gpus"] = model_worker_config.get("num_gpus")
     if args["device"] == "auto":
-        args.set("device", detect_device())
+        args["device"] = detect_device()
 
     if args.gpus:
         if args.num_gpus is None:
