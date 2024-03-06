@@ -14,6 +14,7 @@ from common.utils import detect_device
 
 from common.utils import logger
 
+
 def set_common_args(args):
     if args["device"] == "auto":
         args["device"] = detect_device()
@@ -174,19 +175,6 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     log_level = log_level.upper()
     logger.setLevel(log_level)
 
-    cross_domain = cfg.get("llm.worker.cross_domain", cfg.get("root.cross_domain", True))
-
-    if cross_domain:
-        app.add_middleware(
-            CORSMiddleware,
-            allow_origins=["*"],
-            allow_credentials=True,
-            allow_methods=["*"],
-            allow_headers=["*"],
-        )
-
-    set_httpx_config()
-
     model_name = model_worker_config.get("model_name")
     start_port = cfg.get("llm.worker.start_port")
     worker_port = model_worker_config.get("port")
@@ -219,6 +207,20 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
 
         else:
             app, worker = create_plain_worker(cfg, model_worker_config, log_level)
+
+
+    cross_domain = cfg.get("llm.worker.cross_domain", cfg.get("root.cross_domain", True))
+
+    if cross_domain:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
+
+    set_httpx_config()
 
     app.title = f"FastChat LLM Worker Server ({model_name})"
     app.version = fastchat.__version__
