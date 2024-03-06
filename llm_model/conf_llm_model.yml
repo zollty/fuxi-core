@@ -102,7 +102,7 @@ llm:
         gpus: 1,2,3,4
         max_gpu_memory: 12GiB
       vllm:
-        #max_model_len:
+        max_model_len: 12208
         gpu_memory_utilization: 1.0
     chatglm3-6b:
       infer_turbo: vllm
