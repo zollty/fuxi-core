@@ -58,7 +58,7 @@ def run_controller(started_event: mp.Event = None):
     print(RUNTIME_ROOT_DIR)
     cfg = Cfg(RUNTIME_ROOT_DIR + "/conf_llm_model.toml")
 
-    log_level = cfg.get("llm.controller.log_level", "info")
+    log_level = cfg.get("llm.controller.log_level", "INFO").upper()
     host = cfg.get("llm.controller.host", "0.0.0.0")
     port = cfg.get("llm.controller.port", 21001)
 

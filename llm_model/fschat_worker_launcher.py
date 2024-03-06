@@ -150,7 +150,8 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     from fastapi.middleware.cors import CORSMiddleware
 
     fastchat.constants.LOGDIR = DEFAULT_LOG_PATH
-    logger.setLevel(log_level.upper())
+    log_level = log_level.upper()
+    logger.setLevel(log_level)
 
     cross_domain = cfg.get("llm.worker.cross_domain", cfg.get("root.cross_domain", True))
 
@@ -217,7 +218,7 @@ def run_worker(model_name, started_event: mp.Event = None):
         settings_files=['llm_model/conf_llm_model.yml', 'settings.yaml'],
     )
 
-    log_level = cfg.get("llm.worker.log_level", cfg.get("root.log_level", "info"))
+    log_level = cfg.get("llm.worker.log_level", cfg.get("root.log_level", "INFO"))
 
     model_worker_config = {}
     if model_name == "langchain_model":

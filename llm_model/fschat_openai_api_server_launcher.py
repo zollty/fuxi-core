@@ -24,7 +24,7 @@ def create_openai_api_server_app(cfg: Cfg):
     logger = build_logger("openai_api", "openai_api.log")
     sys.modules["fastchat.serve.openai_api_server"].logger = logger
 
-    log_level = cfg.get("llm.controller.log_level", "info")
+    log_level = cfg.get("llm.controller.log_level", "INFO").upper()
     logger.setLevel(log_level.upper())
 
     controller_address = cfg.get("llm.openai_api_server.controller_address", "")
