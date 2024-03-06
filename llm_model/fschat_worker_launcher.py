@@ -13,15 +13,9 @@ from fastapi import FastAPI
 from common.utils import detect_device
 
 
-def set_common_args(args, model_worker_config):
-    args["model_names"] = [model_worker_config.get("model_name")]
-    args["worker_address"] = model_worker_config.get("worker_address")
-    args["model_path"] = model_worker_config.get("path")
-    args["gpus"] = model_worker_config.get("gpus")
-    args["num_gpus"] = model_worker_config.get("num_gpus")
+def set_common_args(args):
     if args["device"] == "auto":
         args["device"] = detect_device()
-
     if args.gpus:
         if args.num_gpus is None:
             args.num_gpus = len(args.gpus.split(','))
@@ -38,10 +32,11 @@ def create_vllm_worker(cfg: Dynaconf, model_worker_config, log_level):
     from vllm.engine.arg_utils import AsyncEngineArgs
     import argparse
 
-    vllm_args = cfg.get("llm.worker.base") + cfg.get("llm.worker.vllm")
+    vllm_args = cfg.get("llm.worker.base") + cfg.get("llm.worker.vllm") + model_worker_config.get("base")
     if model_worker_config.get("vllm"):
         vllm_args = vllm_args + model_worker_config.get("vllm")
-    set_common_args(vllm_args, model_worker_config)
+
+    set_common_args(vllm_args)
 
     vllm_args["tokenizer"] = vllm_args["model_path"]
 
@@ -60,7 +55,7 @@ def create_vllm_worker(cfg: Dynaconf, model_worker_config, log_level):
 
     worker = VLLMWorker(
         controller_addr=args.controller_addr,
-        worker_addr=args.worker_address,
+        worker_addr=args.worker_addr,
         worker_id=worker_id,
         model_path=args.model_path,
         model_names=args.model_names,
@@ -78,31 +73,43 @@ def create_vllm_worker(cfg: Dynaconf, model_worker_config, log_level):
 
 def create_plain_worker(cfg: Dynaconf, model_worker_config, log_level):
     from fastchat.serve.model_worker import app, GptqConfig, AWQConfig, ModelWorker, worker_id
+    gptq_args = None
+    awq_args = None
+    args = cfg.get("llm.worker.base") + cfg.get("llm.worker.plain") + model_worker_config.get("base")
+    if model_worker_config.get("plain"):
+        args = args + model_worker_config.get("plain")
+        gptq_args = model_worker_config.get("plain.gptq")
+        awq_args = model_worker_config.get("plain.awq")
+    set_common_args(args)
 
-    args = cfg.get("llm.worker.base") + cfg.get("llm.worker.plain")
-    if model_worker_config.get("worker"):
-        args = args + model_worker_config.get("worker")
-    set_common_args(args, model_worker_config)
-
+    if not gptq_args:
+        gptq_args = cfg.get("llm.worker.plain.gptq")
+    elif cfg.get("llm.worker.plain.gptq"):
+        gptq_args = cfg.get("llm.worker.plain.gptq") + gptq_args
     gptq_config = None
-    if cfg.get("llm.worker.plain.gptq"):
+    if gptq_args:
         gptq_config = GptqConfig(
-            ckpt=args.gptq_ckpt or args.model_path,
-            wbits=args.gptq_wbits,
-            groupsize=args.gptq_groupsize,
-            act_order=args.gptq_act_order,
+            ckpt=gptq_args.gptq_ckpt or args.model_path,
+            wbits=gptq_args.gptq_wbits,
+            groupsize=gptq_args.gptq_groupsize,
+            act_order=gptq_args.gptq_act_order,
         )
+
+    if not awq_args:
+        awq_args = cfg.get("llm.worker.plain.awq")
+    elif cfg.get("llm.worker.plain.awq"):
+        awq_args = cfg.get("llm.worker.plain.awq") + awq_args
     awq_config = None
-    if cfg.get("llm.worker.plain.awq"):
+    if awq_args:
         awq_config = AWQConfig(
-            ckpt=args.awq_ckpt or args.model_path,
-            wbits=args.awq_wbits,
-            groupsize=args.awq_groupsize,
+            ckpt=awq_args.awq_ckpt or args.model_path,
+            wbits=awq_args.awq_wbits,
+            groupsize=awq_args.awq_groupsize,
         )
 
     worker = ModelWorker(
         controller_addr=args.controller_addr,
-        worker_addr=args.worker_address,
+        worker_addr=args.worker_addr,
         worker_id=worker_id,
         model_path=args.model_path,
         model_names=args.model_names,
@@ -134,7 +141,7 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     port:
     model_names:[`model_name`]
     controller_addr:
-    worker_address:
+    worker_addr:
 
     对于Langchain支持的模型：
         langchain_model:True
@@ -178,8 +185,10 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
         model_worker_config["worker_port"] = worker_port
 
     host = cfg.get("llm.worker.host")
-    worker_address = f"http://{host}:{worker_port}"
-    model_worker_config["worker_address"] = worker_address
+    worker_addr = f"http://{host}:{worker_port}"
+    model_worker_config["base.worker_addr"] = worker_addr
+    model_worker_config["base.model_path"] = model_worker_config.get("path")
+    model_worker_config["base.model_names"] = [model_worker_config.get("model_name")]
 
     if model_worker_config.get("langchain_model"):  # Langchian支持的模型不用做操作
         from fastchat.serve.base_model_worker import app
@@ -190,7 +199,7 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
 
         worker = worker_class(model_names=[model_name],
                               controller_addr=cfg.controller_addr,
-                              worker_addr=worker_address)
+                              worker_addr=worker_addr)
         # sys.modules["fastchat.serve.base_model_worker"].worker = worker
         sys.modules["fastchat.serve.base_model_worker"].logger.setLevel(log_level)
     # 本地模型
@@ -224,11 +233,11 @@ def run_worker(model_name, started_event: mp.Event = None):
 
     log_level = cfg.get("llm.worker.log_level", cfg.get("root.log_level", "INFO"))
 
-    model_worker_config = {}
+    model_worker_config = {"model_name": model_name}
     if model_name == "langchain_model":
-        model_worker_config = {"langchain_model": True, "model_name": "langchain_model"}
+        model_worker_config["langchain_model"] = True
     else:
-        model_worker_config = cfg.get("llm.model_cfg")[model_name] + {}
+        model_worker_config = cfg.get("llm.model_cfg")[model_name] + model_worker_config
 
     app = create_worker_app(cfg, model_worker_config, log_level)
     set_app_event(app, started_event)

@@ -134,3 +134,8 @@ if __name__ == "__main__":
 
     print(cfg.get("llm.worker.base"))
     print(cfg.get("llm.worker.vllm"))
+
+    cc = {"sss": 123}
+    dd = None
+    if cc:
+        print(cc + dd)

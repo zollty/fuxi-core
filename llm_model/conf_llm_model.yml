@@ -23,7 +23,7 @@ llm:
       device: auto
       num_gpus: 1
       max_gpu_memory: 10GB
-      #model_path: null
+      #model_model_path: null
       #model_names: null
       trust_remote_code: true
     plain: # see: fastchat\serve\model_worker.py
@@ -88,70 +88,79 @@ llm:
     #infer_turbo: null
   model_cfg:
     Qwen-7B-Chat:
-      #infer_turbo: vllm
-      #num_gpus: 3
-      gpus: 1,2,3,4
-      max_gpu_memory: 12GiB
+      infer_turbo: vllm
       path: /ai/models/Qwen-7B-Chat
+      base:
+        #num_gpus: 3
+        gpus: 1,2,3,4
+        max_gpu_memory: 12GiB
     Qwen1.5-7B-Chat:
       infer_turbo: vllm
-      #num_gpus: 4
-      gpus: 1,2,3,4
-      max_gpu_memory: 12GiB
       path: /ai/models/Qwen1.5-7B-Chat
+      base:
+        #num_gpus: 4
+        gpus: 1,2,3,4
+        max_gpu_memory: 12GiB
       vllm:
         #max_model_len:
         gpu_memory_utilization: 0.9
     chatglm3-6b:
       infer_turbo: vllm
-      num_gpus: 5
-      max_gpu_memory: 4GiB
       path: /ai/models/chatglm3-6b
+      base:
+        gpus: 1,2,3,4,5
+        max_gpu_memory: 4GiB
     chatglm3-6b-32k:
       infer_turbo: vllm
-      #num_gpus: 3
-      gpus: 1,2,3
-      max_gpu_memory: 16GiB
       path: /ai/models/chatglm3-6b-32k
+      base:
+        #num_gpus: 3
+        gpus: 1,2,3
+        max_gpu_memory: 16GiB
     Chinese-Alpaca-2-7B:
-      infer_turbo: vllm
-      num_gpus: 5
-      max_gpu_memory: 5GiB
       path: /ai/models/chinese-alpaca-2-7b-hf
+      base:
+        num_gpus: 5
+        max_gpu_memory: 5GiB
     Chinese-Alpaca-2-13B:
-      infer_turbo: vllm
-      num_gpus: 5
-      max_gpu_memory: 6GiB
       path: /ai/models/chinese-alpaca-2-13b-16k-hf
+      base:
+        num_gpus: 5
+        max_gpu_memory: 6GiB
     Llama2-Chinese-13b-Chat:
-      infer_turbo: vllm
-      num_gpus: 5
-      max_gpu_memory: 6GiB
       path: /ai/models/Llama2-Chinese-13b-Chat
+      base:
+        num_gpus: 5
+        max_gpu_memory: 6GiB
     Qwen-14B-Chat:
-      infer_turbo: vllm
-      num_gpus: 4
-      max_gpu_memory: 10GiB
       path: /ai/models/Qwen-14B-Chat-Int8
+      infer_turbo: vllm
       quantize: int8
+      base:
+        num_gpus: 4
+        max_gpu_memory: 10GiB
     Qwen-1.8B-Chat:
-      infer_turbo: vllm
-      num_gpus: 3
-      max_gpu_memory: 4GiB
       path: /ai/models/Qwen-1_8B-Chat-Int8
+      infer_turbo: vllm
       quantize: int8
+      base:
+        num_gpus: 3
+        max_gpu_memory: 4GiB
     Yi-34B-Chat-8bits:
-      infer_turbo: vllm
-      num_gpus: 5
-      max_gpu_memory: 16GiB
       path: /ai/models/Yi-34B-Chat-8bits
-      quantize: int8
-    Qwen-72B-Chat-Int8:
       infer_turbo: vllm
-      num_gpus: 4
-      max_gpu_memory: 22GiB
-      path: /ai/models/Qwen-72B-Chat-Int8
       quantize: int8
+      base:
+        num_gpus: 5
+        max_gpu_memory: 16GiB
+    Qwen-72B-Chat-Int8:
+      path: /ai/models/Qwen-72B-Chat-Int8
+      infer_turbo: vllm
+      quantize: int8
+      base:
+        num_gpus: 4
+        max_gpu_memory: 22GiB
+
 
 embed:
   device: cuda
