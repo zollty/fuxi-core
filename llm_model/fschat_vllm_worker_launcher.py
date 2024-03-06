@@ -232,5 +232,5 @@ def run_worker(model_name, started_event: mp.Event = None):
 
 
 if __name__ == "__main__":
-    run_worker("langchain_model")
-    # run_worker("Qwen-7B-Chat")
+    #run_worker("langchain_model")
+    run_worker("Qwen-7B-Chat")
