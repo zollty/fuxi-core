@@ -214,7 +214,7 @@ def run_worker(model_name, started_event: mp.Event = None):
     if model_name == "langchain_model":
         model_worker_config = {"langchain_model": True, "model_name": "langchain_model"}
     else:
-        model_worker_config += cfg.get("llm.model_cfg")[model_name]
+        model_worker_config = cfg.get("llm.model_cfg")[model_name] + {}
 
     app = create_worker_app(cfg, model_worker_config, log_level)
     set_app_event(app, started_event)
