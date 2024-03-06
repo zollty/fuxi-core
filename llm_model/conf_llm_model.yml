@@ -105,7 +105,8 @@ llm:
       path: /ai/models/chatglm3-6b
     chatglm3-6b-32k:
       infer_turbo: vllm
-      num_gpus: 3
+      #num_gpus: 3
+      gpus: 1,2,3,4
       max_gpu_memory: 16GiB
       path: /ai/models/chatglm3-6b-32k
     Chinese-Alpaca-2-7B:

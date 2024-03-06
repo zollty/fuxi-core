@@ -45,8 +45,8 @@ def create_vllm_worker(cfg: Dynaconf, model_worker_config, log_level):
 
     if vllm_args.model_path:
         vllm_args.model = vllm_args.model_path
-    if vllm_args.num_gpus > 1:
-        vllm_args.tensor_parallel_size = vllm_args.num_gpus
+    # if vllm_args.num_gpus > 1:
+    #     vllm_args.tensor_parallel_size = vllm_args.num_gpus
 
     parser = argparse.ArgumentParser()
     args = parser.parse_args([])
