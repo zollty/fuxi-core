@@ -135,7 +135,35 @@ if __name__ == "__main__":
     print(cfg.get("llm.worker.base"))
     print(cfg.get("llm.worker.vllm"))
 
-    cc = {"sss": 123}
-    dd = None
-    if cc:
-        print(cc + dd)
+    model_name = "Qwen1.5-7B-Chat"
+    model_worker_config = {"model_name": model_name}
+    if model_name == "langchain_model":
+        model_worker_config["langchain_model"] = True
+    else:
+        model_worker_config = cfg.get("llm.model_cfg")[model_name] + model_worker_config
+
+    model_name = model_worker_config.get("model_name")
+    start_port = cfg.get("llm.worker.start_port")
+    worker_port = model_worker_config.get("port")
+    if not worker_port:
+        worker_port = start_port
+        model_worker_config["worker_port"] = worker_port
+
+    host = cfg.get("llm.worker.host")
+    worker_addr = f"http://{host}:{worker_port}"
+    model_worker_config["basexx"] = {}
+    model_worker_config["base.worker_addr"] = worker_addr
+    model_worker_config["basexx"]["worker_addr"] = worker_addr
+    model_worker_config["base.model_path"] = model_worker_config.get("path")
+    model_worker_config["base.model_names"] = [model_worker_config.get("model_name")]
+    print("--------------------------")
+    print(model_worker_config.get("basexx"))
+
+    vllm_args = cfg.get("llm.worker.base") + cfg.get("llm.worker.vllm") + model_worker_config.get("base")
+    if model_worker_config.get("vllm"):
+        vllm_args = vllm_args + model_worker_config.get("vllm")
+
+    vllm_args["tokenizer"] = vllm_args["model_path"]
+
+    if vllm_args.model_path:
+        vllm_args.model = vllm_args.model_path

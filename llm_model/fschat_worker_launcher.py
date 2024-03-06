@@ -16,9 +16,9 @@ from common.utils import detect_device
 def set_common_args(args):
     if args["device"] == "auto":
         args["device"] = detect_device()
-    if args.gpus:
-        if args.num_gpus is None:
-            args.num_gpus = len(args.gpus.split(','))
+    if args["gpus"]:
+        if args["num_gpus"] is None:
+            args["num_gpus"] = len(args.gpus.split(','))
         if len(args.gpus.split(",")) < args.num_gpus:
             raise ValueError(
                 f"Larger --num-gpus ({args.num_gpus}) than --gpus {args.gpus}!"
@@ -78,8 +78,8 @@ def create_plain_worker(cfg: Dynaconf, model_worker_config, log_level):
     args = cfg.get("llm.worker.base") + cfg.get("llm.worker.plain") + model_worker_config.get("base")
     if model_worker_config.get("plain"):
         args = args + model_worker_config.get("plain")
-        gptq_args = model_worker_config.get("plain.gptq")
-        awq_args = model_worker_config.get("plain.awq")
+        gptq_args = model_worker_config["plain"]["gptq"]
+        awq_args = model_worker_config["plain"]["awq"]
     set_common_args(args)
 
     if not gptq_args:
@@ -186,9 +186,9 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
 
     host = cfg.get("llm.worker.host")
     worker_addr = f"http://{host}:{worker_port}"
-    model_worker_config["base.worker_addr"] = worker_addr
-    model_worker_config["base.model_path"] = model_worker_config.get("path")
-    model_worker_config["base.model_names"] = [model_worker_config.get("model_name")]
+    model_worker_config["base"]["worker_addr"] = worker_addr
+    model_worker_config["base"]["model_path"] = model_worker_config.get("path")
+    model_worker_config["base"]["model_names"] = [model_worker_config.get("model_name")]
 
     if model_worker_config.get("langchain_model"):  # Langchian支持的模型不用做操作
         from fastchat.serve.base_model_worker import app
