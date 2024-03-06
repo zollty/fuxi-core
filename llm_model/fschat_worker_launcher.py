@@ -18,8 +18,8 @@ from common.utils import logger
 def set_common_args(args):
     if args["device"] == "auto":
         args["device"] = detect_device()
-    if args["gpus"]:
-        if args["num_gpus"] is None:
+    if args.get("gpus"):
+        if args.get("num_gpus") is None:
             args["num_gpus"] = len(args.gpus.split(','))
         if len(args.gpus.split(",")) < args.num_gpus:
             raise ValueError(
@@ -83,8 +83,8 @@ def create_plain_worker(cfg: Dynaconf, model_worker_config, log_level):
     args = cfg.get("llm.worker.base") + cfg.get("llm.worker.plain") + model_worker_config.get("base")
     if model_worker_config.get("plain"):
         args = args + model_worker_config.get("plain")
-        gptq_args = model_worker_config["plain"]["gptq"]
-        awq_args = model_worker_config["plain"]["awq"]
+        gptq_args = model_worker_config["plain"].get("gptq")
+        awq_args = model_worker_config["plain"].get("awq")
     set_common_args(args)
     logger.info("---------------------worker_args------------------------")
     logger.info(args)

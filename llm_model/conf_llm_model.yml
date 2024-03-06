@@ -21,7 +21,7 @@ llm:
       conv_template: null
       no_register: false
       device: auto
-      num_gpus: 1
+      #num_gpus: 1
       max_gpu_memory: 10GB
       #model_model_path: null
       #model_names: null

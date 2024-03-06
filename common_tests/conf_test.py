@@ -151,13 +151,11 @@ if __name__ == "__main__":
 
     host = cfg.get("llm.worker.host")
     worker_addr = f"http://{host}:{worker_port}"
-    model_worker_config["basexx"] = {}
-    model_worker_config["base.worker_addr"] = worker_addr
-    model_worker_config["basexx"]["worker_addr"] = worker_addr
-    model_worker_config["base.model_path"] = model_worker_config.get("path")
-    model_worker_config["base.model_names"] = [model_worker_config.get("model_name")]
+    model_worker_config["base"]["worker_addr"] = worker_addr
+    model_worker_config["base"]["model_path"] = model_worker_config.get("path")
+    model_worker_config["base"]["model_names"] = [model_worker_config.get("model_name")]
     print("--------------------------")
-    print(model_worker_config.get("basexx"))
+    print(model_worker_config.get("base"))
 
     vllm_args = cfg.get("llm.worker.base") + cfg.get("llm.worker.vllm") + model_worker_config.get("base")
     if model_worker_config.get("vllm"):
@@ -165,5 +163,12 @@ if __name__ == "__main__":
 
     vllm_args["tokenizer"] = vllm_args["model_path"]
 
-    if vllm_args.model_path:
-        vllm_args.model = vllm_args.model_path
+    print(vllm_args)
+    if vllm_args.get("gpus"):
+        if not vllm_args.get("num_gpus"):
+            vllm_args["num_gpus"] = len(vllm_args.gpus.split(','))
+        print(len(vllm_args.gpus.split(",")), vllm_args.num_gpus)
+        if len(vllm_args.gpus.split(",")) < vllm_args.num_gpus:
+            raise ValueError(
+                f"Larger --num-gpus ({vllm_args.num_gpus}) than --gpus {vllm_args.gpus}!"
+            )
