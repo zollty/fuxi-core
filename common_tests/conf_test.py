@@ -133,6 +133,3 @@ if __name__ == "__main__":
     print(cfg.get("llm.worker.base"))
     print(cfg.get("llm.worker.vllm"))
 
-    print(cfg.get("llm.model_cfg")["Qwen-7B-Chat"])
-    model_worker_config = cfg.get("llm.model_cfg")["Qwen-7B-Chat"] + {}
-    print(model_worker_config)
