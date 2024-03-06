@@ -77,6 +77,8 @@ if __name__ == "__main__":
     print("---------222------------------")
     cfg = Cfg(toml_str, False, None)
     print(cfg.get("players[1].name"))
+
+
     # print(cfg.get("servers.alpha.ip"))
 
     def props(obj):
@@ -128,8 +130,7 @@ if __name__ == "__main__":
     tfg1 = cfg.get("llm.worker.base") + {}
     print("-------------------------")
     tfg1["cc"] = "xxxxxxxxx"
-    print(tfg1)
+    print(getattr(tfg1, "conv_template"))
 
     print(cfg.get("llm.worker.base"))
     print(cfg.get("llm.worker.vllm"))
-

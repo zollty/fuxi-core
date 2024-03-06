@@ -18,7 +18,7 @@ llm:
       controller_addr: http://localhost:21101
       #worker_address
       limit_worker_concurrency: 100
-      #conv_template: null
+      conv_template: null
       no_register: false
       device: auto
       num_gpus: 1
@@ -27,43 +27,45 @@ llm:
       #model_names: null
       trust_remote_code: true
     plain: # see: fastchat\serve\model_worker.py
-      #load_8bit: false
-      #stream_interval: 2
-      #cpu_offloading: null
-      #embed_in_truncate: false
-      #awq_ckpt: null
-      #awq_groupsize: -1
-      #awq_wbits: 16
-      #gptq_act_order: false
-      #gptq_ckpt: null
-      #gptq_groupsize: -1
-      #gptq_wbits: 16
       debug: true
       #dtype: null
       #seed: null
+      load_8bit: false
+      stream_interval: 2
+      cpu_offloading: false
+      embed_in_truncate: false
+#      awq:
+#        awq_ckpt: null
+#        awq_groupsize: -1
+#        awq_wbits: 16
+#      gptq:
+#        gptq_act_order: false
+#        gptq_ckpt: null
+#        gptq_groupsize: -1
+#        gptq_wbits: 16
     vllm: # see: https://github.com/vllm-project/vllm/blob/main/vllm/engine/arg_utils.py
-      #block_size: 16
-      #disable_log_requests: false
-      #disable_log_stats: false
-      #download_dir: null
+      block_size: 16
+      disable_log_requests: false
+      disable_log_stats: false
+      download_dir: null
       dtype: auto
-      #engine_use_ray: false
-      #gpu_memory_utilization: 0.9
-      #load_format: auto
-      #max_log_len: null
-      #max_model_len: null
-      #max_num_batched_tokens: null
-      #max_num_seqs: 256
-      #max_paddings: 256
-      #pipeline_parallel_size: 1
-      #quantization: null
-      #revision: null
-      #seed: 0
-      #swap_space: 4
-      #tensor_parallel_size: 1
+      engine_use_ray: false
+      gpu_memory_utilization: 0.9
+      load_format: auto
+      max_log_len: null
+      max_model_len: null
+      max_num_batched_tokens: null
+      max_num_seqs: 256
+      max_paddings: 256
+      pipeline_parallel_size: 1
+      quantization: null
+      revision: null
+      seed: 0
+      swap_space: 4
+      tensor_parallel_size: 1
       tokenizer_mode: auto
-      #tokenizer_revision: null
-      #worker_use_ray: false
+      tokenizer_revision: null
+      worker_use_ray: false
   default_model_cfg:
     host: 127.0.0.1
     port: 20002

@@ -77,17 +77,21 @@ def create_plain_worker(cfg: Dynaconf, model_worker_config, log_level):
     args = cfg.get("llm.worker.plain") + cfg.get("llm.worker.base")
     set_common_args(args, model_worker_config)
 
-    gptq_config = GptqConfig(
-        ckpt=args.gptq_ckpt or args.model_path,
-        wbits=args.gptq_wbits,
-        groupsize=args.gptq_groupsize,
-        act_order=args.gptq_act_order,
-    )
-    awq_config = AWQConfig(
-        ckpt=args.awq_ckpt or args.model_path,
-        wbits=args.awq_wbits,
-        groupsize=args.awq_groupsize,
-    )
+    gptq_config = None
+    if cfg.get("llm.worker.plain.gptq"):
+        gptq_config = GptqConfig(
+            ckpt=args.gptq_ckpt or args.model_path,
+            wbits=args.gptq_wbits,
+            groupsize=args.gptq_groupsize,
+            act_order=args.gptq_act_order,
+        )
+    awq_config = None
+    if cfg.get("llm.worker.plain.awq"):
+        awq_config = AWQConfig(
+            ckpt=args.awq_ckpt or args.model_path,
+            wbits=args.awq_wbits,
+            groupsize=args.awq_groupsize,
+        )
 
     worker = ModelWorker(
         controller_addr=args.controller_address,
