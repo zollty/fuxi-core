@@ -95,12 +95,13 @@ llm:
       path: /ai/models/Qwen-7B-Chat
     Qwen1.5-7B-Chat:
       infer_turbo: vllm
-      num_gpus: 4
+      #num_gpus: 4
+      gpus: 1,2,3,4
       max_gpu_memory: 12GiB
       path: /ai/models/Qwen1.5-7B-Chat
       vllm:
         #max_model_len:
-        gpu_memory_utilization: 1.0
+        gpu_memory_utilization: 0.9
     chatglm3-6b:
       infer_turbo: vllm
       num_gpus: 5
