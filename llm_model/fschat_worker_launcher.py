@@ -54,7 +54,7 @@ def create_vllm_worker(cfg: Dynaconf, model_worker_config, log_level):
     engine = AsyncLLMEngine.from_engine_args(engine_args)
 
     worker = VLLMWorker(
-        controller_addr=args.controller_address,
+        controller_addr=args.controller_addr,
         worker_addr=args.worker_address,
         worker_id=worker_id,
         model_path=args.model_path,
@@ -94,7 +94,7 @@ def create_plain_worker(cfg: Dynaconf, model_worker_config, log_level):
         )
 
     worker = ModelWorker(
-        controller_addr=args.controller_address,
+        controller_addr=args.controller_addr,
         worker_addr=args.worker_address,
         worker_id=worker_id,
         model_path=args.model_path,
@@ -126,7 +126,7 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     host:
     port:
     model_names:[`model_name`]
-    controller_address:
+    controller_addr:
     worker_address:
 
     对于Langchain支持的模型：
@@ -181,7 +181,7 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
         from fastchat.serve.base_model_worker import app
 
         worker = worker_class(model_names=[model_name],
-                              controller_addr=cfg.controller_address,
+                              controller_addr=cfg.controller_addr,
                               worker_addr=worker_address)
         # sys.modules["fastchat.serve.base_model_worker"].worker = worker
         sys.modules["fastchat.serve.base_model_worker"].logger.setLevel(log_level)
