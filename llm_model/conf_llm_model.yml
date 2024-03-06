@@ -62,7 +62,7 @@ llm:
       revision: null
       seed: 0
       swap_space: 4
-      tensor_parallel_size: 1
+      tensor_parallel_size: 2
       tokenizer_mode: auto
       tokenizer_revision: null
       worker_use_ray: false
