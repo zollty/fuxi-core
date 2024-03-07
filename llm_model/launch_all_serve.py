@@ -83,12 +83,19 @@ def string_args(args, args_list):
 
 
 from llm_model.shutdown_serve import check_worker_processes
+
+
 def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
-    if check_worker_processes(model):
-        msg = f"Skip, the {model} worker_processes is already existed!"
+    ret = model.split("@")
+    model_name = model
+    port = None
+    if len(ret) == 2:
+        model_name, port = ret
+    if check_worker_processes(model_name):
+        msg = f"Skip, the {model_name} worker_processes is already existed!"
         print(msg)
         return False, msg
-    log_name = model
+    log_name = model_name
     # args.model_path, args.worker_host, args.worker_port = item.split("@")
     print("*" * 80)
     worker_str_args = f" --model {model} {worker_str_args}"
@@ -97,7 +104,10 @@ def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
     worker_sh = base_launch_sh.format(
         "llm_model/fschat_worker_launcher.py", worker_str_args, LOGDIR, f"worker_{log_name}"
     )
-    worker_check_sh = base_check_model_sh.format(int(wait_times / 2), LOGDIR, f"worker_{log_name}", "model_worker", model)
+    worker_check_sh = base_check_model_sh.format(int(wait_times / 2), LOGDIR,
+                                                 f"worker_{log_name}",
+                                                 "model_worker",
+                                                 model_name)
     print(f"executing worker_sh: {worker_sh}")
     subprocess.run(worker_sh, shell=True, check=True)
     try:

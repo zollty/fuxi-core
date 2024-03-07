@@ -74,11 +74,5 @@ if __name__ == "__main__":
     controller_str_args = string_args(args, controller_args)
     print(" xxxx " + controller_str_args)
 
-    def xxx(ff):
-        if ff:
-            return True, None
-        else:
-            return False, "DSDF"
-
-    ret, msg = xxx(True)
-    print(msg)
+    ret = "xxxx@123".split("@2")
+    print(len(ret))

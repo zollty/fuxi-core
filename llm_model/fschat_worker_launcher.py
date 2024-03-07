@@ -180,11 +180,11 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     logger.setLevel(log_level)
 
     model_name = model_worker_config.get("model_name")
-    start_port = cfg.get("llm.worker.start_port")
     worker_port = model_worker_config.get("port")
     if not worker_port:
+        start_port = cfg.get("llm.worker.start_port")
         worker_port = start_port
-        model_worker_config["worker_port"] = worker_port
+        model_worker_config["port"] = worker_port
 
     host = cfg.get("llm.worker.host")
     worker_addr = f"http://{host}:{worker_port}"
@@ -232,7 +232,7 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     return app
 
 
-def run_model_worker(model_name, started_event: mp.Event = None):
+def run_model_worker(model_name, port: int = 0, started_event: mp.Event = None):
     from common.utils import RUNTIME_ROOT_DIR
     from common.fastapi_tool import run_api, set_app_event
 
@@ -254,11 +254,14 @@ def run_model_worker(model_name, started_event: mp.Event = None):
     else:
         model_worker_config = cfg.get("llm.model_cfg")[model_name] + model_worker_config
 
+    if port > 1000:
+        model_worker_config["port"] = port
+
     app = create_worker_app(cfg, model_worker_config, log_level)
     set_app_event(app, started_event)
 
     host = cfg.get("llm.worker.host")
-    port = model_worker_config.get("worker_port")
+    port = model_worker_config.get("port")
 
     # server info
     with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
@@ -279,6 +282,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str)
+    #parser.add_argument("--port", type=int, default=0)
     parser.add_argument("--custom-config", type=str, default=None)
     parser.add_argument(
         "-v",
@@ -289,7 +293,13 @@ if __name__ == "__main__":
         default=False,
     )
     args = parser.parse_args()
+    ret = args.model.split("@")
+    model_name = args.model
+    port = None
+    if len(ret) == 2:
+        model_name, port = ret
+
     # run_worker("langchain_model")
     # run_worker("chatglm3-6b-32k")
     # run_model_worker("Qwen1.5-7B-Chat")
-    run_model_worker(args.model)
+    run_model_worker(model_name, port)
