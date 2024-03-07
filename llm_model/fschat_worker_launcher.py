@@ -232,7 +232,7 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     return app
 
 
-def run_model_worker(model_name, port: int = 0, started_event: mp.Event = None):
+def run_model_worker(model_name, port: str = None, started_event: mp.Event = None):
     from common.utils import RUNTIME_ROOT_DIR
     from common.fastapi_tool import run_api, set_app_event
 
@@ -254,23 +254,23 @@ def run_model_worker(model_name, port: int = 0, started_event: mp.Event = None):
     else:
         model_worker_config = cfg.get("llm.model_cfg")[model_name] + model_worker_config
 
-    if port > 1000:
-        model_worker_config["port"] = port
+    if port and int(port) > 1000:
+        model_worker_config["port"] = int(port)
 
     app = create_worker_app(cfg, model_worker_config, log_level)
     set_app_event(app, started_event)
 
     host = cfg.get("llm.worker.host")
-    port = model_worker_config.get("port")
+    use_port = model_worker_config.get("port")
 
     # server info
     with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
-        f.write(f"    FenghouAI Model Worker Server ({model_name}): http://{host}:{port}")
+        f.write(f"    FenghouAI Model Worker Server ({model_name}): http://{host}:{use_port}")
 
     run_api(
         app,
         host=host,
-        port=port,
+        port=use_port,
         log_level=log_level,
         ssl_keyfile=cfg.get("llm.worker.ssl_keyfile", cfg.get("root.ssl_keyfile")),
         ssl_certfile=cfg.get("llm.worker.ssl_certfile", cfg.get("root.ssl_certfile")),
