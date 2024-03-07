@@ -123,8 +123,6 @@ def launch_worker(model):
 
 
 def launch_all():
-    LOGDIR = "./logs/"
-
     controller_str_args = string_args(args, controller_args)
     # "nohup python3 -m fastchat.serve.{0} {1} >{2}/{3}.log 2>&1 &"
     controller_sh = base_launch_sh.format(
