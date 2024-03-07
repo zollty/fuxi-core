@@ -130,6 +130,9 @@ llm:
         #num_gpus: 3
         gpus: "1,2,3"
         max_gpu_memory: 16GiB
+      vllm:
+        gpu_memory_utilization: 0.9
+        tensor_parallel_size: 3
     Chinese-Alpaca-2-7B:
       path: /ai/models/chinese-alpaca-2-7b-hf
       base:
