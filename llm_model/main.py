@@ -180,6 +180,15 @@ async def start_main_server():
     else:
         log_level = "ERROR"
 
+    def child_exited(sig, frame):
+        pid, exitcode = os.wait()
+        print("Child process {pid} exited with code {exitcode}".format(
+            pid=pid, exitcode=exitcode
+        ))
+
+    # Comment out the following line to see zombie children
+    signal.signal(signal.SIGCHLD, child_exited)
+
     controller_started = manager.Event()
     if args.fastchat:
         process = Process(
@@ -238,11 +247,12 @@ async def start_main_server():
                 p.start()
                 p.name = f"{p.name} ({p.pid})"
 
+            for process in processes.get("model_worker", {}).values():
+                process.join()
             # 等待所有model_worker启动完成
             for e in model_worker_started:
                 e.wait()
-            # for process in processes.get("model_worker", {}).values():
-            #     process.join()
+
             # for process in processes.get("online_api", {}).values():
             #     process.join()
 
