@@ -123,7 +123,7 @@ def dump_server_info(cfg: Dynaconf, after_start=False):
 
         current_time = datetime.datetime.now()
         formatted_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
-        print(f"Started finished at {formatted_time}, Please check the startup log above\n\n")
+        print(f"\nStarted finished at {formatted_time}, Please check the startup log above\n\n")
 
 
 async def start_main_server():
@@ -225,7 +225,7 @@ async def start_main_server():
                 name=f"model_worker - {new_model_name}",
                 kwargs=dict(model_name=new_model_name,
                             started_event=e),
-                daemon=False,
+                daemon=True,
             )
             processes["model_worker"][new_model_name] = process
 
@@ -280,7 +280,7 @@ async def start_main_server():
                             name=f"model_worker - {new_model_name}",
                             kwargs=dict(model_name=new_model_name,
                                         started_event=e),
-                            daemon=False,
+                            daemon=True,
                         )
                         process.start()
                         process.name = f"{process.name} ({process.pid})"
@@ -312,7 +312,7 @@ async def start_main_server():
                                 name=f"model_worker - {new_model_name}",
                                 kwargs=dict(model_name=new_model_name,
                                             started_event=e),
-                                daemon=False,
+                                daemon=True,
                             )
                             process.start()
                             process.name = f"{process.name} ({process.pid})"
@@ -322,7 +322,6 @@ async def start_main_server():
                             logger.info(f"成功启动新模型进程：{new_model_name}。用时：{timing}。")
                         else:
                             logger.error(f"未找到模型进程：{model_name}")
-
 
         except Exception as e:
             logger.error(e)
