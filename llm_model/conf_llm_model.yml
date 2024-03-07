@@ -109,7 +109,7 @@ llm:
         tensor_parallel_size: 4
     Qwen-1.8B-Chat:
       path: /ai/models/Qwen-1_8B-Chat-Int8
-      #infer_turbo: vllm
+      infer_turbo: vllm
       quantize: int8
       base:
         gpus: "1"

@@ -216,7 +216,7 @@ async def start_main_server():
                 name=f"model_worker - {new_model_name}",
                 kwargs=dict(model_name=new_model_name,
                             started_event=e),
-                daemon=True,
+                daemon=False,
             )
             processes["model_worker"][new_model_name] = process
 
