@@ -25,7 +25,7 @@ def shutdown_worker_serve(model):
         print(f"{model} has been shutdown!")
         return True
     except subprocess.CalledProcessError as e:
-        print(e)
+        print(f"ps grep failed, the {model} worker_processes may not running.")
         return False
 
 def check_worker_processes(model):
