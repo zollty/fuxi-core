@@ -94,14 +94,14 @@ llm:
       path: /ai/models/Qwen-7B-Chat
       base:
         #num_gpus: 3
-        gpus: 1,2,3,4
+        gpus: "1,2,3,4"
         max_gpu_memory: 12GiB
     Qwen1.5-7B-Chat:
       #infer_turbo: vllm
       path: /ai/models/Qwen1.5-7B-Chat
       base:
         #num_gpus: 4
-        gpus: 0,1,2,3
+        gpus: "0,1,2,3"
         max_gpu_memory: 12GiB
       vllm:
         #max_model_len: 6016
@@ -112,7 +112,7 @@ llm:
       infer_turbo: vllm
       quantize: int8
       base:
-        gpus: 1
+        gpus: "1"
         max_gpu_memory: 10GiB
     chatglm3-6b:
       infer_turbo: vllm
@@ -125,7 +125,7 @@ llm:
       path: /ai/models/chatglm3-6b-32k
       base:
         #num_gpus: 3
-        gpus: 1,2,3
+        gpus: "1,2,3"
         max_gpu_memory: 16GiB
     Chinese-Alpaca-2-7B:
       path: /ai/models/chinese-alpaca-2-7b-hf
