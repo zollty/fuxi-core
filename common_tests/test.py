@@ -73,3 +73,12 @@ if __name__ == "__main__":
     controller_args = ["controller_config_path", "verbose", "model"]
     controller_str_args = string_args(args, controller_args)
     print(" xxxx " + controller_str_args)
+
+    def xxx(ff):
+        if ff:
+            return True, None
+        else:
+            return False, "DSDF"
+
+    ret, msg = xxx(True)
+    print(msg)

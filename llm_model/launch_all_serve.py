@@ -101,7 +101,7 @@ def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
     subprocess.run(worker_sh, shell=True, check=True)
     try:
         subprocess.run(worker_check_sh, shell=True, check=True)
-        return True
+        return True, None
     except subprocess.CalledProcessError as e:
         print(e)
         return False, f"start {model} worker fail, see the log for details"
