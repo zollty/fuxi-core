@@ -181,13 +181,14 @@ async def start_main_server():
         log_level = "ERROR"
 
     def child_exited(sig, frame):
-        pid, exitcode = os.wait()
-        print("Child process {pid} exited with code {exitcode}".format(
-            pid=pid, exitcode=exitcode
-        ))
+        os.waitpid(-1, os.WNOHANG)
+        # pid, exitcode = os.wait()
+        # print("Child process {pid} exited with code {exitcode}".format(
+        #     pid=pid, exitcode=exitcode
+        # ))
 
     # Comment out the following line to see zombie children
-    #signal.signal(signal.SIGCHLD, child_exited)
+    signal.signal(signal.SIGCHLD, child_exited)
 
     controller_started = manager.Event()
     if args.fastchat:
