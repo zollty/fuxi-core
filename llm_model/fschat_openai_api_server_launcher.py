@@ -24,7 +24,7 @@ def create_openai_api_server_app(cfg: Dynaconf, log_level):
 
     logger.setLevel(log_level.upper())
 
-    controller_address = cfg.get("llm.openai_api_server.controller_address")
+    controller_address = cfg.get("llm.openai_api_server.controller_addr")
     cross_domain = cfg.get("llm.openai_api_server.cross_domain", cfg.get("root.cross_domain", True))
 
     app_settings.controller_address = controller_address
