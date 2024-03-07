@@ -23,32 +23,32 @@ base_launch_sh = "nohup python3 {0} {1} >{2}/{3}.log 2>&1 &"
 # 2 controller, worker, openai_api_server
 base_check_sh = """i=0
                 while [ `grep -c "Uvicorn running on" {1}/{2}.log` -eq '0' ];do
-                        if [$i -gt {0}]
+                        if [ $i -gt {0} ] 
                         then 
-                            echo "wait timeout({0})!"
-                            exit(1) 
+                            echo "wait timeout({0})!";
+                            exit(1);
                         fi
                         sleep 1s;
-                        echo "wait {3} running"
-                let i++
+                        echo "wait {3} running";
+                        let i++;
                 done
                 echo '{3} running' """
 
-base_check_model_sh = """i=0
+base_check_model_sh = """i=0;
                 while [ `grep -c "Uvicorn running on" {1}/{2}.log` -eq '0' ];do
-                        if [! `ps -ef |grep fschat_worker_launcher.py|grep "{4}"| grep -v grep > /dev/null`]
+                        if [ ! `ps -ef |grep fschat_worker_launcher.py|grep "{4}"| grep -v grep > /dev/null` ] 
                         then 
-                            echo "process {3}-{4} is exited!"
-                            exit(1) 
+                            echo "process {3}-{4} is exited!";
+                            exit(1);
                         fi
-                        if [$i -gt {0}]
+                        if [ $i -gt {0} ] 
                         then 
-                            echo "wait timeout({0})!"
-                            exit(1) 
+                            echo "wait timeout({0})!";
+                            exit(1);
                         fi
                         sleep 2s;
-                        echo "wait {3}-{4} running"
-                let i++
+                        echo "wait {3}-{4} running";
+                        let i++;
                 done
                 echo '{3}-{4} running' """
 
