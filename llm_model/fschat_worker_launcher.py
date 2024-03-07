@@ -16,6 +16,8 @@ from common.utils import logger
 
 
 def set_common_args(args):
+    if not args.get("controller_address"):
+        args["controller_address"] = args["controller_addr"]
     if args["device"] == "auto":
         args["device"] = detect_device()
     if args.get("gpus"):
@@ -196,7 +198,7 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
         from fastchat.serve.base_model_worker import app
 
         worker = worker_class(model_names=[model_name],
-                              controller_addr=cfg.controller_addr,
+                              controller_addr=cfg.llm.worker.base.controller_addr,
                               worker_addr=worker_addr)
         # sys.modules["fastchat.serve.base_model_worker"].worker = worker
         sys.modules["fastchat.serve.base_model_worker"].logger.setLevel(log_level)

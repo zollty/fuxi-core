@@ -67,7 +67,7 @@ def run_controller(started_event: mp.Event = None):
     set_app_event(app, started_event)
 
     with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
-        f.write(f"    FenghouAI Controller Server (fastchat): http://{host}:{port}")
+        f.write(f"    FenghouAI Controller Server (fastchat): http://{host}:{port}\n")
     run_api(
         app,
         host=host,
