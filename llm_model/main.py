@@ -112,12 +112,20 @@ def dump_server_info(cfg: Dynaconf, after_start=False):
     if models := cfg.get("root.default_start_model"):
         server_info.append(f"当前启动的LLM模型：{models} @ {detect_device()}")
 
-    print(''.join(server_info))
+    print("=" * 30 + "FenghouAI Configuration" + "=" * 30)
+    print("\n")
+    print('\n'.join(server_info))
+
     if after_start:
         with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'r') as f:
             print(f.read())
-    print("=" * 30 + "FenghouAI Configuration" + "=" * 30)
-    print("\n")
+        print("=" * 30 + "FenghouAI Configuration" + "=" * 30)
+        print("\n")
+        import datetime
+
+        current_time = datetime.datetime.now()
+        formatted_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
+        print(f"Started finished at {formatted_time}. Please check the startup log above\n")
 
 
 async def start_main_server():
