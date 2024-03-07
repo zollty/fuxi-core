@@ -109,13 +109,14 @@ llm:
         tensor_parallel_size: 4
     Qwen-1.8B-Chat:
       path: /ai/models/Qwen-1_8B-Chat-Int8
-      infer_turbo: vllm
+      #infer_turbo: vllm
       quantize: int8
       base:
-        gpus: "1,2"
+        gpus: "1"
         max_gpu_memory: 15GiB
+      vllm:
         gpu_memory_utilization: 0.5
-        tensor_parallel_size: 2
+        tensor_parallel_size: 1
     chatglm3-6b:
       infer_turbo: vllm
       path: /ai/models/chatglm3-6b
