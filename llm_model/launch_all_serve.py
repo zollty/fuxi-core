@@ -117,6 +117,7 @@ def launch_worker(model):
         "llm_model/fschat_worker_launcher.py", worker_str_args, LOGDIR, f"worker_{log_name}"
     )
     worker_check_sh = base_check_sh.format(LOGDIR, f"worker_{log_name}", "model_worker")
+    print(f"executing worker_sh: {worker_sh}")
     subprocess.run(worker_sh, shell=True, check=True)
     subprocess.run(worker_check_sh, shell=True, check=True)
 
@@ -130,6 +131,8 @@ def launch_all():
         "llm_model/fschat_controller_launcher.py", controller_str_args, LOGDIR, "controller"
     )
     controller_check_sh = base_check_sh.format(LOGDIR, "controller", "controller")
+    print(f"executing controller_sh: {controller_sh}")
+    print(f"watch controller log: {controller_check_sh}")
     subprocess.run(controller_sh, shell=True, check=True)
     subprocess.run(controller_check_sh, shell=True, check=True)
 
