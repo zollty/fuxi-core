@@ -113,7 +113,7 @@ llm:
       quantize: int8
       base:
         gpus: "1"
-        max_gpu_memory: 10GiB
+        max_gpu_memory: 15GiB
     chatglm3-6b:
       infer_turbo: vllm
       path: /ai/models/chatglm3-6b
