@@ -14,11 +14,42 @@ from common.fastapi_tool import set_app_event
 from common.api_base import (BaseResponse, ListResponse)
 from dynaconf import Dynaconf
 
+base_launch_sh = "nohup python3 {0} {1} >{2}/{3}.log 2>&1 &"
+
+# 0 LOGDIR
+# ! 1 log file name
+# 2 controller, worker, openai_api_server
+base_check_sh = """while [ `grep -c "Uvicorn running on" {0}/{1}.log` -eq '0' ];do
+                        sleep 1s;
+                        echo "wait {2} running"
+                done
+                echo '{2} running' """
+
+# def launch_worker(model):
+#     import subprocess
+#     from common.utils import DEFAULT_LOG_PATH
+#
+#     LOGDIR = DEFAULT_LOG_PATH
+#     log_name = model
+#     # args.model_path, args.worker_host, args.worker_port = item.split("@")
+#     print("*" * 80)
+#     worker_str_args = f" --model {model} "
+#     # "nohup python3 -m fastchat.serve.{0} {1} >{2}/{3}.log 2>&1 &"
+#     worker_sh = base_launch_sh.format(
+#         "llm_model/fschat_worker_launcher.py", worker_str_args, LOGDIR, f"worker_{log_name}"
+#     )
+#     worker_check_sh = base_check_sh.format(LOGDIR, f"worker_{log_name}", "model_worker")
+#     print(f"executing worker_sh: {worker_sh}")
+#     subprocess.run(worker_sh, shell=True, check=True)
+#     subprocess.run(worker_check_sh, shell=True, check=True)
+
 
 def mount_controller_routes(app: FastAPI,
                             manager_queue: mp.Queue = None,
                             ):
     from fastchat.serve.controller import logger
+    from llm_model.shutdown_serve import shutdown_worker_serve
+    from llm_model.launch_all_serve import launch_worker
     def model_worker_ctl(
             msg: List[str] = Body(..., description="参数"),
     ) -> Dict:
@@ -30,12 +61,16 @@ def mount_controller_routes(app: FastAPI,
     def start_model(
             model_name: str = Body(None, description="启动该模型"),
     ) -> Dict:
-        return model_worker_ctl(["start_worker", model_name])
+        #return model_worker_ctl(["start_worker", model_name])
+        launch_worker(model_name)
+        return {"code": 200, "msg": "done"}
 
     def stop_model(
             model_name: str = Body(None, description="停止该模型"),
     ) -> Dict:
-        return model_worker_ctl(["stop_worker", model_name])
+        #return model_worker_ctl(["stop_worker", model_name])
+        shutdown_worker_serve(model_name)
+        return {"code": 200, "msg": "done"}
 
     def replace_model(
             model_name: str = Body(None, description="停止该模型"),
