@@ -3,7 +3,7 @@ Usage：
 python shutdown_serve.py --down all
 options: "all","controller","model_worker","openai_api_server"， `all` means to stop all related servers 
 """
-
+import subprocess
 
 def shutdown_serve(key):
     base_shell = "ps -eo user,pid,cmd|grep fschat_{}|grep -v grep|awk '{{print $2}}'|xargs kill -9"
@@ -24,7 +24,6 @@ def shutdown_worker_serve(model):
 
 if __name__ == "__main__":
     import argparse
-    import subprocess
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
