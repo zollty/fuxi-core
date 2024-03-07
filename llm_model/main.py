@@ -237,23 +237,28 @@ async def start_main_server():
             if p := processes.get("controller"):
                 p.start()
                 p.name = f"{p.name} ({p.pid})"
+                p.join()
                 controller_started.wait()  # 等待controller启动完成
 
             if p := processes.get("openai_api"):
                 p.start()
                 p.name = f"{p.name} ({p.pid})"
+                p.join()
 
             for n, p in processes.get("model_worker", {}).items():
                 logger.info(f"准备启动新模型进程：{p.name}")
                 p.start()
                 p.name = f"{p.name} ({p.pid})"
+                p.jion()
+
+            # for process in processes.get("model_worker", {}).values():
+            #     process.join()
 
             # 等待所有model_worker启动完成
             for e in model_worker_started:
                 e.wait()
 
-            # for process in processes.get("online_api", {}).values():
-            #     process.join()
+
 
             # for name, process in processes.items():
             #     if name not in ["model_worker", "online_api"]:
@@ -284,6 +289,7 @@ async def start_main_server():
                         process.start()
                         process.name = f"{process.name} ({process.pid})"
                         processes["model_worker"][new_model_name] = process
+                        process.join()
                         e.wait()
                         timing = datetime.now() - start_time
                         logger.info(f"成功启动新模型进程：{new_model_name}。用时：{timing}。")
@@ -316,6 +322,7 @@ async def start_main_server():
                             process.start()
                             process.name = f"{process.name} ({process.pid})"
                             processes["model_worker"][new_model_name] = process
+                            process.join()
                             e.wait()
                             timing = datetime.now() - start_time
                             logger.info(f"成功启动新模型进程：{new_model_name}。用时：{timing}。")
