@@ -22,12 +22,35 @@ base_launch_sh = "nohup python3 {0} {1} >{2}/{3}.log 2>&1 &"
 # ! 1 log file name
 # 2 controller, worker, openai_api_server
 base_check_sh = """i=0
-                while [ $i -le {0} -a `grep -c "Uvicorn running on" {1}/{2}.log` -eq '0' ];do
-                        sleep 2s;
+                while [ `grep -c "Uvicorn running on" {1}/{2}.log` -eq '0' ];do
+                        if [$i -gt {0}]
+                        then 
+                            echo "wait timeout({0})!"
+                            exit(1) 
+                        fi
+                        sleep 1s;
                         echo "wait {3} running"
                 let i++
                 done
                 echo '{3} running' """
+
+base_check_model_sh = """i=0
+                while [ `grep -c "Uvicorn running on" {1}/{2}.log` -eq '0' ];do
+                        if [! `ps -ef |grep fschat_worker_launcher.py|grep "{4}"| grep -v grep > /dev/null`]
+                        then 
+                            echo "process {3}-{4} is exited!"
+                            exit(1) 
+                        fi
+                        if [$i -gt {0}]
+                        then 
+                            echo "wait timeout({0})!"
+                            exit(1) 
+                        fi
+                        sleep 2s;
+                        echo "wait {3}-{4} running"
+                let i++
+                done
+                echo '{3}-{4} running' """
 
 
 def string_args(args, args_list):
@@ -58,7 +81,7 @@ def string_args(args, args_list):
     return args_str
 
 
-def launch_worker(model, wait_times: int = 60, worker_str_args: str = ""):
+def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
     log_name = model
     # args.model_path, args.worker_host, args.worker_port = item.split("@")
     print("*" * 80)
@@ -68,11 +91,15 @@ def launch_worker(model, wait_times: int = 60, worker_str_args: str = ""):
     worker_sh = base_launch_sh.format(
         "llm_model/fschat_worker_launcher.py", worker_str_args, LOGDIR, f"worker_{log_name}"
     )
-    worker_check_sh = base_check_sh.format(wait_times/2, LOGDIR, f"worker_{log_name}", "model_worker")
+    worker_check_sh = base_check_model_sh.format(wait_times / 2, LOGDIR, f"worker_{log_name}", "model_worker", model)
     print(f"executing worker_sh: {worker_sh}")
     subprocess.run(worker_sh, shell=True, check=True)
-    ret = subprocess.run(worker_check_sh, shell=True, check=True)
-    return ret.returncode
+    try:
+        subprocess.run(worker_check_sh, shell=True, check=True)
+        return True
+    except subprocess.CalledProcessError as e:
+        print(e)
+        return False
 
 
 if __name__ == "__main__":
@@ -134,7 +161,7 @@ if __name__ == "__main__":
         controller_sh = base_launch_sh.format(
             "llm_model/fschat_controller_launcher.py", controller_str_args, LOGDIR, "controller"
         )
-        controller_check_sh = base_check_sh.format(LOGDIR, "controller", "controller")
+        controller_check_sh = base_check_sh.format(10, LOGDIR, "controller", "controller")
         print(f"executing controller_sh: {controller_sh}")
         # print(f"watch controller log: {controller_check_sh}")
         subprocess.run(controller_sh, shell=True, check=True)
@@ -153,9 +180,7 @@ if __name__ == "__main__":
         server_sh = base_launch_sh.format(
             "llm_model/fschat_openai_api_server_launcher.py", server_str_args, LOGDIR, "openai_api_server"
         )
-        server_check_sh = base_check_sh.format(
-            LOGDIR, "openai_api_server", "openai_api_server"
-        )
+        server_check_sh = base_check_sh.format(10, LOGDIR, "openai_api_server", "openai_api_server")
         subprocess.run(server_sh, shell=True, check=True)
         subprocess.run(server_check_sh, shell=True, check=True)
 
