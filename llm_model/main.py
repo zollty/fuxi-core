@@ -92,7 +92,7 @@ def parse_args() -> argparse.ArgumentParser:
     return args, parser
 
 
-def dump_server_info(cfg: Dynaconf, after_start=False, args=None):
+def dump_server_info(cfg: Dynaconf, after_start=False):
     from common.utils import RUNTIME_ROOT_DIR
     import platform
     import langchain
@@ -113,8 +113,9 @@ def dump_server_info(cfg: Dynaconf, after_start=False, args=None):
         server_info.append(f"当前启动的LLM模型：{models} @ {detect_device()}")
 
     print(''.join(server_info))
-    with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'r') as f:
-        print(f.read())
+    if after_start:
+        with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'r') as f:
+            print(f.read())
     print("=" * 30 + "FenghouAI Configuration" + "=" * 30)
     print("\n")
 
@@ -158,8 +159,7 @@ async def start_main_server():
     queue = manager.Queue()
     args, parser = parse_args()
 
-    # dump_server_info(args=args)
-
+    dump_server_info(cfg)
     if len(sys.argv) > 1:
         logger.info(f"正在启动服务：")
         logger.info(f"如需查看 llm_api 日志，请前往 {DEFAULT_LOG_PATH}")
@@ -247,6 +247,8 @@ async def start_main_server():
             #                 work_process.join()
             #         else:
             #             process.join()
+
+            dump_server_info(cfg, after_start=True)
             while True:
                 msg = queue.get()  # 收到切换模型的消息
                 e = manager.Event()
