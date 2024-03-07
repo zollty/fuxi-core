@@ -19,7 +19,7 @@ def mount_controller_routes(app: FastAPI,
                             manager_queue: mp.Queue = None,
                             ):
     from fastchat.serve.controller import logger
-    from llm_model.shutdown_serve import shutdown_worker_serve
+    from llm_model.shutdown_serve import shutdown_worker_serve, check_worker_processes
     from llm_model.launch_all_serve import launch_worker
     def model_worker_ctl(
             msg: List[str] = Body(..., description="参数"),
@@ -32,25 +32,36 @@ def mount_controller_routes(app: FastAPI,
     def start_model(
             model_name: str = Body(None, description="启动该模型"),
     ) -> Dict:
-        #return model_worker_ctl(["start_worker", model_name])
-        launch_worker(model_name)
-        return {"code": 200, "msg": "done"}
+        # return model_worker_ctl(["start_worker", model_name])
+        if check_worker_processes(model_name):
+            return {"success": False, "code": 502, "msg": f"{model_name} worker_processes is already existed!"}
+        else:
+            if launch_worker(model_name):
+                return {"success": True, "code": 200, "msg": "success"}
+            else:
+                return {"success": False, "code": 501,
+                        "msg": f"start {model_name} worker fail, see the log for details"}
 
     def stop_model(
             model_name: str = Body(None, description="停止该模型"),
     ) -> Dict:
-        #return model_worker_ctl(["stop_worker", model_name])
-        shutdown_worker_serve(model_name)
-        return {"code": 200, "msg": "done"}
+        # return model_worker_ctl(["stop_worker", model_name])
+        if check_worker_processes(model_name):
+            shutdown_worker_serve(model_name)
+            return {"success": True, "code": 200, "msg": "success"}
+        else:
+            return {"success": False, "code": 501, "msg": f"{model_name} worker_processes not running"}
 
     def replace_model(
             model_name: str = Body(None, description="停止该模型"),
             new_model_name: str = Body(None, description="替换该模型"),
     ) -> Dict:
-        shutdown_worker_serve(model_name)
-        launch_worker(new_model_name)
-        return {"code": 200, "msg": "done"}
-        #return model_worker_ctl(["replace_worker", model_name, new_model_name])
+        ret = stop_model(model_name)
+        if ret.get("success"):
+            return start_model(new_model_name)
+        else:
+            return ret
+        # return model_worker_ctl(["replace_worker", model_name, new_model_name])
 
     app.post("/start_worker",
              tags=["LLM Management"],
