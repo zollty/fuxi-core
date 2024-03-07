@@ -26,7 +26,7 @@ base_check_sh = """i=0;
                         if [ $i -gt {0} ] 
                         then 
                             echo "wait timeout({0})!";
-                            exit(1);
+                            exit 2;
                         fi
                         sleep 1s;
                         echo "wait {3} running";
@@ -39,12 +39,12 @@ base_check_model_sh = """i=0;
                         if [ ! `ps -ef |grep fschat_worker_launcher.py|grep "{4}"| grep -v grep > /dev/null` ] 
                         then 
                             echo "process {3}-{4} is exited!";
-                            exit(1);
+                            exit 1;
                         fi
                         if [ $i -gt {0} ] 
                         then 
                             echo "wait timeout({0})!";
-                            exit(1);
+                            exit 2;
                         fi
                         sleep 2s;
                         echo "wait {3}-{4} running";
