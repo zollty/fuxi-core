@@ -97,7 +97,7 @@ def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
     worker_sh = base_launch_sh.format(
         "llm_model/fschat_worker_launcher.py", worker_str_args, LOGDIR, f"worker_{log_name}"
     )
-    worker_check_sh = base_check_model_sh.format(wait_times / 2, LOGDIR, f"worker_{log_name}", "model_worker", model)
+    worker_check_sh = base_check_model_sh.format(int(wait_times / 2), LOGDIR, f"worker_{log_name}", "model_worker", model)
     print(f"executing worker_sh: {worker_sh}")
     subprocess.run(worker_sh, shell=True, check=True)
     try:
