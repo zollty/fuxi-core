@@ -179,7 +179,9 @@ async def start_main_server():
         process = Process(
             target=run_controller,
             name=f"controller",
-            kwargs=dict(started_event=controller_started),
+            kwargs=dict(
+                manager_queue=queue,
+                started_event=controller_started),
             daemon=True,
         )
         processes["controller"] = process
@@ -206,9 +208,6 @@ async def start_main_server():
                 target=run_model_worker,
                 name=f"model_worker - {new_model_name}",
                 kwargs=dict(model_name=new_model_name,
-                            controller_address=args.controller_address,
-                            log_level=log_level,
-                            managerQueue=queue,
                             started_event=e),
                 daemon=True,
             )
@@ -258,13 +257,11 @@ async def start_main_server():
                     if cmd == "start_worker":  # 运行新模型
                         new_model_name = msg[1]
                         logger.info(f"准备启动新模型进程：{new_model_name}")
+                        start_time = datetime.now()
                         process = Process(
                             target=run_model_worker,
                             name=f"model_worker - {new_model_name}",
                             kwargs=dict(model_name=new_model_name,
-                                        controller_address=args.controller_address,
-                                        log_level=log_level,
-                                        managerQueue=queue,
                                         started_event=e),
                             daemon=True,
                         )
@@ -272,7 +269,8 @@ async def start_main_server():
                         process.name = f"{process.name} ({process.pid})"
                         processes["model_worker"][new_model_name] = process
                         e.wait()
-                        logger.info(f"成功启动新模型进程：{new_model_name}")
+                        timing = datetime.now() - start_time
+                        logger.info(f"成功启动新模型进程：{new_model_name}。用时：{timing}。")
                     elif cmd == "stop":
                         model_name = msg[1]
                         if process := processes["model_worker"].get(model_name):
@@ -295,9 +293,6 @@ async def start_main_server():
                                 target=run_model_worker,
                                 name=f"model_worker - {new_model_name}",
                                 kwargs=dict(model_name=new_model_name,
-                                            controller_address=args.controller_address,
-                                            log_level=log_level,
-                                            managerQueue=queue,
                                             started_event=e),
                                 daemon=True,
                             )
