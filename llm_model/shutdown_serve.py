@@ -16,8 +16,7 @@ base_shell = "ps -eo user,pid,cmd|grep fschat_{}|grep -v grep|awk '{{print $2}}'
 if args.down == "all":
     shell_script = base_shell.format("")
 else:
-    serve = f".{args.down}"
-    shell_script = base_shell.format(serve)
+    shell_script = base_shell.format(args.down)
 print(f"execute shell cmd: {shell_script}")
 subprocess.run(shell_script, shell=True, check=True)
 print(f"{args.down} has been shutdown!")
