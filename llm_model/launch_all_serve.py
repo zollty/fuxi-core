@@ -36,8 +36,9 @@ base_check_sh = """i=0;
 
 base_check_model_sh = """i=0;
                 while [ `grep -c "Uvicorn running on" {1}/{2}.log` -eq '0' ];do
-                        if [ ! `ps -ef |grep fschat_worker_launcher.py|grep "{4}"| grep -v grep > /dev/null` ] 
-                        then 
+                        if `ps -ef |grep fschat_worker_launcher.py|grep "{4}"| grep -v grep > /dev/null`
+                        then c=0;
+                        else 
                             echo "process {3}-{4} is exited!";
                             exit 1;
                         fi
