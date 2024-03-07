@@ -33,25 +33,19 @@ def mount_controller_routes(app: FastAPI,
             model_name: str = Body(None, description="启动该模型"),
     ) -> Dict:
         # return model_worker_ctl(["start_worker", model_name])
-        if check_worker_processes(model_name):
-            return {"success": False, "code": 502, "msg": f"{model_name} worker_processes is already existed!"}
+        ret, msg = launch_worker(model_name)
+        if ret:
+            return {"success": True, "code": 200, "msg": "success"}
         else:
-            if launch_worker(model_name):
-                return {"success": True, "code": 200, "msg": "success"}
-            else:
-                return {"success": False, "code": 501,
-                        "msg": f"start {model_name} worker fail, see the log for details"}
+            return {"success": False, "code": 501, "msg": msg}
 
     def stop_model(
             model_name: str = Body(None, description="停止该模型"),
     ) -> Dict:
         # return model_worker_ctl(["stop_worker", model_name])
-        if check_worker_processes(model_name):
-            if shutdown_worker_serve(model_name):
-                return {"success": True, "code": 200, "msg": "success"}
-            return {"success": False, "code": 501, "msg": f"{model_name} worker_processes not running"}
-        else:
-            return {"success": False, "code": 501, "msg": f"{model_name} worker_processes not running"}
+        if shutdown_worker_serve(model_name):
+            return {"success": True, "code": 200, "msg": "success"}
+        return {"success": False, "code": 501, "msg": f"the {model_name} worker_processes may not running"}
 
     def replace_model(
             model_name: str = Body(None, description="停止该模型"),

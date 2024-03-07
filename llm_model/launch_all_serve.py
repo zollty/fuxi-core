@@ -81,7 +81,12 @@ def string_args(args, args_list):
     return args_str
 
 
+from llm_model.shutdown_serve import check_worker_processes
 def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
+    if check_worker_processes(model):
+        msg = f"Skip, the {model} worker_processes is already existed!"
+        print(msg)
+        return False, msg
     log_name = model
     # args.model_path, args.worker_host, args.worker_port = item.split("@")
     print("*" * 80)
@@ -99,7 +104,7 @@ def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
         return True
     except subprocess.CalledProcessError as e:
         print(e)
-        return False
+        return False, f"start {model} worker fail, see the log for details"
 
 
 if __name__ == "__main__":

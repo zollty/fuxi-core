@@ -17,6 +17,9 @@ def shutdown_serve(key):
     return ret.returncode
 
 def shutdown_worker_serve(model):
+    if not check_worker_processes(model):
+        print(f"ps grep failed, the {model} worker_processes may not running.")
+        return False
     base_shell = "ps -eo user,pid,cmd|grep fschat_worker_launcher.py|grep {}|grep -v grep|awk '{{print $2}}'|xargs kill -9"
     shell_script = base_shell.format(model)
     print(f"execute shell cmd: {shell_script}")
