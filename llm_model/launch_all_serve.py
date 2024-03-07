@@ -30,7 +30,7 @@ base_check_sh = """i=0;
                         fi
                         sleep 1s;
                         echo "wait {3} running";
-                        let i++;
+                        i = i+1;
                 done
                 echo '{3} running' """
 
@@ -48,7 +48,7 @@ base_check_model_sh = """i=0;
                         fi
                         sleep 2s;
                         echo "wait {3}-{4} running";
-                        let i++;
+                        i = i+1;
                 done
                 echo '{3}-{4} running' """
 
