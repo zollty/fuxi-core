@@ -114,6 +114,8 @@ llm:
       base:
         gpus: "1,2"
         max_gpu_memory: 15GiB
+        gpu_memory_utilization: 0.5
+        tensor_parallel_size: 2
     chatglm3-6b:
       infer_turbo: vllm
       path: /ai/models/chatglm3-6b
