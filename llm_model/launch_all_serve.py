@@ -7,6 +7,10 @@ __current_script_path = os.path.abspath(__file__)
 RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
+from common.utils import DEFAULT_LOG_PATH
+
+LOGDIR = DEFAULT_LOG_PATH
+
 # 0,controller, model_worker, openai_api_server
 # 1, cmd options
 # 2,LOGDIR
@@ -70,9 +74,6 @@ def launch_worker(model, worker_str_args: str = ""):
 if __name__ == "__main__":
     import subprocess
     import argparse
-    from common.utils import DEFAULT_LOG_PATH
-
-    LOGDIR = DEFAULT_LOG_PATH
 
     parser = argparse.ArgumentParser()
 
@@ -123,6 +124,7 @@ if __name__ == "__main__":
     # ---------------------------------------------MAIN---------------------------------------------------
     args = parser.parse_args()
 
+
     # def launch_worker(model):
     #     log_name = model
     #     # args.model_path, args.worker_host, args.worker_port = item.split("@")
@@ -146,7 +148,7 @@ if __name__ == "__main__":
         )
         controller_check_sh = base_check_sh.format(LOGDIR, "controller", "controller")
         print(f"executing controller_sh: {controller_sh}")
-        print(f"watch controller log: {controller_check_sh}")
+        # print(f"watch controller log: {controller_check_sh}")
         subprocess.run(controller_sh, shell=True, check=True)
         subprocess.run(controller_check_sh, shell=True, check=True)
 
@@ -168,5 +170,6 @@ if __name__ == "__main__":
         )
         subprocess.run(server_sh, shell=True, check=True)
         subprocess.run(server_check_sh, shell=True, check=True)
+
 
     launch_all()
