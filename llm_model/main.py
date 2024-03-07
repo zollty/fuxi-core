@@ -224,7 +224,7 @@ async def start_main_server():
                 name=f"model_worker - {new_model_name}",
                 kwargs=dict(model_name=new_model_name,
                             started_event=e),
-                daemon=False,
+                daemon=True,
             )
             processes["model_worker"][new_model_name] = process
 
@@ -279,7 +279,7 @@ async def start_main_server():
                             name=f"model_worker - {new_model_name}",
                             kwargs=dict(model_name=new_model_name,
                                         started_event=e),
-                            daemon=False,
+                            daemon=True,
                         )
                         process.start()
                         process.name = f"{process.name} ({process.pid})"
@@ -305,12 +305,13 @@ async def start_main_server():
                             time.sleep(1)
                             process.terminate()
                             process.join()
+                            logger.info(f"准备启动新模型进程：{new_model_name}")
                             process = Process(
                                 target=run_model_worker,
                                 name=f"model_worker - {new_model_name}",
                                 kwargs=dict(model_name=new_model_name,
                                             started_event=e),
-                                daemon=False,
+                                daemon=True,
                             )
                             process.start()
                             process.name = f"{process.name} ({process.pid})"
