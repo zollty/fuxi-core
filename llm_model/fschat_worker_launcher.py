@@ -275,6 +275,20 @@ def run_model_worker(model_name, started_event: mp.Event = None):
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model", type=str)
+    parser.add_argument("--custom-config", type=str, default=None)
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        help="增加log信息",
+        dest="verbose",
+        default=None,
+    )
+    args = parser.parse_args()
     # run_worker("langchain_model")
     # run_worker("chatglm3-6b-32k")
-    run_model_worker("Qwen1.5-7B-Chat")
+    # run_model_worker("Qwen1.5-7B-Chat")
+    run_model_worker(args.model)
