@@ -7,26 +7,23 @@ __current_script_path = os.path.abspath(__file__)
 RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
-from common.conf import Cfg
 import multiprocessing as mp
 from common.fastapi_tool import set_app_event
+from dynaconf import Dynaconf
 
-
-def create_controller_app(cfg: Cfg):
-    from common.utils import DEFAULT_LOG_PATH, VERSION, OPEN_CROSS_DOMAIN
+def create_controller_app(cfg: Dynaconf, log_level):
+    from common.utils import DEFAULT_LOG_PATH
     from common.fastapi_tool import set_httpx_config, MakeFastAPIOffline
     import sys
-    import fastchat
     import fastchat.constants
     from fastchat.serve.controller import app, Controller, logger
     from fastapi.middleware.cors import CORSMiddleware
 
     fastchat.constants.LOGDIR = DEFAULT_LOG_PATH
-    log_level = cfg.get("llm.controller.log_level", "info")
     logger.setLevel(log_level.upper())
 
     dispatch_method = cfg.get("llm.controller.dispatch_method", "shortest_queue")
-    cross_domain = cfg.get("llm.controller.cross_domain", OPEN_CROSS_DOMAIN)
+    cross_domain = cfg.get("llm.controller.cross_domain", cfg.get("root.cross_domain", True))
 
     controller = Controller(dispatch_method)
 
@@ -56,13 +53,17 @@ def run_controller(started_event: mp.Event = None):
     from common.fastapi_tool import run_api
 
     print(RUNTIME_ROOT_DIR)
-    cfg = Cfg(RUNTIME_ROOT_DIR + "/conf_llm_model.toml")
+    cfg = Dynaconf(
+        envvar_prefix="FUXI",
+        root_path=RUNTIME_ROOT_DIR,
+        settings_files=['llm_model/conf_llm_model.yml', 'settings.yaml'],
+    )
 
-    log_level = cfg.get("llm.controller.log_level", "INFO").upper()
+    log_level = cfg.get("llm.controller.log_level", cfg.get("root.log_level", "INFO")).upper()
     host = cfg.get("llm.controller.host", "0.0.0.0")
     port = cfg.get("llm.controller.port", 21001)
 
-    app = create_controller_app(cfg)
+    app = create_controller_app(cfg, log_level)
     set_app_event(app, started_event)
 
     with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:

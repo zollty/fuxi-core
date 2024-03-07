@@ -7,12 +7,10 @@ __current_script_path = os.path.abspath(__file__)
 RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
-from common.conf import Cfg
-import multiprocessing as mp
-from common.fastapi_tool import set_app_event
+from dynaconf import Dynaconf
 
 
-def create_openai_api_server_app(cfg: Cfg):
+def create_openai_api_server_app(cfg: Dynaconf, log_level):
     from fastapi.middleware.cors import CORSMiddleware
     from common.utils import DEFAULT_LOG_PATH, OPEN_CROSS_DOMAIN
     from common.fastapi_tool import set_httpx_config, MakeFastAPIOffline
@@ -24,11 +22,10 @@ def create_openai_api_server_app(cfg: Cfg):
     logger = build_logger("openai_api", "openai_api.log")
     sys.modules["fastchat.serve.openai_api_server"].logger = logger
 
-    log_level = cfg.get("llm.controller.log_level", "INFO").upper()
     logger.setLevel(log_level.upper())
 
-    controller_address = cfg.get("llm.openai_api_server.controller_address", "")
-    cross_domain = cfg.get("llm.openai_api_server.cross_domain", OPEN_CROSS_DOMAIN)
+    controller_address = cfg.get("llm.openai_api_server.controller_address")
+    cross_domain = cfg.get("llm.openai_api_server.cross_domain", cfg.get("root.cross_domain", True))
 
     app_settings.controller_address = controller_address
     app_settings.api_keys = cfg.get("llm.openai_api_server.api_keys", "")
@@ -57,13 +54,17 @@ def run_openai_api_server():
     from common.fastapi_tool import run_api
 
     print(RUNTIME_ROOT_DIR)
-    cfg = Cfg(RUNTIME_ROOT_DIR + "/conf_llm_model.toml")
+    cfg = Dynaconf(
+        envvar_prefix="FUXI",
+        root_path=RUNTIME_ROOT_DIR,
+        settings_files=['llm_model/conf_llm_model.yml', 'settings.yaml'],
+    )
 
     log_level = cfg.get("llm.openai_api_server.log_level", "info")
     host = cfg.get("llm.openai_api_server.host", "0.0.0.0")
     port = cfg.get("llm.openai_api_server.port", 8000)
 
-    app = create_openai_api_server_app(cfg)
+    app = create_openai_api_server_app(cfg, log_level)
 
     with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
         f.write(f"    FenghouAI OpeanAI API Server (fastchat): http://{host}:{port}")
