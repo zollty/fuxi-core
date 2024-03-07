@@ -266,9 +266,8 @@ async def start_main_server():
             dump_server_info(cfg, after_start=True)
             while True:
                 msg = queue.get()  # 收到切换模型的消息
-                e = manager.Event()
                 logger.info(f"收到消息: {msg}")
-                #  managerQueue.put([model_name, "start", new_model_name])
+                e = manager.Event()
                 if isinstance(msg, list):
                     cmd = msg[0]
                     if cmd == "start_worker":  # 运行新模型
