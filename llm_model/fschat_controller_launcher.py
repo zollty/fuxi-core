@@ -18,11 +18,13 @@ from dynaconf import Dynaconf
 def mount_controller_routes(app: FastAPI,
                             manager_queue: mp.Queue = None,
                             ):
+    from fastchat.serve.controller import logger
     def model_worker_ctl(
             msg: List[str] = Body(..., description="参数"),
     ) -> Dict:
         # 与manager进程通信
         manager_queue.put(msg)
+        logger.warn(f"execute: {msg}")
         return {"code": 200, "msg": "done"}
 
     def start_model(
