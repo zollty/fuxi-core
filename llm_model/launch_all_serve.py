@@ -98,7 +98,8 @@ parser.add_argument(
     "--verbose",
     help="增加log信息",
     dest="verbose",
-    default=None,
+    type=bool,
+    default=False,
 )
 model_worker_args = ["wp", "verbose"]
 

@@ -285,7 +285,8 @@ if __name__ == "__main__":
         "--verbose",
         help="增加log信息",
         dest="verbose",
-        default=None,
+        type=bool,
+        default=False,
     )
     args = parser.parse_args()
     # run_worker("langchain_model")

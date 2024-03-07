@@ -45,7 +45,7 @@ if __name__ == "__main__":
         "-v",
         "--verbose",
         help="增加log信息",
-        dest="verbose", default=8001,
+        dest="verbose", type=bool, default=False
     )
     parser.add_argument(
         "-cp",
