@@ -118,8 +118,7 @@ def dump_server_info(cfg: Dynaconf, after_start=False):
     if after_start:
         with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'r') as f:
             print(f.read())
-        print("=" * 30 + "FenghouAI Configuration" + "=" * 30)
-        print("\n")
+
         import datetime
 
         current_time = datetime.datetime.now()
@@ -259,7 +258,7 @@ async def start_main_server():
             while True:
                 msg = queue.get()  # 收到切换模型的消息
                 e = manager.Event()
-                logger.info("收到消息", msg)
+                logger.info(f"收到消息: {msg}")
                 #  managerQueue.put([model_name, "start", new_model_name])
                 if isinstance(msg, list):
                     cmd = msg[0]
@@ -272,7 +271,7 @@ async def start_main_server():
                             name=f"model_worker - {new_model_name}",
                             kwargs=dict(model_name=new_model_name,
                                         started_event=e),
-                            daemon=True,
+                            daemon=False,
                         )
                         process.start()
                         process.name = f"{process.name} ({process.pid})"
@@ -280,7 +279,7 @@ async def start_main_server():
                         e.wait()
                         timing = datetime.now() - start_time
                         logger.info(f"成功启动新模型进程：{new_model_name}。用时：{timing}。")
-                    elif cmd == "stop":
+                    elif cmd == "stop_worker":
                         model_name = msg[1]
                         if process := processes["model_worker"].get(model_name):
                             time.sleep(1)
@@ -289,7 +288,7 @@ async def start_main_server():
                             logger.info(f"停止模型进程：{model_name}")
                         else:
                             logger.error(f"未找到模型进程：{model_name}")
-                    elif cmd == "replace":
+                    elif cmd == "replace_worker":
                         model_name = msg[1]
                         new_model_name = msg[2]
                         if process := processes["model_worker"].pop(model_name, None):
@@ -303,7 +302,7 @@ async def start_main_server():
                                 name=f"model_worker - {new_model_name}",
                                 kwargs=dict(model_name=new_model_name,
                                             started_event=e),
-                                daemon=True,
+                                daemon=False,
                             )
                             process.start()
                             process.name = f"{process.name} ({process.pid})"

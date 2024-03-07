@@ -28,18 +28,18 @@ def mount_controller_routes(app: FastAPI,
     def start_model(
             model_name: str = Body(None, description="启动该模型"),
     ) -> Dict:
-        return model_worker_ctl(["start", model_name])
+        return model_worker_ctl(["start_worker", model_name])
 
     def stop_model(
             model_name: str = Body(None, description="停止该模型"),
     ) -> Dict:
-        return model_worker_ctl(["stop", model_name])
+        return model_worker_ctl(["stop_worker", model_name])
 
     def replace_model(
             model_name: str = Body(None, description="停止该模型"),
             new_model_name: str = Body(None, description="替换该模型"),
     ) -> Dict:
-        return model_worker_ctl(["replace", model_name, new_model_name])
+        return model_worker_ctl(["replace_worker", model_name, new_model_name])
 
     app.post("/start_worker",
              tags=["LLM Management"],
