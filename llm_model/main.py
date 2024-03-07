@@ -247,8 +247,6 @@ async def start_main_server():
                 p.start()
                 p.name = f"{p.name} ({p.pid})"
 
-            for process in processes.get("model_worker", {}).values():
-                process.join()
             # 等待所有model_worker启动完成
             for e in model_worker_started:
                 e.wait()
