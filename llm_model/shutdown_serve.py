@@ -5,6 +5,7 @@ options: "all","controller","model_worker","openai_api_server"， `all` means to
 """
 import subprocess
 
+
 def shutdown_serve(key):
     base_shell = "ps -eo user,pid,cmd|grep fschat_{}|grep -v grep|awk '{{print $2}}'|xargs kill -9"
     if key == "all":
@@ -15,6 +16,7 @@ def shutdown_serve(key):
     ret = subprocess.run(shell_script, shell=True, check=True)
     print(f"{key} has been shutdown!")
     return ret.returncode
+
 
 def shutdown_worker_serve(model):
     if not check_worker_processes(model):
@@ -31,6 +33,7 @@ def shutdown_worker_serve(model):
         print(f"ps grep failed, the {model} worker_processes may not running.")
         return False
 
+
 def check_worker_processes(model):
     base_shell = "ps -ef |grep fschat_worker_launcher.py|grep {}| grep -v grep > /dev/null"
     shell_script = base_shell.format(model)
@@ -39,8 +42,9 @@ def check_worker_processes(model):
         subprocess.run(shell_script, shell=True, check=True)
         return True
     except subprocess.CalledProcessError as e:
-        print(e)
+        # print(e)
         return False
+
 
 if __name__ == "__main__":
     import argparse
