@@ -187,7 +187,7 @@ async def start_main_server():
         ))
 
     # Comment out the following line to see zombie children
-    signal.signal(signal.SIGCHLD, child_exited)
+    #signal.signal(signal.SIGCHLD, child_exited)
 
     controller_started = manager.Event()
     if args.fastchat:
@@ -224,7 +224,7 @@ async def start_main_server():
                 name=f"model_worker - {new_model_name}",
                 kwargs=dict(model_name=new_model_name,
                             started_event=e),
-                daemon=True,
+                daemon=False,
             )
             processes["model_worker"][new_model_name] = process
 
@@ -279,7 +279,7 @@ async def start_main_server():
                             name=f"model_worker - {new_model_name}",
                             kwargs=dict(model_name=new_model_name,
                                         started_event=e),
-                            daemon=True,
+                            daemon=False,
                         )
                         process.start()
                         process.name = f"{process.name} ({process.pid})"
@@ -311,7 +311,7 @@ async def start_main_server():
                                 name=f"model_worker - {new_model_name}",
                                 kwargs=dict(model_name=new_model_name,
                                             started_event=e),
-                                daemon=True,
+                                daemon=False,
                             )
                             process.start()
                             process.name = f"{process.name} ({process.pid})"
