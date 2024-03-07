@@ -21,11 +21,13 @@ base_launch_sh = "nohup python3 {0} {1} >{2}/{3}.log 2>&1 &"
 # 0 LOGDIR
 # ! 1 log file name
 # 2 controller, worker, openai_api_server
-base_check_sh = """while [ `grep -c "Uvicorn running on" {0}/{1}.log` -eq '0' ];do
-                        sleep 1s;
-                        echo "wait {2} running"
+base_check_sh = """i=0
+                while [ $i -le {0} -a `grep -c "Uvicorn running on" {1}/{2}.log` -eq '0' ];do
+                        sleep 2s;
+                        echo "wait {3} running"
+                let i++
                 done
-                echo '{2} running' """
+                echo '{3} running' """
 
 
 def string_args(args, args_list):
@@ -56,7 +58,7 @@ def string_args(args, args_list):
     return args_str
 
 
-def launch_worker(model, worker_str_args: str = ""):
+def launch_worker(model, wait_times: int = 60, worker_str_args: str = ""):
     log_name = model
     # args.model_path, args.worker_host, args.worker_port = item.split("@")
     print("*" * 80)
@@ -66,7 +68,7 @@ def launch_worker(model, worker_str_args: str = ""):
     worker_sh = base_launch_sh.format(
         "llm_model/fschat_worker_launcher.py", worker_str_args, LOGDIR, f"worker_{log_name}"
     )
-    worker_check_sh = base_check_sh.format(LOGDIR, f"worker_{log_name}", "model_worker")
+    worker_check_sh = base_check_sh.format(wait_times/2, LOGDIR, f"worker_{log_name}", "model_worker")
     print(f"executing worker_sh: {worker_sh}")
     subprocess.run(worker_sh, shell=True, check=True)
     ret = subprocess.run(worker_check_sh, shell=True, check=True)

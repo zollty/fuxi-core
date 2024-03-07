@@ -24,6 +24,14 @@ def shutdown_worker_serve(model):
     print(f"{model} has been shutdown!")
     return ret.returncode
 
+def check_worker_processes(model):
+    base_shell = "ps -ef |grep fschat_worker_launcher.py|grep {}| grep -v grep > /dev/null"
+    shell_script = base_shell.format(model)
+    print(f"execute shell cmd: {shell_script}")
+    ret = subprocess.run(shell_script, shell=True, check=True)
+    print(f"{model} worker is not exist!")
+    return ret.returncode
+
 if __name__ == "__main__":
     import argparse
 
@@ -37,6 +45,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.model:
+        print(check_worker_processes(args.model))
         shutdown_worker_serve(args.model)
     else:
         shutdown_serve(args.down)
