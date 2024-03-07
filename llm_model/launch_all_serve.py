@@ -68,7 +68,8 @@ def launch_worker(model, worker_str_args: str = ""):
     worker_check_sh = base_check_sh.format(LOGDIR, f"worker_{log_name}", "model_worker")
     print(f"executing worker_sh: {worker_sh}")
     subprocess.run(worker_sh, shell=True, check=True)
-    subprocess.run(worker_check_sh, shell=True, check=True)
+    ret = subprocess.run(worker_check_sh, shell=True, check=True)
+    return ret.returncode
 
 
 if __name__ == "__main__":
@@ -124,21 +125,6 @@ if __name__ == "__main__":
     # ---------------------------------------------MAIN---------------------------------------------------
     args = parser.parse_args()
 
-
-    # def launch_worker(model):
-    #     log_name = model
-    #     # args.model_path, args.worker_host, args.worker_port = item.split("@")
-    #     print("*" * 80)
-    #     worker_str_args = f" --model {model} " + string_args(args, model_worker_args)
-    #     print(worker_str_args)
-    #     # "nohup python3 -m fastchat.serve.{0} {1} >{2}/{3}.log 2>&1 &"
-    #     worker_sh = base_launch_sh.format(
-    #         "llm_model/fschat_worker_launcher.py", worker_str_args, LOGDIR, f"worker_{log_name}"
-    #     )
-    #     worker_check_sh = base_check_sh.format(LOGDIR, f"worker_{log_name}", "model_worker")
-    #     print(f"executing worker_sh: {worker_sh}")
-    #     subprocess.run(worker_sh, shell=True, check=True)
-    #     subprocess.run(worker_check_sh, shell=True, check=True)
 
     def launch_all():
         controller_str_args = string_args(args, controller_args)

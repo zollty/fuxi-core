@@ -76,7 +76,10 @@ def mount_controller_routes(app: FastAPI,
             model_name: str = Body(None, description="停止该模型"),
             new_model_name: str = Body(None, description="替换该模型"),
     ) -> Dict:
-        return model_worker_ctl(["replace_worker", model_name, new_model_name])
+        shutdown_worker_serve(model_name)
+        launch_worker(new_model_name)
+        return {"code": 200, "msg": "done"}
+        #return model_worker_ctl(["replace_worker", model_name, new_model_name])
 
     app.post("/start_worker",
              tags=["LLM Management"],
