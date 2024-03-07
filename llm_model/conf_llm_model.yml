@@ -2,13 +2,13 @@ llm:
   device: auto
   controller:
     host: 0.0.0.0
-    port: 21101
+    port: 21001
     dispatch-method: shortest_queue
     #log_level: INFO
   openai_api_server:
     host: 0.0.0.0
-    port: 8880
-    controller_addr: http://localhost:21101
+    port: 20000
+    controller_addr: http://localhost:21001
     api_keys: EMPTY
     #log_level: INFO
   worker:
@@ -17,7 +17,7 @@ llm:
     #log_level: null
     #cross_domain: true
     base:
-      controller_addr: http://localhost:21101
+      controller_addr: http://localhost:21001
       #worker_address
       limit_worker_concurrency: 100
       conv_template: null
