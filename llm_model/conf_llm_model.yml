@@ -113,7 +113,7 @@ llm:
       quantize: int8
       base:
         gpus: "1"
-        max_gpu_memory: 15GiB
+        max_gpu_memory: 12GiB
       vllm:
         gpu_memory_utilization: 0.5
         tensor_parallel_size: 1
