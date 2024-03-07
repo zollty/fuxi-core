@@ -112,7 +112,7 @@ llm:
       infer_turbo: vllm
       quantize: int8
       base:
-        gpus: "1"
+        gpus: "1,2"
         max_gpu_memory: 15GiB
     chatglm3-6b:
       infer_turbo: vllm
