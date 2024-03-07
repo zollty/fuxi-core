@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser()
 # 1, cmd options
 # 2,LOGDIR
 # 3, log file name
-base_launch_sh = "nohup python3 -m {0} {1} >{2}/{3}.log 2>&1 &"
+base_launch_sh = "nohup python3 {0} {1} >{2}/{3}.log 2>&1 &"
 
 # 0 LOGDIR
 # ! 1 log file name
