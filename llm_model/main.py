@@ -17,6 +17,7 @@ from typing import List, Dict
 from fastapi import FastAPI
 from common.utils import logger, LOG_VERBOSE, DEFAULT_LOG_PATH
 import fastchat.constants
+from dynaconf import Dynaconf
 
 fastchat.constants.LOGDIR = DEFAULT_LOG_PATH
 
@@ -91,11 +92,50 @@ def parse_args() -> argparse.ArgumentParser:
     return args, parser
 
 
+def dump_server_info(cfg: Dynaconf, after_start=False, args=None):
+    from common.utils import RUNTIME_ROOT_DIR
+    import platform
+    import langchain
+    import fastchat
+    from common.utils import detect_device
+
+    server_info = []
+
+    server_info.append("\n")
+    server_info.append("=" * 30 + "Chatchat Configuration" + "=" * 30)
+    server_info.append(f"操作系统：{platform.platform()}.")
+    server_info.append(f"python版本：{sys.version}")
+    server_info.append(f"项目版本：{cfg.root.version}")
+    server_info.append(f"langchain版本：{langchain.__version__}. fastchat版本：{fastchat.__version__}")
+    server_info.append("\n")
+
+    if models := cfg.get("root.default_start_model"):
+        server_info.append(f"当前启动的LLM模型：{models} @ {detect_device()}")
+
+    print(''.join(server_info))
+    with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'r') as f:
+        print(f.read())
+    print("=" * 30 + "FenghouAI Configuration" + "=" * 30)
+    print("\n")
+
+
 async def start_main_server():
     import time
     import signal
     from llm_model.fschat_controller_launcher import run_controller
     from llm_model.fschat_openai_api_server_launcher import run_openai_api_server
+    from llm_model.fschat_worker_launcher import run_model_worker
+    from common.utils import RUNTIME_ROOT_DIR
+    from dynaconf import Dynaconf
+
+    cfg = Dynaconf(
+        envvar_prefix="FUXI",
+        root_path=RUNTIME_ROOT_DIR,
+        settings_files=['llm_model/conf_llm_model.yml', 'settings.yaml'],
+    )
+
+    with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', "w") as f:
+        f.truncate(0)
 
     def handler(signalname):
         """
@@ -157,6 +197,22 @@ async def start_main_server():
         #     daemon=True,
         # )
         # processes["openai_api"] = process
+    model_worker_started = []
+    if dm := cfg.get("root.default_start_model"):
+        for new_model_name in dm:
+            e = manager.Event()
+            model_worker_started.append(e)
+            process = Process(
+                target=run_model_worker,
+                name=f"model_worker - {new_model_name}",
+                kwargs=dict(model_name=new_model_name,
+                            controller_address=args.controller_address,
+                            log_level=log_level,
+                            managerQueue=queue,
+                            started_event=e),
+                daemon=True,
+            )
+            processes["model_worker"][new_model_name] = process
 
     if process_count() == 0:
         parser.print_help()
@@ -172,6 +228,14 @@ async def start_main_server():
                 p.start()
                 p.name = f"{p.name} ({p.pid})"
 
+            for n, p in processes.get("model_worker", {}).items():
+                logger.info(f"准备启动新模型进程：{p.name}")
+                p.start()
+                p.name = f"{p.name} ({p.pid})"
+
+            # 等待所有model_worker启动完成
+            for e in model_worker_started:
+                e.wait()
             # for process in processes.get("model_worker", {}).values():
             #     process.join()
             # for process in processes.get("online_api", {}).values():
@@ -185,9 +249,67 @@ async def start_main_server():
             #         else:
             #             process.join()
             while True:
-                cmd = queue.get()  # 收到切换模型的消息
+                msg = queue.get()  # 收到切换模型的消息
                 e = manager.Event()
-                logger.info("收到消息", cmd)
+                logger.info("收到消息", msg)
+                #  managerQueue.put([model_name, "start", new_model_name])
+                if isinstance(msg, list):
+                    cmd = msg[0]
+                    if cmd == "start_worker":  # 运行新模型
+                        new_model_name = msg[1]
+                        logger.info(f"准备启动新模型进程：{new_model_name}")
+                        process = Process(
+                            target=run_model_worker,
+                            name=f"model_worker - {new_model_name}",
+                            kwargs=dict(model_name=new_model_name,
+                                        controller_address=args.controller_address,
+                                        log_level=log_level,
+                                        managerQueue=queue,
+                                        started_event=e),
+                            daemon=True,
+                        )
+                        process.start()
+                        process.name = f"{process.name} ({process.pid})"
+                        processes["model_worker"][new_model_name] = process
+                        e.wait()
+                        logger.info(f"成功启动新模型进程：{new_model_name}")
+                    elif cmd == "stop":
+                        model_name = msg[1]
+                        if process := processes["model_worker"].get(model_name):
+                            time.sleep(1)
+                            process.terminate()
+                            process.join()
+                            logger.info(f"停止模型进程：{model_name}")
+                        else:
+                            logger.error(f"未找到模型进程：{model_name}")
+                    elif cmd == "replace":
+                        model_name = msg[1]
+                        new_model_name = msg[2]
+                        if process := processes["model_worker"].pop(model_name, None):
+                            logger.info(f"停止模型进程：{model_name}")
+                            start_time = datetime.now()
+                            time.sleep(1)
+                            process.terminate()
+                            process.join()
+                            process = Process(
+                                target=run_model_worker,
+                                name=f"model_worker - {new_model_name}",
+                                kwargs=dict(model_name=new_model_name,
+                                            controller_address=args.controller_address,
+                                            log_level=log_level,
+                                            managerQueue=queue,
+                                            started_event=e),
+                                daemon=True,
+                            )
+                            process.start()
+                            process.name = f"{process.name} ({process.pid})"
+                            processes["model_worker"][new_model_name] = process
+                            e.wait()
+                            timing = datetime.now() - start_time
+                            logger.info(f"成功启动新模型进程：{new_model_name}。用时：{timing}。")
+                        else:
+                            logger.error(f"未找到模型进程：{model_name}")
+
 
         except Exception as e:
             logger.error(e)

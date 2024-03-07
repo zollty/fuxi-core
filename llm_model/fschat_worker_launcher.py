@@ -229,7 +229,7 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     return app
 
 
-def run_worker(model_name, started_event: mp.Event = None):
+def run_model_worker(model_name, started_event: mp.Event = None):
     from common.utils import RUNTIME_ROOT_DIR
     from common.fastapi_tool import run_api, set_app_event
 
@@ -256,6 +256,11 @@ def run_worker(model_name, started_event: mp.Event = None):
 
     host = cfg.get("llm.worker.host")
     port = model_worker_config.get("worker_port")
+
+    # server info
+    with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
+        f.write(f"    FenghouAI Model Worker Server ({model_name}): http://{host}:{port}")
+
     run_api(
         app,
         host=host,
@@ -269,4 +274,4 @@ def run_worker(model_name, started_event: mp.Event = None):
 if __name__ == "__main__":
     # run_worker("langchain_model")
     # run_worker("chatglm3-6b-32k")
-    run_worker("Qwen1.5-7B-Chat")
+    run_model_worker("Qwen1.5-7B-Chat")
