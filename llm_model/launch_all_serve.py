@@ -21,7 +21,7 @@ base_launch_sh = "nohup python3 {0} {1} >{2}/{3}.log 2>&1 &"
 # 0 LOGDIR
 # ! 1 log file name
 # 2 controller, worker, openai_api_server
-base_check_sh = """i=0
+base_check_sh = """i=0;
                 while [ `grep -c "Uvicorn running on" {1}/{2}.log` -eq '0' ];do
                         if [ $i -gt {0} ] 
                         then 
