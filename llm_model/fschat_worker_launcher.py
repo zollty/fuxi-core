@@ -18,6 +18,8 @@ from common.utils import logger
 def set_common_args(args):
     if not args.get("controller_address"):
         args["controller_address"] = args["controller_addr"]
+    if not args.get("worker_address"):
+        args["worker_address"] = args["worker_addr"]
     if args["device"] == "auto":
         args["device"] = detect_device()
     if args.get("gpus"):
@@ -209,7 +211,6 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
 
         else:
             app, worker = create_plain_worker(cfg, model_worker_config, log_level)
-
 
     cross_domain = cfg.get("llm.worker.cross_domain", cfg.get("root.cross_domain", True))
 
