@@ -102,18 +102,17 @@ def dump_server_info(cfg: Dynaconf, after_start=False):
     server_info = []
 
     server_info.append("\n")
-    server_info.append("=" * 30 + "Chatchat Configuration" + "=" * 30)
+    server_info.append("=" * 30 + "FenghouAI Configuration" + "=" * 30)
     server_info.append(f"操作系统：{platform.platform()}.")
     server_info.append(f"python版本：{sys.version}")
     server_info.append(f"项目版本：{cfg.root.version}")
     server_info.append(f"langchain版本：{langchain.__version__}. fastchat版本：{fastchat.__version__}")
-    server_info.append("\n")
 
     if models := cfg.get("root.default_start_model"):
         server_info.append(f"当前启动的LLM模型：{models} @ {detect_device()}")
 
-    print("=" * 30 + "FenghouAI Configuration" + "=" * 30)
-    print("\n")
+    server_info.append("=" * 30 + "FenghouAI Configuration" + "=" * 30)
+    server_info.append("\n")
     print('\n'.join(server_info))
 
     if after_start:
@@ -125,7 +124,7 @@ def dump_server_info(cfg: Dynaconf, after_start=False):
 
         current_time = datetime.datetime.now()
         formatted_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
-        print(f"Started finished at {formatted_time}. Please check the startup log above\n")
+        print(f"Started finished at {formatted_time}, Please check the startup log above\n\n")
 
 
 async def start_main_server():
