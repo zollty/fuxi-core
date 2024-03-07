@@ -20,9 +20,13 @@ def shutdown_worker_serve(model):
     base_shell = "ps -eo user,pid,cmd|grep fschat_worker_launcher.py|grep {}|grep -v grep|awk '{{print $2}}'|xargs kill -9"
     shell_script = base_shell.format(model)
     print(f"execute shell cmd: {shell_script}")
-    ret = subprocess.run(shell_script, shell=True, check=True)
-    print(f"{model} has been shutdown!")
-    return ret.returncode
+    try:
+        subprocess.run(shell_script, shell=True, check=True)
+        print(f"{model} has been shutdown!")
+        return True
+    except subprocess.CalledProcessError as e:
+        print(e)
+        return False
 
 def check_worker_processes(model):
     base_shell = "ps -ef |grep fschat_worker_launcher.py|grep {}| grep -v grep > /dev/null"
