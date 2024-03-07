@@ -7,6 +7,7 @@ __current_script_path = os.path.abspath(__file__)
 RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
+import subprocess
 from common.utils import DEFAULT_LOG_PATH
 
 LOGDIR = DEFAULT_LOG_PATH
@@ -73,7 +74,6 @@ def launch_worker(model, worker_str_args: str = ""):
 
 
 if __name__ == "__main__":
-    import subprocess
     import argparse
 
     parser = argparse.ArgumentParser()
