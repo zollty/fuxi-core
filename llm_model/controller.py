@@ -13,6 +13,7 @@ def mount_controller_routes(app: FastAPI,
 
     def list_config_models(
             types: List[str] = Body(["local", "online"], description="模型配置项类别，如local, online, worker"),
+            placeholder: str = Body(None, description="占位用，无实际效果")
     ) -> BaseResponse:
         '''
         从本地获取configs中配置的模型列表
