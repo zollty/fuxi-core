@@ -124,6 +124,36 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
+        "-a",
+        "--all",
+        action="store_true",
+        help="run fastchat's controller/openai_api/model_worker servers",
+        dest="all",
+    )
+    parser.add_argument(
+        "-c",
+        "--controller",
+        action="store_true",
+        help="run fastchat's controller servers",
+        dest="controller",
+    )
+    parser.add_argument(
+        "-o",
+        "--openai-api",
+        action="store_true",
+        help="run fastchat's openai_api servers",
+        dest="openai_api",
+    )
+    parser.add_argument(
+        "-w",
+        "--model-worker",
+        action="store_true",
+        help="run fastchat's model_worker server with specified model name. "
+             "specify -m if not using default LLM_MODELS",
+        dest="model_worker",
+    )
+
+    parser.add_argument(
         "-cp",
         "--controller-config-path",
         help="custom controller config path",
@@ -172,18 +202,24 @@ if __name__ == "__main__":
 
 
     def launch_all():
-        controller_str_args = string_args(args, controller_args)
-        # "nohup python3 -m fastchat.serve.{0} {1} >{2}/{3}.log 2>&1 &"
-        controller_sh = base_launch_sh.format(
-            "llm_model/fschat_controller_launcher.py", controller_str_args, LOGDIR, "controller"
-        )
-        controller_check_sh = base_check_sh.format(10, LOGDIR, "controller", "controller")
-        print(f"executing controller_sh: {controller_sh}")
-        # print(f"watch controller log: {controller_check_sh}")
-        subprocess.run(controller_sh, shell=True, check=True)
-        subprocess.run(controller_check_sh, shell=True, check=True)
+        if args.all:
+            args.controller = True
+            args.openai_api = True
+            args.model_worker = True
 
-        if args.model:
+        if args.controller:
+            controller_str_args = string_args(args, controller_args)
+            # "nohup python3 -m fastchat.serve.{0} {1} >{2}/{3}.log 2>&1 &"
+            controller_sh = base_launch_sh.format(
+                "llm_model/fschat_controller_launcher.py", controller_str_args, LOGDIR, "controller"
+            )
+            controller_check_sh = base_check_sh.format(10, LOGDIR, "controller", "controller")
+            print(f"executing controller_sh: {controller_sh}")
+            # print(f"watch controller log: {controller_check_sh}")
+            subprocess.run(controller_sh, shell=True, check=True)
+            subprocess.run(controller_check_sh, shell=True, check=True)
+
+        if args.model_worker and args.model:
             worker_str_args = string_args(args, model_worker_args)
             if isinstance(args.model, str):
                 launch_worker(args.model, worker_str_args)
@@ -192,13 +228,14 @@ if __name__ == "__main__":
                     print(f"loading {idx}th model:{item}")
                     launch_worker(item, worker_str_args)
 
-        server_str_args = string_args(args, openaiapi_server_args)
-        server_sh = base_launch_sh.format(
-            "llm_model/fschat_openai_api_server_launcher.py", server_str_args, LOGDIR, "openai_api_server"
-        )
-        server_check_sh = base_check_sh.format(10, LOGDIR, "openai_api_server", "openai_api_server")
-        subprocess.run(server_sh, shell=True, check=True)
-        subprocess.run(server_check_sh, shell=True, check=True)
+        if args.openai_api:
+            server_str_args = string_args(args, openaiapi_server_args)
+            server_sh = base_launch_sh.format(
+                "llm_model/fschat_openai_api_server_launcher.py", server_str_args, LOGDIR, "openai_api_server"
+            )
+            server_check_sh = base_check_sh.format(10, LOGDIR, "openai_api_server", "openai_api_server")
+            subprocess.run(server_sh, shell=True, check=True)
+            subprocess.run(server_check_sh, shell=True, check=True)
 
 
     launch_all()

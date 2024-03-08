@@ -2,6 +2,7 @@ from typing import Any, List, Optional, Dict
 import multiprocessing as mp
 from fastapi import FastAPI, Body
 from common.api_base import (BaseResponse, ListResponse)
+from dynaconf import Dynaconf
 
 def mount_controller_routes(app: FastAPI,
                             cfg: Dynaconf,
