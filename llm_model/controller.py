@@ -21,7 +21,7 @@ def mount_controller_routes(app: FastAPI,
         '''
         # 本地模型
         models = cfg.get("llm.model_cfg", {})
-        for model in models:
+        for model in models.values():
             if not model.get("model_path_exists"):
                 path = model.get("path", None)
                 if path and os.path.isdir(path):
