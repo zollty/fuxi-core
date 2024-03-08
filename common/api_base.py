@@ -202,7 +202,7 @@ class ApiRequest:
                             # print(chunk, end="", flush=True)
                             yield chunk
             except httpx.ConnectError as e:
-                msg = f"无法连接API服务器，请确认 ‘api.py’ 已正常启动。({e})"
+                msg = f"无法连接API服务器，请确认 ‘api服务’ 已正常启动。({e})"
                 logger.error(msg)
                 yield {"code": 500, "msg": msg}
             except httpx.ReadTimeout as e:

@@ -173,3 +173,6 @@ if __name__ == "__main__":
                 f"Larger --num-gpus ({vllm_args.num_gpus}) than --gpus {vllm_args.gpus}!"
             )
 
+    models = cfg.get("llm.model_cfg", {})
+    for type, models in models.items():
+        print(models)
