@@ -3,6 +3,7 @@ import multiprocessing as mp
 from fastapi import FastAPI, Body
 from common.api_base import (BaseResponse, ListResponse)
 from dynaconf import Dynaconf
+import os
 
 def mount_controller_routes(app: FastAPI,
                             cfg: Dynaconf,
@@ -18,6 +19,14 @@ def mount_controller_routes(app: FastAPI,
         '''
         从本地获取configs中配置的模型列表
         '''
+        # 本地模型
+        models = cfg.get("llm.model_cfg", {})
+        for model in models:
+            if not model.get("model_path_exists"):
+                path = model.get("path", None)
+                if path and os.path.isdir(path):
+                    model["model_path_exists"] = True
+
         data = {"local": cfg.get("llm.model_cfg", {})}
         return BaseResponse(data=data)
 
