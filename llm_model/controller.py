@@ -17,7 +17,7 @@ def mount_controller_routes(app: FastAPI,
         '''
         从本地获取configs中配置的模型列表
         '''
-        data = {"local": cfg.get("llm.worker.model_cfg", {})}
+        data = {"local": cfg.get("llm.model_cfg", {})}
         return BaseResponse(data=data)
 
     def start_model(
