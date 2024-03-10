@@ -52,7 +52,7 @@ def mount_controller_routes(app: FastAPI,
             if provider := v.get("provider"):
                 worker_class = getattr(model_workers, provider, None)
                 if worker_class is not None and worker_class.can_embedding():
-                    ret[k] = worker_class
+                    ret[k] = provider
         return BaseResponse(data=ret)
 
     def start_model(
