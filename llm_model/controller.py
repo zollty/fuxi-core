@@ -70,6 +70,7 @@ def mount_controller_routes(app: FastAPI,
     ) -> Dict:
         # return model_worker_ctl(["stop_worker", model_name])
         if shutdown_worker_serve(model_name):
+            app._controller.refresh_all_workers()
             return {"success": True, "code": 200, "msg": "success"}
         return {"success": False, "code": 501, "msg": f"the {model_name} worker_processes may not running"}
 

@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 
 # 获取当前脚本的绝对路径
 __current_script_path = os.path.abspath(__file__)
@@ -112,6 +113,7 @@ def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
     subprocess.run(worker_sh, shell=True, check=True)
     try:
         subprocess.run(worker_check_sh, shell=True, check=True)
+        time.sleep(1)
         return True, None
     except subprocess.CalledProcessError as e:
         print(e)

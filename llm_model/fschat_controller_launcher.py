@@ -28,6 +28,8 @@ def create_controller_app(cfg: Dynaconf, log_level):
     cross_domain = cfg.get("llm.controller.cross_domain", cfg.get("root.cross_domain", True))
 
     controller = Controller(dispatch_method)
+    sys.modules["fastchat.serve.controller"].controller = controller
+    app._controller = controller
 
     app.title = "FastChat Controller"
     app.version = fastchat.__version__
@@ -45,8 +47,6 @@ def create_controller_app(cfg: Dynaconf, log_level):
 
     set_httpx_config()
 
-    sys.modules["fastchat.serve.controller"].controller = controller
-    app._controller = controller
     MakeFastAPIOffline(app)
 
     return app
