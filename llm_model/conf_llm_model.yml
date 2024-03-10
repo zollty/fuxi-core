@@ -178,7 +178,7 @@ llm:
       openai_proxy: ""
     qwen-api:
       provider: "QwenWorker"
-      version: "qwen-max",  # 可选包括 "qwen-turbo", "qwen-plus"
+      version: "qwen-max"  # 可选包括 "qwen-turbo", "qwen-plus"
       api_key: ""
       embed_model: "text-embedding-v1"  # embedding 模型名称
 
