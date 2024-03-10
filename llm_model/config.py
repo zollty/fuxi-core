@@ -1,0 +1,3 @@
+
+
+TEMPERATURE = 0.7

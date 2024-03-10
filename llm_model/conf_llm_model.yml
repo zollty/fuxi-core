@@ -170,6 +170,44 @@ llm:
         num_gpus: 4
         max_gpu_memory: 22GiB
 
+  online_model_cfg:
+    openai-api:
+      model_name: "gpt-4"
+      api_base_url: "https://api.openai.com/v1"
+      api_key: ""
+      openai_proxy: ""
+    qwen-api:
+      provider: "QwenWorker"
+      version: "qwen-max",  # 可选包括 "qwen-turbo", "qwen-plus"
+      api_key: ""
+      embed_model: "text-embedding-v1"  # embedding 模型名称
+
+  embed_model_cfg:
+    bce-embedding-base_v1: "/ai/models/bce-embedding-base_v1"
+    nlp_corom_sentence-embedding_chinese-base: "/ai/models/nlp_corom_sentence-embedding_chinese-base"
+    nlp_gte_sentence-embedding_chinese-large: "/ai/models/nlp_gte_sentence-embedding_chinese-large"
+    bge-large-zh-v1.5: "/ai/models/BAAI_bge-large-zh-v1.5" # "BAAI/bge-large-zh-v1.5"
+    bge-large-zh: "/ai/models/BAAI_bge-large-zh" # "BAAI/bge-large-zh" # "/--/embeddings/BAAI/bge-large-zh_Merge_Keywords_20231215_132654" # BAAI/bge-large-zh
+    bge-reranker-large: "/ai/models/BAAI_bge-reranker-large"
+    m3e-large: "/ai/models/moka-ai_m3e-large" # "moka-ai/m3e-large"
+    text2vec-bge-large-chinese: "/ai/models/text2vec-bge-large-chinese" # "shibing624/text2vec-bge-large-chinese"
+#    ernie-tiny: "nghuyong/ernie-3.0-nano-zh"
+#    ernie-base: "nghuyong/ernie-3.0-base-zh"
+#    text2vec-base: "shibing624/text2vec-base-chinese"
+#    text2vec: "GanymedeNil/text2vec-large-chinese"
+#    text2vec-paraphrase: "shibing624/text2vec-base-chinese-paraphrase"
+#    text2vec-sentence: "shibing624/text2vec-base-chinese-sentence"
+#    text2vec-multilingual: "shibing624/text2vec-base-multilingual"
+#    m3e-small: "moka-ai/m3e-small"
+#    m3e-base: "moka-ai/m3e-base"
+#    bge-small-zh: "BAAI/bge-small-zh"
+#    bge-base-zh: "BAAI/bge-base-zh"
+#    bge-large-zh-noinstruct: "BAAI/bge-large-zh-noinstruct"
+#    bge-base-zh-v1.5: "BAAI/bge-base-zh-v1.5"
+#    bge-m3: "BAAI/bge-m3"
+#    piccolo-base-zh: "sensenova/piccolo-base-zh"
+#    piccolo-large-zh: "sensenova/piccolo-large-zh"
+#    text-embedding-ada-002: "your OPENAI_API_KEY"
 
 embed:
   device: cuda

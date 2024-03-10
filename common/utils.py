@@ -41,6 +41,11 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logging.basicConfig(format=LOG_FORMAT)
 
+# NLTK模型分词模型 例如：NLTKTextSplitter，SpacyTextSplitter，配置nltk 模型存储路径
+# import nltk
+# NLTK_DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "nltk_data")
+# nltk.data.path = [NLTK_DATA_PATH] + nltk.data.path
+
 def detect_device() -> Literal["cuda", "mps", "cpu"]:
     try:
         import torch
@@ -52,3 +57,7 @@ def detect_device() -> Literal["cuda", "mps", "cpu"]:
         pass
     return "cpu"
 
+def decide_device(device: str = None) -> Literal["cuda", "mps", "cpu"]:
+    if not device or device not in ["cuda", "mps", "cpu"]:
+        device = detect_device()
+    return device
