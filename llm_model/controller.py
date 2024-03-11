@@ -6,7 +6,6 @@ from dynaconf import Dynaconf
 import os
 
 from langchain.docstore.document import Document
-from pydantic.fields import ModelField
 
 class DocumentWithVSId(Document):
     """
@@ -19,13 +18,15 @@ class DocumentWithVSId(Document):
         """Pass page_content in as positional or named arg."""
         super().__init__(page_content=page_content, **kwargs)
 
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(cls, value, field: ModelField):
-        return cls(value)
+    class Config:
+        schema_extra = {
+            'examples': [
+                {
+                    'id': 'aaa',
+                    'score': 25.0,
+                }
+            ]
+        }
 
 
 def mount_controller_routes(app: FastAPI,
