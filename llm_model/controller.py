@@ -15,6 +15,14 @@ class DocumentWithVSId(Document):
     id: str = None
     score: float = 3.0
 
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, value: Any) -> Any:
+        return value
+
 
 def mount_controller_routes(app: FastAPI,
                             cfg: Dynaconf,
