@@ -15,6 +15,10 @@ class DocumentWithVSId(Document):
     id: str = None
     score: float = 3.0
 
+    def __init__(self, page_content: str, **kwargs: Any) -> None:
+        """Pass page_content in as positional or named arg."""
+        super().__init__(page_content=page_content, **kwargs)
+
     @classmethod
     def __get_validators__(cls):
         yield cls.validate
