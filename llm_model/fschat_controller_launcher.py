@@ -8,7 +8,6 @@ RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
 from typing import Any, List, Optional, Dict
-from common.fastapi_tool import set_app_event
 from dynaconf import Dynaconf
 
 
@@ -68,8 +67,6 @@ def run_controller():
     port = cfg.get("llm.controller.port", 21001)
 
     app = create_controller_app(cfg, log_level)
-
-    set_app_event(app)
 
     with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
         f.write(f"    FenghouAI Controller Server (fastchat): http://{host}:{port}\n")

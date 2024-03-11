@@ -1,3 +1,5 @@
+import uvicorn
+from fastapi import FastAPI
 import sys
 import os
 
@@ -7,17 +9,18 @@ __current_script_path = os.path.abspath(__file__)
 RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
-
 from typing import Any, List, Optional, Dict
 from fastapi import FastAPI, Body
 
 # from langchain.docstore.document import Document
 from pydantic import BaseModel, Field
 
+
 class BaseResponse(BaseModel):
     code: int = Field(200, description="API status code")
     msg: str = Field("success", description="API status message")
     data: Any = Field(None, description="API data")
+
 
 class DocumentWithVSId(BaseModel):
     """
@@ -49,63 +52,43 @@ def testpyd() -> List[DocumentWithVSId]:
             DocumentWithVSId(page_content="yyyyyyyy", id="yyy", name="sdds", score=2.1)]
     return data
 
-def testpyd22() -> DocumentWithVSId:
+
+def test2222() -> BaseResponse:
     """
     从本地获取configs中配置的embedding模型列表
     """
     data = [DocumentWithVSId(page_content="xxxx", id="xxxx", name="jhdsjhdsjhds", score=2.1),
             DocumentWithVSId(page_content="yyyyyyyy", id="yyy", name="sdds", score=2.1)]
-    return data[0]
+    return BaseResponse(data=data)
+
 
 if __name__ == '__main__':
+    from common.fastapi_tool import run_api
+
     app = FastAPI()
 
-    # app.post("/testpyd",
-    #          tags=["LLM Management"],
-    #          response_model=List[DocumentWithVSId],
-    #          summary="zzzzzzzzzzzzzzzzzz"
-    #          )(testpyd)
-    app.post("/testpyd",
-             tags=["LLM Management"],
-             response_model=DocumentWithVSId,
-             summary="zzzzzzzzzzzzzzzzzz",
-             # include_in_schema=False,
-             )(testpyd22)
 
-    from fastapi.openapi.utils import get_fields_from_routes
-    from pydantic.json_schema import GenerateJsonSchema
-
-    REF_TEMPLATE = "#/components/schemas/{model}"
-
-    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
-
-    import json
-    print(json.dumps(testpyd(), default=lambda k: k.__dict__))
-
-    print(DocumentWithVSId.schema(
-        ref_template=REF_TEMPLATE
-    ))
-
-    class Item(BaseModel):
-        name: str
-        description: str = None
-        price: float
-        tax: float = None
+    # 添加首页
+    @app.get("/")
+    def index():
+        return "This is Home Page."
 
 
-    class ItemList(BaseModel):
-        items: List[Item]
+    app.get("/testpyd",
+            tags=["LLM Management"],
+            response_model=List[DocumentWithVSId],
+            summary="zzzzzzzzzzzzzzzzzz",
+            )(testpyd)
 
-    print(ItemList.schema(
-        ref_template=REF_TEMPLATE
-    ))
+    app.get("/testpyd222",
+            tags=["LLM Management"],
+            response_model=BaseResponse,
+            summary="zzzzzzzzzzzzzzzzzz",
+            )(test2222)
 
-    fields = get_fields_from_routes(list(app.routes or []))
-    inputs = [
-        (field, field.mode, field._type_adapter.core_schema)
-        for field in fields
-    ]
-    field_mapping, definitions = schema_generator.generate_definitions(
-        inputs=inputs
+    run_api(
+        app,
+        host="0.0.0.0",
+        port=8080,
+        log_level="debug",
     )
-

@@ -232,9 +232,9 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     return app
 
 
-def run_model_worker(model_name, port: str = None, started_event: mp.Event = None):
+def run_model_worker(model_name, port: str = None):
     from common.utils import RUNTIME_ROOT_DIR
-    from common.fastapi_tool import run_api, set_app_event
+    from common.fastapi_tool import run_api
 
     print(RUNTIME_ROOT_DIR)
 
@@ -258,7 +258,6 @@ def run_model_worker(model_name, port: str = None, started_event: mp.Event = Non
         model_worker_config["port"] = int(port)
 
     app = create_worker_app(cfg, model_worker_config, log_level)
-    set_app_event(app, started_event)
 
     host = cfg.get("llm.worker.host")
     use_port = model_worker_config.get("port")

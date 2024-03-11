@@ -7,7 +7,7 @@ import json
 
 from typing import Any, List, Optional, Dict
 
-import datetime
+import datetime, decimal
 class MyEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
@@ -21,6 +21,8 @@ class MyEncoder(json.JSONEncoder):
             return float(obj)
         # elif isinstance(obj, array):
         #    return obj.tolist()
+        if isinstance(obj, decimal.Decimal):
+            return float(obj)
         else:
             return super(MyEncoder, self).default(obj)
 

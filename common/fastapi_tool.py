@@ -262,13 +262,3 @@ def run_api(app, host, port, **kwargs):
                     )
     else:
         uvicorn.run(app, host=host, port=port, log_level=kwargs.get("log_level", "info").lower())
-
-
-import multiprocessing as mp
-
-
-def set_app_event(app: FastAPI, started_event: mp.Event = None):
-    @app.on_event("startup")
-    async def on_startup():
-        if started_event is not None:
-            started_event.set()
