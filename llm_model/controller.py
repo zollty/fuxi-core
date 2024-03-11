@@ -22,7 +22,7 @@ class DocumentWithVSId(Document):
     @classmethod
     def __get_validators__(cls):
         #yield cls.validate
-        pass
+        return []
 
     @classmethod
     def validate(cls, value: Any) -> Any:
