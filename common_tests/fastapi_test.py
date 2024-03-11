@@ -74,6 +74,9 @@ if __name__ == '__main__':
 
     schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
 
+    import json
+    print(json.dumps(testpyd(), default=lambda k: k.__dict__))
+
     fields = get_fields_from_routes(list(app.routes or []))
     inputs = [
         (field, field.mode, field._type_adapter.core_schema)
