@@ -155,7 +155,8 @@ def mount_controller_routes(app: FastAPI,
     app.post("/testpyd",
              tags=["LLM Management"],
              response_model=List[DocumentWithVSId],
-             summary="zzzzzzzzzzzzzzzzzz"
+             summary="zzzzzzzzzzzzzzzzzz",
+             include_in_schema=False,
              )(testpyd)
 
     return app
