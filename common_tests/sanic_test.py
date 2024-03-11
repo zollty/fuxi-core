@@ -74,10 +74,12 @@ def mount_app(app):
         return sanic_json({})
 
 
-appp = Sanic("sdjkjdhszollty")
+appp = Sanic("QAnything")
 appp.config.API_VERSION = 'v0.0.1'
 appp.config.API_TITLE = '异步平台 API文档'
+# 设置请求体最大为 400MB
+appp.config.REQUEST_MAX_SIZE = 400 * 1024 * 1024
 mount_app(appp)
 
-if __name__ == '__main__':
-    appp.run(host="0.0.0.0", port=7500, debug=True)
+if __name__ == "__main__":
+    appp.run(host='0.0.0.0', port=7500, workers=10, debug=True)
