@@ -6,7 +6,7 @@ from dynaconf import Dynaconf
 import os
 
 from langchain.docstore.document import Document
-
+from pydantic.fields import ModelField
 
 class DocumentWithVSId(Document):
     """
@@ -21,12 +21,11 @@ class DocumentWithVSId(Document):
 
     @classmethod
     def __get_validators__(cls):
-        #yield cls.validate
-        return []
+        yield cls.validate
 
     @classmethod
-    def validate(cls, value: Any) -> Any:
-        return value
+    def validate(cls, value, field: ModelField):
+        return cls(value)
 
 
 def mount_controller_routes(app: FastAPI,
