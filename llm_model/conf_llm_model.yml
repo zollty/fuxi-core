@@ -101,12 +101,12 @@ llm:
       path: /ai/models/Qwen1.5-7B-Chat
       base:
         #num_gpus: 4
-        gpus: "0,1,2,3"
+        gpus: "2,3"
         max_gpu_memory: 12GiB
       vllm:
         #max_model_len: 6016
-        gpu_memory_utilization: 0.80
-        tensor_parallel_size: 4
+        gpu_memory_utilization: 0.90
+        tensor_parallel_size: 2
     Qwen-1.8B-Chat:
       path: /ai/models/Qwen-1_8B-Chat-Int8
       #infer_turbo: vllm
