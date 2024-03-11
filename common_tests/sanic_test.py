@@ -5,8 +5,6 @@ from sanic.response import text as sanic_text
 from sanic_ext import openapi
 import json
 
-
-
 from typing import Any, List, Optional, Dict
 
 
@@ -75,9 +73,11 @@ def mount_app(app):
     async def add_student(request):
         return sanic_json({})
 
-appp = Sanic(name="sdjkjdhszollty")
+
+appp = Sanic("sdjkjdhszollty")
+appp.config.API_VERSION = 'v0.0.1'
+appp.config.API_TITLE = '异步平台 API文档'
+mount_app(appp)
+
 if __name__ == '__main__':
-    appp.config.API_VERSION = 'v0.0.1'
-    appp.config.API_TITLE = '异步平台 API文档'
-    mount_app(appp)
     appp.run(host="0.0.0.0", port=7500, debug=True)
