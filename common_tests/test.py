@@ -76,3 +76,13 @@ if __name__ == "__main__":
 
     ret = "xxxx@123".split("@2")
     print(len(ret))
+
+    from langchain.docstore.document import Document
+
+    docs = []
+    doc = Document(page_content="xxxx", metadata={"ss":1})
+    docs.append(Document(page_content="xxxx", metadata={"ss":1}))
+    docs.append(Document(page_content="xxxx333", metadata={"ss":1}))
+    d = [xx.page_content for xx in docs]
+    print(d)
+

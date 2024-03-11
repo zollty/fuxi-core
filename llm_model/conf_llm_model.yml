@@ -97,7 +97,7 @@ llm:
         gpus: "1,2,3,4"
         max_gpu_memory: 12GiB
     Qwen1.5-7B-Chat:
-      #infer_turbo: vllm
+      infer_turbo: vllm
       path: /ai/models/Qwen1.5-7B-Chat
       base:
         #num_gpus: 4
