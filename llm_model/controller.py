@@ -5,6 +5,16 @@ from common.utils import decide_device
 from dynaconf import Dynaconf
 import os
 
+from langchain.docstore.document import Document
+
+
+class DocumentWithVSId(Document):
+    """
+    矢量化后的文档
+    """
+    id: str = None
+    score: float = 3.0
+
 
 def mount_controller_routes(app: FastAPI,
                             cfg: Dynaconf,
@@ -41,6 +51,14 @@ def mount_controller_routes(app: FastAPI,
         从本地获取configs中配置的embedding模型列表
         """
         return BaseResponse(data=cfg.get("llm.embed_model_cfg", {}))
+
+    def testpyd() -> List[DocumentWithVSId]:
+        """
+        从本地获取configs中配置的embedding模型列表
+        """
+        data = [DocumentWithVSId(page_content="xxxx", id="xxxx", name="jhdsjhdsjhds"),
+                DocumentWithVSId(page_content="yyyyyyyy", id="yyy", name="sdds")]
+        return data
 
     def list_online_embed_models() -> BaseResponse:
         """
@@ -120,5 +138,11 @@ def mount_controller_routes(app: FastAPI,
              response_model=BaseResponse,
              summary="查看配置的所有online embeddings模型"
              )(list_online_embed_models)
+
+    app.post("/testpyd",
+             tags=["LLM Management"],
+             response_model=List[DocumentWithVSId],
+             summary="zzzzzzzzzzzzzzzzzz"
+             )(testpyd)
 
     return app
