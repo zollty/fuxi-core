@@ -7,6 +7,7 @@ import os
 
 from langchain.docstore.document import Document
 
+
 class DocumentWithVSId(Document):
     """
     矢量化后的文档
@@ -152,11 +153,11 @@ def mount_controller_routes(app: FastAPI,
              summary="查看配置的所有online embeddings模型"
              )(list_online_embed_models)
 
-    app.post("/testpyd",
-             tags=["LLM Management"],
-             response_model=List[DocumentWithVSId],
-             summary="zzzzzzzzzzzzzzzzzz",
-             include_in_schema=False,
-             )(testpyd)
+    app.get("/testpyd",
+            tags=["LLM Management"],
+            response_model=List[DocumentWithVSId],
+            summary="zzzzzzzzzzzzzzzzzz",
+            include_in_schema=False,
+            )(testpyd)
 
     return app
