@@ -5,7 +5,8 @@ from sanic.response import json
 
 app = Sanic(__name__)
 app.config.API_VERSION = 'v0.0.1'
-
+app.config.API_TITLE = '异步平台 API文档'
+app.blueprint(swagger_blueprint)
 
 @app.get("/class", version=1)
 @doc.summary("获取班级信息")  # API信息描述
@@ -33,6 +34,5 @@ async def add_student(request):
 
 
 if __name__ == '__main__':
-    app.config.API_TITLE = '异步平台 API文档'
-    app.blueprint(swagger_blueprint)
+
     app.run(host="0.0.0.0", port=7500, debug=True)
