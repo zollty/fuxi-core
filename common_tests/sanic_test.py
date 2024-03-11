@@ -3,7 +3,7 @@ from sanic_openapi import swagger_blueprint
 from sanic import Sanic
 from sanic.response import json
 
-app = Sanic(__name__)
+app = Sanic(name="收到可接受的金卡戴珊")
 app.config.API_VERSION = 'v0.0.1'
 app.config.API_TITLE = '异步平台 API文档'
 app.blueprint(swagger_blueprint)
