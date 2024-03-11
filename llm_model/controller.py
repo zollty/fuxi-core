@@ -21,7 +21,7 @@ class DocumentWithVSId(Document):
 
     @classmethod
     def __get_validators__(cls):
-        yield cls.validate
+        #yield cls.validate
 
     @classmethod
     def validate(cls, value: Any) -> Any:
