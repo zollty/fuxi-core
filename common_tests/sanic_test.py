@@ -43,15 +43,15 @@ def testpyd() -> List[DocumentWithVSId]:
 
 
 def mount_app(app):
-    @app.route("/testpyd")
+    @app.route("/testpyd", name="testpyd")
     async def test(request):
         return sanic_json(json.dumps(testpyd(), ensure_ascii=False))  # , default=lambda k: k.__dict__
 
-    @app.route("/")
+    @app.route("/", name="index")
     async def test(request):
         return sanic_json({"hello": "world"})
 
-    @app.get("/class", version=1)
+    @app.get("/class", version=1, name="class")
     @openapi.summary("获取班级信息")  # API信息描述
     @openapi.tag("班级")  # API分组
     @openapi.parameter({"class_name": str}, location="query", required=False)
@@ -59,14 +59,14 @@ def mount_app(app):
     async def get_class(request):
         return sanic_json({})
 
-    @app.get("/studentList", version=1)
+    @app.get("/studentList", version=1, name="studentList")
     @openapi.summary("获取学生信息")
     @openapi.tag("学生")
     @openapi.parameter({"stu_name": str}, location="query", required=True)
     async def get_student(request):
         return sanic_json({})
 
-    @app.post("/addStudent", version=2)
+    @app.post("/addStudent", version=2, name="addStudent")
     @openapi.summary("新增学生信息")  # API信息描述
     @openapi.tag("学生")  # API分组
     @openapi.parameter({"product": {"stu_name": str, "age": int, "city": str}}, location="body")
