@@ -36,10 +36,10 @@ from sanic.response import json
 
 from sanic import Sanic
 from sanic.response import json
-from sanic_openapi import openapi2_blueprint
+from sanic_openapi import openapi3_blueprint
 
 app = Sanic(name="AwesomeApi")
-app.blueprint(openapi2_blueprint)
+app.blueprint(openapi3_blueprint)
 
 
 @app.route("/")
