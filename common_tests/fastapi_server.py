@@ -12,7 +12,7 @@ sys.path.append(RUNTIME_ROOT_DIR)
 from typing import Any, List, Optional, Dict
 from fastapi import FastAPI, Body
 
-# from langchain.docstore.document import Document
+from langchain.docstore.document import Document
 from pydantic import BaseModel, Field
 
 
@@ -22,7 +22,7 @@ class BaseResponse(BaseModel):
     data: Any = Field(None, description="API data")
 
 
-class DocumentWithVSId(BaseModel):
+class DocumentWithVSId(Document):
     """
     矢量化后的文档
     """
