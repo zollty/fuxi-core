@@ -75,10 +75,9 @@ def mount_app(app):
     async def add_student(request):
         return sanic_json({})
 
-
+appp = Sanic(name="sdjkjdhszollty")
 if __name__ == '__main__':
-    app = Sanic(name="sdjkjdhszollty")
-    app.config.API_VERSION = 'v0.0.1'
-    app.config.API_TITLE = '异步平台 API文档'
-    mount_app(app)
-    app.run(host="0.0.0.0", port=7500, debug=True)
+    appp.config.API_VERSION = 'v0.0.1'
+    appp.config.API_TITLE = '异步平台 API文档'
+    mount_app(appp)
+    appp.run(host="0.0.0.0", port=7500, debug=True)
