@@ -6,8 +6,6 @@ from sanic_ext import openapi
 import json
 
 app = Sanic(name="sdjkjdhszollty")
-app.config.API_VERSION = 'v0.0.1'
-app.config.API_TITLE = '异步平台 API文档'
 
 
 from typing import Any, List, Optional, Dict
@@ -46,7 +44,7 @@ def testpyd() -> List[DocumentWithVSId]:
 
 @app.route("/testpyd")
 async def test(request):
-    return sanic_json(json.dumps(testpyd(), ensure_ascii=False))
+    return sanic_json(json.dumps(testpyd(), ensure_ascii=False)) # , default=lambda k: k.__dict__
 
 
 @app.route("/")
@@ -80,4 +78,6 @@ async def add_student(request):
 
 
 if __name__ == '__main__':
+    app.config.API_VERSION = 'v0.0.1'
+    app.config.API_TITLE = '异步平台 API文档'
     app.run(host="0.0.0.0", port=7500, debug=True)
