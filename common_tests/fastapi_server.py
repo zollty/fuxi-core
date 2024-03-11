@@ -22,7 +22,7 @@ class BaseResponse(BaseModel):
     data: Any = Field(None, description="API data")
 
 
-class DocumentWithVSId(Document):
+class DocumentWithVSId(BaseModel):
     """
     矢量化后的文档
     """
