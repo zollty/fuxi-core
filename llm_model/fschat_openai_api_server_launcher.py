@@ -68,6 +68,9 @@ def run_openai_api_server():
 
     with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
         f.write(f"    FenghouAI OpeanAI API Server (fastchat): http://{host}:{port}\n")
+
+    if host == "localhost" or host == "127.0.0.1":
+        host = "0.0.0.0"
     run_api(
         app,
         host=host,
