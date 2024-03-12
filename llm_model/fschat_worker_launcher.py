@@ -266,6 +266,8 @@ def run_model_worker(model_name, port: str = None):
     with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
         f.write(f"    FenghouAI Model Worker Server ({model_name}): http://{host}:{use_port}")
 
+    if host == "localhost" or host == "127.0.0.1":
+        host = "0.0.0.0"
     run_api(
         app,
         host=host,
@@ -281,7 +283,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str)
-    #parser.add_argument("--port", type=int, default=0)
+    # parser.add_argument("--port", type=int, default=0)
     parser.add_argument("--custom-config", type=str, default=None)
     parser.add_argument(
         "-v",
