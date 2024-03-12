@@ -8,7 +8,7 @@ import subprocess
 
 def shutdown_serve(key):
     base_shell = "ps -eo user,pid,cmd|grep fschat_{}|grep -v grep|awk '{{print $2}}'|xargs kill -9"
-    if key == "all":
+    if key == "all" or key == "a":
         shell_script = base_shell.format("")
     else:
         shell_script = base_shell.format(key)
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--down", choices=["all", "controller", "worker", "openai", "c", "w", "o"]
+        "--down", choices=["all", "controller", "worker", "openai", "a", "c", "w", "o"]
     )
     parser.add_argument(
         "--model", type=str, default=None
