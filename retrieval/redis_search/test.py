@@ -75,6 +75,6 @@ if __name__ == '__main__':
 
     # Embedding a batch of texts
     embeddings = vectorizer.embed_many(sentences, batch_size=2)
-    print(embedding[0][:10])
+    print(embeddings[0][:10])
 
     create_index(vectorizer, sentences, embeddings)
