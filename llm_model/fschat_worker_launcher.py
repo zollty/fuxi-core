@@ -278,6 +278,10 @@ def run_model_worker(model_name, port: str = None):
     )
 
 
+# CUDA_VISIBLE_DEVICES=$gpuid1 nohup python3 -m fastchat.serve.model_worker --host 0.0.0.0 --port 7801 \
+#     --controller-address http://0.0.0.0:7800 --worker-address http://0.0.0.0:7801 \
+#     --model-path /model_repos/QAEnsemble/$LLM_API_SERVE_MODEL --load-8bit \
+#     --dtype bfloat16 --conv-template $LLM_API_SERVE_CONV_TEMPLATE > fschat_model_worker_7801.log 2>&1 &
 if __name__ == "__main__":
     import argparse
 
