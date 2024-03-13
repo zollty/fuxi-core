@@ -23,7 +23,7 @@ def create_index(vectorizer, sentences, embeddings):
              "embedding": v}
             for t, v in zip(sentences, embeddings)]
 
-    print(data)
+    #print(data)
 
     # load装载数据
     index.load(data)
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     print(embedding[:10])
 
     # Embedding a batch of texts
-    embeddings = vectorizer.embed_many(sentences, batch_size=2)
+    embeddings = vectorizer.embed_many(sentences, batch_size=2, as_buffer=True)
     print(embeddings[0][:10])
 
     create_index(vectorizer, sentences, embeddings)
