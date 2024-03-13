@@ -42,30 +42,33 @@ def create_index(vectorizer, sentences, embeddings):
     retrieve(vectorizer, index)
 
 
-def retrieve(vectorizer, index):
+def retrieve(hf, index):
     from redisvl.query import VectorQuery
 
-    embedding = vectorizer.embed("happy thing")
-    print("Vector dimensions: ", len(embedding))
-    print(embedding[:10])
+    # use the HuggingFace vectorizer again to create a query embedding
+    query_embedding = hf.embed("That is a happy cat")
 
     query = VectorQuery(
-        vector=embedding,
+        vector=query_embedding,
         vector_field_name="embedding",
-        num_results=2
+        return_fields=["text"],
+        num_results=4
     )
-    # run the vector search query against the embedding field
-    results = index.query(query)
+
     print("--------------------5---retrieve success")
-    print(results)
+    results = index.query(query)
+    for doc in results:
+        print(doc["text"], doc["vector_distance"])
+
 
 
 if __name__ == '__main__':
     from redisvl.utils.vectorize import HFTextVectorizer
 
     sentences = [
-        "That is a happy dog",
+        "That is a happy apple",
         "That is a happy person",
+        "That is a happy dog",
         "Today is a sunny day"
     ]
 
