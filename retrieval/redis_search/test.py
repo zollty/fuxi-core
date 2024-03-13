@@ -51,14 +51,14 @@ def retrieve(hf, index):
     query = VectorQuery(
         vector=query_embedding,
         vector_field_name="embedding",
-        return_fields=["text"],
+        return_fields=["sentence"],
         num_results=4
     )
 
     print("--------------------5---retrieve success")
     results = index.query(query)
     for doc in results:
-        print(doc["text"], doc["vector_distance"])
+        print(doc["sentence"], doc["vector_distance"])
 
 
 
