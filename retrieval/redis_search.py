@@ -18,7 +18,7 @@ def get_short_url(url):
     return short_url[:6]
 
 
-from redisvl.schema import IndexSchema
+# from redisvl.schema import IndexSchema
 from redisvl.index import SearchIndex
 from redisvl.utils.vectorize import HFTextVectorizer
 from redisvl.query import VectorQuery
@@ -58,7 +58,7 @@ def create_schema(kb_name: str, dims: int):
         ]
     }
 
-    return IndexSchema.from_dict(schema)
+    return schema
 
 
 def create_and_run_index(kb_name: str, dims: int = DEFAULT_EMBED_DIMS, redis_url: str = REDIS_URL):
