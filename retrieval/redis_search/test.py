@@ -19,7 +19,7 @@ def create_index(vectorizer, sentences, embeddings):
     # load expects an iterable of dictionaries where
     # the vector is stored as a bytes buffer
 
-    data = [{"text": t,
+    data = [{"sentence": t,
              "embedding": v}
             for t, v in zip(sentences, embeddings)]
 
