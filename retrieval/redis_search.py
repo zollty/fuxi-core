@@ -135,5 +135,5 @@ if __name__ == '__main__':
 
     results = retrieve_docs("That is a happy cat", kb_name)
 
-    for doc in results:
-        print(doc["sentence"], doc["vector_distance"])
+    for x in results:
+        print(x["doc"], x["vector_distance"])
