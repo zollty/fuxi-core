@@ -5,7 +5,7 @@ def create_index(vectorizer, sentences, embeddings):
     from redisvl.index import SearchIndex
 
     # construct a search index from the schema
-    index = SearchIndex.from_yaml("./hfschema.yaml")
+    index = SearchIndex.from_yaml("/ai/apps/fuxi-core/retrieval/redis_search/hfschema.yaml")
 
     # connect to local redis instance
     index.connect("redis://127.0.0.1:6389")
