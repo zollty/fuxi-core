@@ -23,6 +23,8 @@ def create_index(vectorizer, sentences, embeddings):
              "embedding": v}
             for t, v in zip(sentences, embeddings)]
 
+    print(data)
+
     # load装载数据
     index.load(data)
 
