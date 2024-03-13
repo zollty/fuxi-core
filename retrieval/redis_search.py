@@ -19,6 +19,7 @@ def get_short_url(url):
 
 
 from redisvl.schema import IndexSchema
+from redisvl.index import SearchIndex
 from redisvl.utils.vectorize import HFTextVectorizer
 from redisvl.query import VectorQuery
 
@@ -29,7 +30,7 @@ EMBED_BATCH_SIZE = 16
 DEFAULT_VEC_NUM = 20
 
 
-def create_index(kb_name: str, dims: int):
+def create_schema(kb_name: str, dims: int):
     s = get_short_url(kb_name)
     prefix = "r:" + s
     name = "idx:" + s
@@ -61,7 +62,8 @@ def create_index(kb_name: str, dims: int):
 
 
 def create_and_run_index(kb_name: str, dims: int = DEFAULT_EMBED_DIMS, redis_url: str = REDIS_URL):
-    index = create_index(kb_name, dims)
+    schema = create_schema(kb_name, dims)
+    index = SearchIndex.from_dict(schema)
     # connect to local redis instance
     index.connect(redis_url)
 
@@ -80,7 +82,8 @@ def insert_doc(docs: List[str], kb_name: str, redis_url: str = REDIS_URL, embedd
     embeddings = vectorizer.embed_many(sentences, batch_size=EMBED_BATCH_SIZE, as_buffer=True)
     dims = len(embeddings[0])
 
-    index = create_index(kb_name, dims)
+    schema = create_schema(kb_name, dims)
+    index = SearchIndex.from_dict(schema)
     # connect to local redis instance
     index.connect(redis_url)  # "redis://127.0.0.1:6389"
 
@@ -105,7 +108,8 @@ def retrieve_docs(query: str, kb_name: str, top_k: int = DEFAULT_VEC_NUM, redis_
         num_results=top_k
     )
 
-    index = create_index(kb_name, dims)
+    schema = create_schema(kb_name, dims)
+    index = SearchIndex.from_dict(schema)
     # connect to local redis instance
     index.connect(redis_url)
     results = index.query(query)
