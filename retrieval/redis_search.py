@@ -32,11 +32,11 @@ DEFAULT_VEC_NUM = 20
 
 class DocSchema:
     nid: int = 0
-    key: str = None
-    src: str = None
-    doc: str = None
+    key: str = ""
+    src: str = ""
+    doc: str
 
-    def __init__(self, doc: str, src: str = None, key: str = None, nid: int = 0):
+    def __init__(self, doc: str, src: str = "", key: str = "", nid: int = 0):
         self.nid = nid
         self.key = key
         self.src = src
