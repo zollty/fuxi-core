@@ -88,7 +88,7 @@ def create_and_run_index(kb_name: str, dims: int = DEFAULT_EMBED_DIMS, redis_url
 
 def insert_doc(docs: List[DocSchema], kb_name: str, use_id: str = None, redis_url: str = REDIS_URL,
                embedd_path: str = DEFAULT_EMBED_PATH):
-    sentences = docs
+    sentences = [t.doc for t in docs]
 
     # Embedding a single text
     vectorizer = HFTextVectorizer(model=embedd_path)
@@ -106,7 +106,7 @@ def insert_doc(docs: List[DocSchema], kb_name: str, use_id: str = None, redis_ur
              "nid": t.nid,
              "src": t.src,
              "embed": v}
-            for t, v in zip(sentences, embeddings)]
+            for t, v in zip(docs, embeddings)]
 
     # load装载数据
     if use_id:
