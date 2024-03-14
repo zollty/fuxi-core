@@ -83,5 +83,4 @@ if __name__ == '__main__':
         print(f"\n\n\n\n-------------------------query: {doc}")
         results = retrieve_docs(doc, kb_name, 3)
         for x in results:
-            print(x)
-            # print(x["doc"], x["vector_distance"])
+            print(x["doc"], x["vector_distance"], x["src"])
