@@ -67,7 +67,7 @@ if __name__ == '__main__':
     raw_documents_fw = load_docs('/ai/apps/data/园博园服务.txt')
     docs = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw
 
-    # insert_doc(docs, kb_name, use_id="key")
+    insert_doc(docs, kb_name, use_id="key")
 
     sentences = [
         "白蛇娘子",
