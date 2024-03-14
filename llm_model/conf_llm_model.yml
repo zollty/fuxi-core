@@ -114,7 +114,29 @@ llm:
         #max_model_len: 6016
         gpu_memory_utilization: 0.70
         tensor_parallel_size: 4
-    internlm2-chat-7b: # 目前最强7B模型，支持200k窗口
+    Qwen1.5-14B-Chat-Int8:
+      infer_turbo: vllm
+      path: /ai/models/Qwen1.5-14B-Chat-Int8
+      base:
+        #num_gpus: 4
+        gpus: "0,1,2,3"
+        max_gpu_memory: 12GiB
+      vllm:
+        #max_model_len: 6016
+        gpu_memory_utilization: 0.70
+        tensor_parallel_size: 4
+    Qwen1.5-14B-Chat-Int4:
+      infer_turbo: vllm
+      path: /ai/models/Qwen1.5-14B-Chat-Int4
+      base:
+        #num_gpus: 4
+        gpus: "0,1,2,3"
+        max_gpu_memory: 12GiB
+      vllm:
+        #max_model_len: 6016
+        gpu_memory_utilization: 0.70
+        tensor_parallel_size: 4
+    internlm2-chat-7b:
       #infer_turbo: vllm
       path: /ai/models/internlm2-chat-7b
       base:
