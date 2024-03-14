@@ -47,7 +47,7 @@ def load_docs(path: str):
     print(len(raw_documents[0].page_content))
 
     # 分割文档
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=250, chunk_overlap=50)
     documents = text_splitter.split_documents(raw_documents)
     print("documents nums:", documents.__len__())
     print(documents[0].page_content)

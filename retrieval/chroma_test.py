@@ -17,7 +17,7 @@ print(
     len(raw_documents_sanguo[0].page_content + raw_documents_xiyou[0].page_content + raw_documents_fw[0].page_content))
 
 # 分割文档
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=250, chunk_overlap=50)
 documents_sanguo = text_splitter.split_documents(raw_documents_sanguo)
 documents_xiyou = text_splitter.split_documents(raw_documents_xiyou)
 documents_fw = text_splitter.split_documents(raw_documents_fw)
