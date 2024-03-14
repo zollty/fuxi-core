@@ -159,4 +159,4 @@ if __name__ == '__main__':
 
     for x in results:
         print(x)
-        # print(x["doc"], x["vector_distance"], x["src"])
+        #  print(x["doc"], x["vector_distance"], x["src"])
