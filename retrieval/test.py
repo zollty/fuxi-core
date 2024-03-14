@@ -37,7 +37,7 @@ documents_fw = text_splitter.split_documents(raw_documents_fw)
 documents = documents_sanguo + documents_xiyou + documents_fw
 print("documents nums:", documents.__len__())
 print(documents[0].page_content)
-print(documents[:-1].page_content)
+print(documents[-1].page_content)
 
 if __name__ == '__main__':
 
