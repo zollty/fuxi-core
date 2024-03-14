@@ -82,7 +82,6 @@ def create_and_run_index(kb_name: str, dims: int = DEFAULT_EMBED_DIMS, redis_url
 
     # create the index (no data yet)
     index.create(overwrite=True)
-
     return index
 
 
