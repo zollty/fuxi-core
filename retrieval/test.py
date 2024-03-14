@@ -1,10 +1,19 @@
+import sys
+import os
+
+# 获取当前脚本的绝对路径
+__current_script_path = os.path.abspath(__file__)
+# 将项目根目录添加到sys.path
+RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
+sys.path.append(RUNTIME_ROOT_DIR)
+
 from langchain.document_loaders import TextLoader
 from langchain.embeddings import ModelScopeEmbeddings
 from langchain.embeddings import HuggingFaceBgeEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 import chardet
-from .redis_search import create_and_run_index, insert_doc, retrieve_docs
+from retrieval.redis_search import create_and_run_index, insert_doc, retrieve_docs
 
 # def read_file(path, encoding):
 #     result = []
