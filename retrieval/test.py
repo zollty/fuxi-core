@@ -67,7 +67,7 @@ if __name__ == '__main__':
     raw_documents_fw = load_docs('/ai/apps/data/园博园服务.txt')
     docs = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw
 
-    insert_doc(docs, kb_name, use_id="key")
+    # insert_doc(docs, kb_name, use_id="key")
 
     sentences = [
         "白蛇娘子",
@@ -76,6 +76,7 @@ if __name__ == '__main__':
         "博纳",
         "梅苑山庄",
         "院融景园",
+        "在景点分布布局上，主要的景点景区中有梅林山庄吗",
     ]
     for doc in sentences:
         print(f"\n\n\n\n-------------------------query: {doc}")
