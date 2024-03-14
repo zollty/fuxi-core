@@ -124,7 +124,7 @@ def retrieve_docs(query: str, kb_name: str, top_k: int = DEFAULT_VEC_NUM, redis_
     query = VectorQuery(
         vector=query_embedding,
         vector_field_name="embed",
-        return_fields=["doc"],
+        # return_fields=["doc"],
         num_results=top_k
     )
 
@@ -158,4 +158,4 @@ if __name__ == '__main__':
     results = retrieve_docs("That is a happy cat", kb_name)
 
     for x in results:
-        print(x["doc"], x["vector_distance"])
+        print(x["doc"], x["vector_distance"], x["src"])
