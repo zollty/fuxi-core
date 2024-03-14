@@ -30,7 +30,20 @@ EMBED_BATCH_SIZE = 16
 DEFAULT_VEC_NUM = 20
 
 
-def create_schema(kb_name: str, dims: int):
+class DocSchema:
+    nid: int = 0
+    key: str = None
+    src: str = None
+    doc: str = None
+
+    def __init__(self, doc: str, src: str = None, key: str = None, nid: int = 0):
+        self.nid = nid
+        self.key = key
+        self.src = src
+        self.doc = doc
+
+
+def create_schema(kb_name: str, dims: int = DEFAULT_EMBED_DIMS):
     s = get_short_url(kb_name)
     prefix = "r:" + s
     name = "idx:" + s
@@ -41,10 +54,10 @@ def create_schema(kb_name: str, dims: int):
             "prefix": prefix,
         },
         "fields": [
-            # {"name": "user", "type": "tag"},
-            # {"name": "credit_score", "type": "tag"},
+            {"name": "nid", "type": "numeric"},  # id，和key二选一即可
+            {"name": "key", "type": "tag"},  # 唯一key，和nid二选一即可
+            {"name": "src", "type": "tag"},  # 来源，例如文件名
             {"name": "doc", "type": "text"},
-            # {"name": "age", "type": "numeric"},
             {
                 "name": "embed",
                 "type": "vector",
@@ -73,7 +86,8 @@ def create_and_run_index(kb_name: str, dims: int = DEFAULT_EMBED_DIMS, redis_url
     return index
 
 
-def insert_doc(docs: List[str], kb_name: str, redis_url: str = REDIS_URL, embedd_path: str = DEFAULT_EMBED_PATH):
+def insert_doc(docs: List[DocSchema], kb_name: str, use_id: str = None, redis_url: str = REDIS_URL,
+               embedd_path: str = DEFAULT_EMBED_PATH):
     sentences = docs
 
     # Embedding a single text
@@ -87,11 +101,18 @@ def insert_doc(docs: List[str], kb_name: str, redis_url: str = REDIS_URL, embedd
     # connect to local redis instance
     index.connect(redis_url)  # "redis://127.0.0.1:6389"
 
-    data = [{"doc": t,
+    data = [{"doc": t.doc,
+             "key": t.key,
+             "nid": t.nid,
+             "src": t.src,
              "embed": v}
             for t, v in zip(sentences, embeddings)]
+
     # load装载数据
-    index.load(data)
+    if use_id:
+        index.load(data, id_field=use_id)
+    else:
+        index.load(data)
 
 
 def retrieve_docs(query: str, kb_name: str, top_k: int = DEFAULT_VEC_NUM, redis_url: str = REDIS_URL,
@@ -124,14 +145,16 @@ if __name__ == '__main__':
     kb_name = "vectorizers"
     create_and_run_index(kb_name)
 
-    sentences = [
+    docs = [
         "That is a happy apple",
         "That is a happy person",
         "That is a happy dog",
         "Today is a sunny day"
     ]
 
-    insert_doc(sentences, kb_name)
+    sentences = [DocSchema(doc, key=get_short_url(doc)) for doc in docs]
+
+    insert_doc(sentences, kb_name, use_id="key")
 
     results = retrieve_docs("That is a happy cat", kb_name)
 

@@ -13,7 +13,7 @@ from langchain.embeddings import HuggingFaceBgeEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 import chardet
-from retrieval.redis_search import create_and_run_index, insert_doc, retrieve_docs
+from retrieval.redis_search import create_and_run_index, insert_doc, retrieve_docs, DocSchema, get_short_url
 
 # def read_file(path, encoding):
 #     result = []
@@ -39,14 +39,35 @@ print("documents nums:", documents.__len__())
 print(documents[0].page_content)
 print(documents[-1].page_content)
 
+
+def load_docs(path: str):
+    # 读取原始文档
+    raw_documents = TextLoader(path, encoding='utf-8').load()
+
+    print(len(raw_documents[0].page_content))
+
+    # 分割文档
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    documents = text_splitter.split_documents(raw_documents)
+    print("documents nums:", documents.__len__())
+    print(documents[0].page_content)
+    print(documents[-1].page_content)
+
+    docs = [DocSchema(doc=x.page_content, key=get_short_url(x.page_content), src=path) for x in documents]
+    return docs
+
+
 if __name__ == '__main__':
 
     kb_name = "yby"
     create_and_run_index(kb_name)
 
-    docs = [x.page_content for x in documents]
+    raw_documents_sanguo = load_docs('/ai/apps/data/园博园参考资料.txt')
+    raw_documents_xiyou = load_docs('/ai/apps/data/园博园介绍.txt')
+    raw_documents_fw = load_docs('/ai/apps/data/园博园服务.txt')
+    docs = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw
 
-    insert_doc(docs, kb_name)
+    insert_doc(docs, kb_name, use_id="key")
 
     sentences = [
         "白蛇娘子",
@@ -57,7 +78,7 @@ if __name__ == '__main__':
         "院融景园",
     ]
     for doc in sentences:
-        print(f"-------------------------query: {doc}")
-        results = retrieve_docs(doc, kb_name)
+        print(f"\n\n\n\n-------------------------query: {doc}")
+        results = retrieve_docs(doc, kb_name, 3)
         for x in results:
             print(x["doc"], x["vector_distance"])
