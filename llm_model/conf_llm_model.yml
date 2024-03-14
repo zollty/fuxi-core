@@ -36,15 +36,15 @@ llm:
       stream_interval: 2
       cpu_offloading: false
       embed_in_truncate: false
-#      awq:
-#        awq_ckpt: null
-#        awq_groupsize: -1
-#        awq_wbits: 16
-#      gptq:
-#        gptq_act_order: false
-#        gptq_ckpt: null
-#        gptq_groupsize: -1
-#        gptq_wbits: 16
+    #      awq:
+    #        awq_ckpt: null
+    #        awq_groupsize: -1
+    #        awq_wbits: 16
+    #      gptq:
+    #        gptq_act_order: false
+    #        gptq_ckpt: null
+    #        gptq_groupsize: -1
+    #        gptq_wbits: 16
     vllm: # see: https://github.com/vllm-project/vllm/blob/main/vllm/engine/arg_utils.py
       block_size: 16
       disable_log_requests: false
@@ -106,6 +106,17 @@ llm:
     Qwen1.5-7B-Chat:
       infer_turbo: vllm
       path: /ai/models/Qwen1.5-7B-Chat
+      base:
+        #num_gpus: 4
+        gpus: "0,1,2,3"
+        max_gpu_memory: 12GiB
+      vllm:
+        #max_model_len: 6016
+        gpu_memory_utilization: 0.70
+        tensor_parallel_size: 4
+    internlm2-chat-7b: # 目前最强7B模型，支持200k窗口
+      infer_turbo: vllm
+      path: /ai/models/internlm2-chat-7b
       base:
         #num_gpus: 4
         gpus: "0,1,2,3"
