@@ -5,6 +5,23 @@ from common.utils import decide_device
 from dynaconf import Dynaconf
 import os
 
+global_worker_dict = {}
+
+
+def find_use_port():
+    start_port = 21005
+    ports = [x["port"] for _, x in global_worker_dict.items()]
+    while True:
+        find_y = False
+        for port in ports:
+            if port == start_port:
+                find_y = True
+                break
+        if find_y:
+            start_port = start_port + 1
+        else:
+            return start_port
+
 
 def mount_controller_routes(app: FastAPI,
                             cfg: Dynaconf,
@@ -12,6 +29,8 @@ def mount_controller_routes(app: FastAPI,
     from fastchat.serve.controller import logger
     from llm_model.shutdown_serve import shutdown_worker_serve, check_worker_processes
     from llm_model.launch_all_serve import launch_worker
+
+    global global_worker_dict
 
     def list_llm_models(
             types: List[str] = Body(["local", "online"], description="模型配置项类别，如local, online, worker"),
@@ -60,7 +79,14 @@ def mount_controller_routes(app: FastAPI,
             placeholder: str = Body(None, description="占位用，无实际效果"),
     ) -> Dict:
         # return model_worker_ctl(["start_worker", model_name])
-        ret, msg = launch_worker(model_name)
+        ret = model_name.split("@")
+        port = None
+        if len(ret) == 2:
+            model_name, port = ret
+        else:
+            port = find_use_port()
+        ret, msg = launch_worker(f"{model_name}@{port}")
+        global_worker_dict[model_name] = {"port": port, "success": ret}
         if ret:
             return {"success": True, "code": 200, "msg": "success"}
         else:
@@ -71,6 +97,7 @@ def mount_controller_routes(app: FastAPI,
             placeholder: str = Body(None, description="占位用，无实际效果"),
     ) -> Dict:
         # return model_worker_ctl(["stop_worker", model_name])
+        del global_worker_dict[model_name]
         if shutdown_worker_serve(model_name):
             app._controller.refresh_all_workers()
             return {"success": True, "code": 200, "msg": "success"}
@@ -122,6 +149,5 @@ def mount_controller_routes(app: FastAPI,
              response_model=BaseResponse,
              summary="查看配置的所有online embeddings模型"
              )(list_online_embed_models)
-
 
     return app

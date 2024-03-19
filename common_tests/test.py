@@ -88,5 +88,13 @@ if __name__ == "__main__":
     d = [xx.page_content for xx in docs]
     print(d)
 
+    global_worker_dict = {}
+
+    # global_worker_dict["aaaa"] = {"port": 123, "success": True}
+    # global_worker_dict["bbb"] = {"port": 2334, "success": True}
+
+    ports = [x["port"] for _, x in global_worker_dict.items()]
+    print(ports)
+
 
 

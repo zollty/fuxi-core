@@ -8,7 +8,6 @@ RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
 from dynaconf import Dynaconf
-import multiprocessing as mp
 from fastapi import FastAPI
 from common.utils import detect_device
 
@@ -225,7 +224,7 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
 
     set_httpx_config()
 
-    app.title = f"FastChat LLM Worker Server ({model_name})"
+    app.title = f"风后 LLM Worker Server ({model_name})"
     app.version = fastchat.__version__
     app._worker = worker
     MakeFastAPIOffline(app)
