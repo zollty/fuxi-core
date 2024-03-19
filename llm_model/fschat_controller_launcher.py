@@ -54,6 +54,7 @@ def create_controller_app(cfg: Dynaconf, log_level):
 def run_controller():
     from common.utils import RUNTIME_ROOT_DIR
     from common.fastapi_tool import run_api
+    import threading
 
     import argparse
 
@@ -91,13 +92,21 @@ def run_controller():
 
     default_run = cfg.get("llm.default_run", [])
     if default_run and args.run_default:
-        import threading
         def my_function():
             for m in default_run:
                 app.start_model(m)
 
         my_thread = threading.Thread(target=my_function)
         my_thread.start()
+
+    def init_get_registed_workers_info():
+        # available_models = app._controller.list_models()
+        # worker_address = app._controller.get_worker_address(available_models[0])
+        print("----------------------------------------------")
+        print(app._controller.get_all_workers())
+
+    t = threading.Timer(10, init_get_registed_workers_info)  # 延时x秒后执行action函数
+    t.start()
 
     with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
         f.write(f"    FenghouAI Controller Server (fastchat): http://{host}:{port}\n")
