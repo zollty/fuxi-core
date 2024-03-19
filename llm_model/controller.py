@@ -24,7 +24,6 @@ def find_use_port():
             return start_port
 
 
-
 def mount_controller_routes(app: FastAPI,
                             cfg: Dynaconf,
                             ):
@@ -46,14 +45,14 @@ def mount_controller_routes(app: FastAPI,
         t = threading.Timer(60, action)  # 延时x秒后执行action函数
         t.start()
 
+
     def run_default_models():
         default_run = cfg.get("llm.default_run", [])
         res = {}
         if default_run:
             for m in default_run:
                 res[m] = start_model(m)
-        return res
-
+        return BaseResponse(data=res)
 
     def list_llm_models(
             types: List[str] = Body(["local", "online"], description="模型配置项类别，如local, online, worker"),
@@ -180,6 +179,22 @@ def mount_controller_routes(app: FastAPI,
              response_model=BaseResponse,
              summary="启动配置的所有llm模型"
              )(run_default_models)
+
+    def init_get_registed_workers_info():
+        global global_worker_dict
+        # available_models = app._controller.list_models()
+        # worker_address = app._controller.get_worker_address(available_models[0])
+        print("--------------------init_get_registed_workers_info--------------------------")
+        print(app._controller.worker_info)
+        for w_name, w_info in app._controller.worker_info.items():
+            port = w_name.split(":")[1]
+            for m in w_info["model_names"]:
+                global_worker_dict[m] = {"port": port, "success": True}
+        print("--------------------global_worker_dict--------------------------")
+        print(global_worker_dict)
+
+    t = threading.Timer(15, init_get_registed_workers_info)  # 延时x秒后执行action函数
+    t.start()
 
     app.start_model = start_model
     app.stop_model = stop_model
