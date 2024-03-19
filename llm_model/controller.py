@@ -193,7 +193,7 @@ def mount_controller_routes(app: FastAPI,
         print("--------------------global_worker_dict--------------------------")
         print(global_worker_dict)
 
-    t = threading.Timer(15, init_get_registed_workers_info)  # 延时x秒后执行action函数
+    t = threading.Timer(25, init_get_registed_workers_info)  # 延时x秒后执行action函数
     t.start()
 
     app.start_model = start_model
