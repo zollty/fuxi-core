@@ -195,6 +195,8 @@ def mount_controller_routes(app: FastAPI,
     t.start()
     threading.Timer(25, init_get_registed_workers_info).start()
     threading.Timer(35, init_get_registed_workers_info).start()
+    threading.Timer(45, init_get_registed_workers_info).start()
+    threading.Timer(60, init_get_registed_workers_info).start()
 
     app.start_model = start_model
     app.stop_model = stop_model
