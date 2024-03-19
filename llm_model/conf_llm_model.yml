@@ -1,8 +1,8 @@
 llm:
   device: auto
   default_run:
-    - Qwen1.5-14B-Chat-GPTQ-Int4
-    - Qwen-1.8B-Chat
+    - "Qwen1.5-14B-Chat-GPTQ-Int4"
+    - "Qwen-1.8B-Chat"
   controller:
     host: 0.0.0.0
     port: 21001
