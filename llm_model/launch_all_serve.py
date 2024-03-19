@@ -206,7 +206,7 @@ if __name__ == "__main__":
     def launch_all():
         if args.all:
             args.controller = True
-            args.openai_api = True
+            args.openai_api = False
             args.model_worker = True
 
         if args.controller:
