@@ -55,6 +55,27 @@ def run_controller():
     from common.utils import RUNTIME_ROOT_DIR
     from common.fastapi_tool import run_api
 
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-rd",
+        "--run-default",
+        help="运行配置的默认模型",
+        dest="run_default",
+        type=bool,
+        default=False,
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        help="增加log信息",
+        dest="verbose",
+        type=bool,
+        default=False,
+    )
+    args = parser.parse_args()
+
     print(RUNTIME_ROOT_DIR)
     cfg = Dynaconf(
         envvar_prefix="FUXI",
@@ -69,7 +90,7 @@ def run_controller():
     app = create_controller_app(cfg, log_level)
 
     default_run = cfg.get("llm.default_run", [])
-    if default_run:
+    if default_run and args.run_default:
         import threading
         def my_function():
             for m in default_run:

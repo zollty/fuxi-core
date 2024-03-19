@@ -45,6 +45,15 @@ def mount_controller_routes(app: FastAPI,
         t = threading.Timer(60, action)  # 延时x秒后执行action函数
         t.start()
 
+    def run_default_models():
+        default_run = cfg.get("llm.default_run", [])
+        res = {}
+        if default_run:
+            for m in default_run:
+                res[m] = start_model(m)
+        return res
+
+
     def list_llm_models(
             types: List[str] = Body(["local", "online"], description="模型配置项类别，如local, online, worker"),
             placeholder: str = Body(None, description="占位用，无实际效果")
@@ -164,6 +173,12 @@ def mount_controller_routes(app: FastAPI,
              response_model=BaseResponse,
              summary="查看配置的所有online embeddings模型"
              )(list_online_embed_models)
+
+    app.post("/run_default_models",
+             tags=["LLM Management"],
+             response_model=BaseResponse,
+             summary="启动配置的所有llm模型"
+             )(run_default_models)
 
     app.start_model = start_model
     app.stop_model = stop_model
