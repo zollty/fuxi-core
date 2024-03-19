@@ -96,7 +96,8 @@ def mount_controller_routes(app: FastAPI,
             placeholder: str = Body(None, description="占位用，无实际效果"),
     ) -> Dict:
         # return model_worker_ctl(["stop_worker", model_name])
-        del global_worker_dict[model_name]
+        if model_name in global_worker_dict:
+            del global_worker_dict[model_name]
         if shutdown_worker_serve(model_name):
             app._controller.refresh_all_workers()
             return {"success": True, "code": 200, "msg": "success"}

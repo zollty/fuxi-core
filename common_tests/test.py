@@ -91,10 +91,5 @@ if __name__ == "__main__":
     d = [xx.page_content for xx in docs]
     print(d)
 
-    aaa = AAA()
-
-    aaa.bbbb = {"port": 123, "success": True}
-    print(aaa.bbbb)
-
 
 
