@@ -1,7 +1,6 @@
 from typing import Any, List, Optional, Dict
 from fastapi import FastAPI, Body
 from common.api_base import (BaseResponse, ListResponse)
-from common.utils import decide_device
 from dynaconf import Dynaconf
 import os
 import threading
@@ -36,14 +35,13 @@ def mount_controller_routes(app: FastAPI,
     def check_start_status(model):
         def action():
             nonlocal model
-            print(f"---------------------------------check status of: {model}")
+            print(f"-----------------------check status of: {model} -----------------------")
             worker_address = app._controller.get_worker_address(model)
             if not worker_address:
-                print(f"---------------------------------model start failed: {model}")
+                print(f"-------------------model start failed: {model} --------------------")
                 stop_model(model)
 
-        t = threading.Timer(60, action)  # 延时x秒后执行action函数
-        t.start()
+        threading.Timer(60, action).start()  # 延时x秒后执行action函数
 
 
     def run_default_models():
