@@ -57,6 +57,7 @@ def mount_controller_routes(app: FastAPI,
 
     def start_model(
             model_name: str = Body(None, description="启动该模型"),
+            placeholder: str = Body(None, description="占位用，无实际效果"),
     ) -> Dict:
         # return model_worker_ctl(["start_worker", model_name])
         ret, msg = launch_worker(model_name)
@@ -67,6 +68,7 @@ def mount_controller_routes(app: FastAPI,
 
     def stop_model(
             model_name: str = Body(None, description="停止该模型"),
+            placeholder: str = Body(None, description="占位用，无实际效果"),
     ) -> Dict:
         # return model_worker_ctl(["stop_worker", model_name])
         if shutdown_worker_serve(model_name):

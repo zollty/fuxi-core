@@ -18,7 +18,7 @@ services:
       GROUP_NAME_WHITE_LIST: '["ParamlandGroup", "AI机器人", "好大一家人"]' #'["ALL_GROUP"]' #
       GROUP_CHAT_IN_ONE_SESSION: '["ParamlandGroup"]'
       IMAGE_CREATE_PREFIX: '["画", "看", "找"]'
-      CONVERSATION_MAX_TOKENS: 8000
+      CONVERSATION_MAX_TOKENS: 4000
       SPEECH_RECOGNITION: 'False'
       CHARACTER_DESC: '你是聊天助手和知识顾问, 你旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。'
       SUBSCRIBE_MSG: '感谢您的关注！\n这里是FenghouAI，可以自由对话。\n支持语音对话。\n支持图片输入。\n支持图片输出，画字开头的消息将按要求创作图片。\n支持tool、角色扮演和文字冒险等丰富的插件。\n输入{trigger_prefix}#help 查看详细指令。'
