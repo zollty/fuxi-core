@@ -188,7 +188,7 @@ def mount_controller_routes(app: FastAPI,
         print(app._controller.worker_info)
         for w_name, w_info in app._controller.worker_info.items():
             port = w_name.split(":")[1]
-            for m in w_info["model_names"]:
+            for m in w_info.model_names:
                 global_worker_dict[m] = {"port": port, "success": True}
         print("--------------------global_worker_dict--------------------------")
         print(global_worker_dict)
