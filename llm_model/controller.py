@@ -4,8 +4,10 @@ from common.api_base import (BaseResponse, ListResponse)
 from common.utils import decide_device
 from dynaconf import Dynaconf
 import os
+import threading
 
 global_worker_dict = {}
+
 
 def find_use_port():
     start_port = 21105
@@ -30,6 +32,18 @@ def mount_controller_routes(app: FastAPI,
     from llm_model.launch_all_serve import launch_worker
 
     global global_worker_dict
+
+    def check_start_status(model):
+        def action():
+            nonlocal model
+            print(f"---------------------------------check status of: {model}")
+            worker_address = app._controller.get_worker_address(model)
+            if not worker_address:
+                print(f"---------------------------------model start failed: {model}")
+                stop_model(model)
+
+        t = threading.Timer(60, action)  # 延时x秒后执行action函数
+        t.start()
 
     def list_llm_models(
             types: List[str] = Body(["local", "online"], description="模型配置项类别，如local, online, worker"),
@@ -89,6 +103,7 @@ def mount_controller_routes(app: FastAPI,
         if ret:
             return {"success": True, "code": 200, "msg": "success"}
         else:
+            check_start_status(model_name)
             return {"success": False, "code": 501, "msg": msg}
 
     def stop_model(
