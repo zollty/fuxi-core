@@ -7,7 +7,6 @@ import os
 
 global_worker_dict = {}
 
-
 def find_use_port():
     start_port = 21105
     ports = [x["port"] for _, x in global_worker_dict.items()]
@@ -150,4 +149,7 @@ def mount_controller_routes(app: FastAPI,
              summary="查看配置的所有online embeddings模型"
              )(list_online_embed_models)
 
+    app.start_model = start_model
+    app.stop_model = stop_model
+    app.replace_model = replace_model
     return app

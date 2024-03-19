@@ -34,6 +34,9 @@ def string_args(args, args_list):
 
     return args_str
 
+class AAA:
+    pass
+
 
 if __name__ == "__main__":
     from common.conf import Cfg
@@ -88,13 +91,10 @@ if __name__ == "__main__":
     d = [xx.page_content for xx in docs]
     print(d)
 
-    global_worker_dict = {}
+    aaa = AAA()
 
-    # global_worker_dict["aaaa"] = {"port": 123, "success": True}
-    # global_worker_dict["bbb"] = {"port": 2334, "success": True}
-
-    ports = [x["port"] for _, x in global_worker_dict.items()]
-    print(ports)
+    aaa.bbbb = {"port": 123, "success": True}
+    print(aaa.bbbb)
 
 
 

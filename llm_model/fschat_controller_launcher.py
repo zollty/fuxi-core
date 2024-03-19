@@ -68,6 +68,16 @@ def run_controller():
 
     app = create_controller_app(cfg, log_level)
 
+    default_run = cfg.get("llm.default_run", [])
+    if default_run:
+        import threading
+        def my_function():
+            for m in default_run:
+                app.start_model(m)
+
+        my_thread = threading.Thread(target=my_function)
+        my_thread.start()
+
     with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
         f.write(f"    FenghouAI Controller Server (fastchat): http://{host}:{port}\n")
 
