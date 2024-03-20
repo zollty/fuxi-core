@@ -70,7 +70,7 @@ if __name__ == "__main__":
     from common.utils import RUNTIME_ROOT_DIR
 
     print(RUNTIME_ROOT_DIR)
-    cfg = Cfg(RUNTIME_ROOT_DIR + "/conf_rerank_test.toml")
+    cfg = Cfg(RUNTIME_ROOT_DIR + "/tests/conf_rerank_test.toml")
     print(cfg.get("reranker.model.bge-reranker-large"))
     print(cfg.get("embed.device"))
 
@@ -102,7 +102,21 @@ if __name__ == "__main__":
     conf = OmegaConf.create(conf)
     print(conf.kbs_config)
 
-    conf = OmegaConf.load(RUNTIME_ROOT_DIR + '/llm_model/conf_llm_model.yml')
+    s = """
+    obj:
+        a: b
+        b: c
+    list:
+    - item1
+    - item2
+    123: 456
+    """
+    conf = OmegaConf.create(s)
+    print("=================================------")
+    print(type(conf["list"]))
+    print(OmegaConf.to_yaml(conf))
+
+    conf = OmegaConf.load(RUNTIME_ROOT_DIR + '/conf/llm_model.yml')
     print(conf.llm.model_cfg)
     for mc in conf["llm"]["model_cfg"].items():
         print(mc)
@@ -112,12 +126,19 @@ if __name__ == "__main__":
     cfg = Dynaconf(
         envvar_prefix="FUXI",
         root_path=RUNTIME_ROOT_DIR,
-        settings_files=['llm_model/conf_llm_model.yml', 'settings.yaml'],
+        settings_files=['conf/llm_model.yml', 'conf/settings.yaml'],  # 后者优先级高，以一级key覆盖前者（一级key相同的，前者不生效）
     )
 
-    print("===================================")
+    print("===================================+++")
+    print(cfg.get("llm.openai_api_server.host"))
+    print(cfg.get("llm.openai_api_server.port"))
+    cfg["llm.openai_api_server.host"] = "xxxxxxxxxx"
+    cfg["llm.openai_api_server.port"] = 23832874
+    print(cfg.get("llm.openai_api_server.host"))
+    print(cfg.get("llm.openai_api_server.port"))
     print(cfg["test-aa.key-bb"])
     print(cfg.get("test-aa.key-bb"))
+    print(cfg.get("test-aa.key-bb-cc"))  #
     print(cfg.get("test-aa.key-bb-cc", cfg.get("llm.worker.base.controller_addr")))
     for k, v in cfg.items():
         print(k, v)

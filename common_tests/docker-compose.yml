@@ -16,11 +16,11 @@ services:
       SINGLE_CHAT_REPLY_PREFIX: '"[bot] "'
       GROUP_CHAT_PREFIX: '["@bot"]'
       GROUP_NAME_WHITE_LIST: '["ParamlandGroup", "AI机器人", "好大一家人"]' #'["ALL_GROUP"]' #
-      GROUP_CHAT_IN_ONE_SESSION: '["ParamlandGroup"]'
-      IMAGE_CREATE_PREFIX: '["画", "看", "找"]'
+#      GROUP_CHAT_IN_ONE_SESSION: '["ParamlandGroup"]'
+#      IMAGE_CREATE_PREFIX: '["画", "看", "找"]'
       CONVERSATION_MAX_TOKENS: 4000
       SPEECH_RECOGNITION: 'False'
-      CHARACTER_DESC: '你是聊天助手和知识顾问, 你旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。'
+      CHARACTER_DESC: '你是聊天助手和知识顾问, 你旨在回答并解决人们的任何问题。如果问你是谁，你就说是AI智能机器人。如果问你的主人是谁，你说是数地科技邹天涌。如果问你邹天涌是谁，你就说邹天涌的资深技术架构师，曾在多家公司负责重点项目和技术研发管理，同时也是公益技术博主和布道师，公众号“IT研发之路”的作者。'
       SUBSCRIBE_MSG: '感谢您的关注！\n这里是FenghouAI，可以自由对话。\n支持语音对话。\n支持图片输入。\n支持图片输出，画字开头的消息将按要求创作图片。\n支持tool、角色扮演和文字冒险等丰富的插件。\n输入{trigger_prefix}#help 查看详细指令。'
       EXPIRES_IN_SECONDS: 3600
       CLEAR_MEMORY_COMMANDS: '["new"]'

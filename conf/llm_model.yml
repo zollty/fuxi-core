@@ -133,12 +133,12 @@ llm:
       path: /ai/models/Qwen1.5-14B-Chat-GPTQ-Int4
       base:
         #num_gpus: 4
-        gpus: "0,1,2,3"
-        max_gpu_memory: 16GiB
+        gpus: "0,1"
+        max_gpu_memory: 24GiB
       vllm:
         #max_model_len: 6016
-        gpu_memory_utilization: 0.30
-        tensor_parallel_size: 4
+        gpu_memory_utilization: 0.90
+        tensor_parallel_size: 2
     internlm2-chat-7b:
       #infer_turbo: vllm
       path: /ai/models/internlm2-chat-7b
@@ -155,8 +155,8 @@ llm:
       #infer_turbo: vllm
       quantize: int8
       base:
-        gpus: "1"
-        max_gpu_memory: 10GiB
+        gpus: "2"
+        max_gpu_memory: 24GiB
       vllm:
         gpu_memory_utilization: 0.5
         tensor_parallel_size: 1
@@ -262,4 +262,7 @@ reranker:
     bce-reranker-base_v1: G:/50-TEMP/models/embed/bce-reranker-base_v1
 
 test-aa:
-  key-bb: 555
+  key-bb-cc: 555
+
+test-cc:
+  key: 3443
