@@ -133,12 +133,12 @@ llm:
       path: /ai/models/Qwen1.5-14B-Chat-GPTQ-Int4
       base:
         #num_gpus: 4
-        gpus: "0,1"
+        gpus: "0,1,2,3"
         max_gpu_memory: 24GiB
       vllm:
         #max_model_len: 6016
         gpu_memory_utilization: 0.90
-        tensor_parallel_size: 2
+        tensor_parallel_size: 4
     internlm2-chat-7b:
       #infer_turbo: vllm
       path: /ai/models/internlm2-chat-7b
