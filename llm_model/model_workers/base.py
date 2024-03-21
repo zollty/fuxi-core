@@ -2,13 +2,11 @@ from fastchat.conversation import Conversation
 from fastchat.serve.base_model_worker import BaseModelWorker
 import uuid
 import json
-from pydantic import BaseModel, root_validator
-# from langchain.pydantic_v1 import Extra, root_validator
-import fastchat
+from pydantic import BaseModel
 import asyncio
 from typing import Dict, List, Optional
 
-from llm_model.config import TEMPERATURE
+from hpdeploy.llm_model.config import TEMPERATURE
 
 __all__ = ["ApiModelWorker", "ApiChatParams", "ApiCompletionParams", "ApiEmbeddingsParams"]
 

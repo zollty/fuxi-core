@@ -4,9 +4,9 @@ import os
 # 获取当前脚本的绝对路径
 __current_script_path = os.path.abspath(__file__)
 # 将项目根目录添加到sys.path
-RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
-sys.path.append(RUNTIME_ROOT_DIR)
-print(RUNTIME_ROOT_DIR)
+get_runtime_root_dir() = os.path.dirname(os.path.dirname(__current_script_path))
+sys.path.append(get_runtime_root_dir())
+print(get_runtime_root_dir())
 
 if __name__ == "__main__":
     from common.api_base import ApiRequest

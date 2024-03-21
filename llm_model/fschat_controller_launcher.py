@@ -4,23 +4,23 @@ import os
 # 获取当前脚本的绝对路径
 __current_script_path = os.path.abspath(__file__)
 # 将项目根目录添加到sys.path
-RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
-sys.path.append(RUNTIME_ROOT_DIR)
+runtime_root_dir = os.path.dirname(os.path.dirname(__current_script_path))
+sys.path.append(runtime_root_dir)
 
 from typing import Any, List, Optional, Dict
 from dynaconf import Dynaconf
 
 
 def create_controller_app(cfg: Dynaconf, log_level):
-    from common.utils import DEFAULT_LOG_PATH
-    from common.fastapi_tool import set_httpx_config, MakeFastAPIOffline
+    from fuxi.utils.runtime_conf import get_default_log_path
+    from fuxi.utils.fastapi_tool import set_httpx_config, MakeFastAPIOffline
     import sys
     import fastchat.constants
     from fastchat.serve.controller import app, Controller, logger
     from fastapi.middleware.cors import CORSMiddleware
-    from llm_model.controller import mount_controller_routes
+    from hpdeploy.llm_model.controller import mount_controller_routes
 
-    fastchat.constants.LOGDIR = DEFAULT_LOG_PATH
+    fastchat.constants.LOGDIR = get_default_log_path()
     logger.setLevel(log_level.upper())
 
     dispatch_method = cfg.get("llm.controller.dispatch_method", "shortest_queue")
@@ -52,8 +52,8 @@ def create_controller_app(cfg: Dynaconf, log_level):
 
 
 def run_controller():
-    from common.utils import RUNTIME_ROOT_DIR
-    from common.fastapi_tool import run_api
+    from fuxi.utils.runtime_conf import get_runtime_root_dir
+    from fuxi.utils.fastapi_tool import run_api
     import threading
 
     import argparse
@@ -77,10 +77,10 @@ def run_controller():
     )
     args = parser.parse_args()
 
-    print(RUNTIME_ROOT_DIR)
+    print(get_runtime_root_dir())
     cfg = Dynaconf(
         envvar_prefix="FUXI",
-        root_path=RUNTIME_ROOT_DIR,
+        root_path=get_runtime_root_dir(),
         settings_files=['conf/llm_model.yml', 'settings.yaml'],  # 后者优先级高，以一级key覆盖前者（一级key相同的，前者不生效）
     )
 
@@ -99,7 +99,7 @@ def run_controller():
         my_thread = threading.Thread(target=my_function)
         my_thread.start()
 
-    with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
+    with open(get_runtime_root_dir() + '/logs/start_info.txt', 'a') as f:
         f.write(f"    FenghouAI Controller Server (fastchat): http://{host}:{port}\n")
 
     run_api(

@@ -5,13 +5,13 @@ import time
 # 获取当前脚本的绝对路径
 __current_script_path = os.path.abspath(__file__)
 # 将项目根目录添加到sys.path
-RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
-sys.path.append(RUNTIME_ROOT_DIR)
+runtime_root_dir = os.path.dirname(os.path.dirname(__current_script_path))
+sys.path.append(runtime_root_dir)
 
 import subprocess
-from common.utils import DEFAULT_LOG_PATH
+from fuxi.utils.runtime_conf import get_default_log_path
 
-LOGDIR = DEFAULT_LOG_PATH
+LOGDIR = get_default_log_path()
 
 # 0,controller, model_worker, openai_api_server
 # 1, cmd options
@@ -83,7 +83,7 @@ def string_args(args, args_list):
     return args_str
 
 
-from llm_model.shutdown_serve import check_worker_processes
+from hpdeploy.llm_model.shutdown_serve import check_worker_processes
 
 
 def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):

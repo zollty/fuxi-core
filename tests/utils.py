@@ -15,10 +15,10 @@ import os
 # 获取当前脚本的绝对路径
 __current_script_path = os.path.abspath(__file__)
 # 将项目根目录添加到sys.path
-RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
+get_runtime_root_dir() = os.path.dirname(os.path.dirname(__current_script_path))
 
 # 日志存储路径
-DEFAULT_LOG_PATH = os.path.join(RUNTIME_ROOT_DIR, "logs")
+DEFAULT_LOG_PATH = os.path.join(get_runtime_root_dir(), "logs")
 if not os.path.exists(DEFAULT_LOG_PATH):
     os.mkdir(DEFAULT_LOG_PATH)
 

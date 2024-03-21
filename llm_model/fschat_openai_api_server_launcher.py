@@ -4,19 +4,19 @@ import os
 # 获取当前脚本的绝对路径
 __current_script_path = os.path.abspath(__file__)
 # 将项目根目录添加到sys.path
-RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
-sys.path.append(RUNTIME_ROOT_DIR)
+runtime_root_dir = os.path.dirname(os.path.dirname(__current_script_path))
+sys.path.append(runtime_root_dir)
 
 from dynaconf import Dynaconf
 
 
 def create_openai_api_server_app(cfg: Dynaconf, log_level):
     from fastapi.middleware.cors import CORSMiddleware
-    from common.utils import DEFAULT_LOG_PATH, OPEN_CROSS_DOMAIN
-    from common.fastapi_tool import set_httpx_config, MakeFastAPIOffline
+    from fuxi.utils.runtime_conf import get_default_log_path
+    from fuxi.utils.fastapi_tool import set_httpx_config, MakeFastAPIOffline
     import sys
     import fastchat.constants
-    fastchat.constants.LOGDIR = DEFAULT_LOG_PATH
+    fastchat.constants.LOGDIR = get_default_log_path()
     from fastchat.serve.openai_api_server import app, app_settings
     from fastchat.utils import build_logger
     logger = build_logger("openai_api", "openai_api.log")
@@ -50,13 +50,13 @@ def create_openai_api_server_app(cfg: Dynaconf, log_level):
 
 
 def run_openai_api_server():
-    from common.utils import RUNTIME_ROOT_DIR
-    from common.fastapi_tool import run_api
+    from fuxi.utils.runtime_conf import get_runtime_root_dir
+    from fuxi.utils.fastapi_tool import run_api
 
-    print(RUNTIME_ROOT_DIR)
+    print(get_runtime_root_dir())
     cfg = Dynaconf(
         envvar_prefix="FUXI",
-        root_path=RUNTIME_ROOT_DIR,
+        root_path=get_runtime_root_dir(),
         settings_files=['conf/llm_model.yml', 'settings.yaml'],  # 后者优先级高，以一级key覆盖前者（一级key相同的，前者不生效）
     )
 
@@ -66,7 +66,7 @@ def run_openai_api_server():
 
     app = create_openai_api_server_app(cfg, log_level)
 
-    with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
+    with open(get_runtime_root_dir() + '/logs/start_info.txt', 'a') as f:
         f.write(f"    FenghouAI OpeanAI API Server (fastchat): http://{host}:{port}\n")
 
     if host == "localhost" or host == "127.0.0.1":

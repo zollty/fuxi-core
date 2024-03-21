@@ -4,14 +4,14 @@ import os
 # 获取当前脚本的绝对路径
 __current_script_path = os.path.abspath(__file__)
 # 将项目根目录添加到sys.path
-RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
-sys.path.append(RUNTIME_ROOT_DIR)
+runtime_root_dir = os.path.dirname(os.path.dirname(__current_script_path))
+sys.path.append(runtime_root_dir)
 
 from dynaconf import Dynaconf
 from fastapi import FastAPI
-from common.utils import detect_device
+from fuxi.utils.torch_helper import detect_device
 
-from common.utils import logger
+from fuxi.utils.runtime_conf import logger
 
 
 def set_common_args(args):
@@ -167,14 +167,14 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
         model_path: `model_name_or_path`,huggingface的repo-id或本地路径
         device:`LLM_DEVICE`
     """
-    from common.utils import DEFAULT_LOG_PATH, VERSION, OPEN_CROSS_DOMAIN
-    from common.fastapi_tool import set_httpx_config, MakeFastAPIOffline
+    from fuxi.utils.runtime_conf import get_default_log_path
+    from fuxi.utils.fastapi_tool import set_httpx_config, MakeFastAPIOffline
     import sys
     import fastchat.constants
     from fastchat.serve.model_worker import logger
     from fastapi.middleware.cors import CORSMiddleware
 
-    fastchat.constants.LOGDIR = DEFAULT_LOG_PATH
+    fastchat.constants.LOGDIR = get_default_log_path()
     log_level = log_level.upper()
     logger.setLevel(log_level)
 
@@ -232,16 +232,16 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
 
 
 def run_model_worker(model_name, port: str = None):
-    from common.utils import RUNTIME_ROOT_DIR
-    from common.fastapi_tool import run_api
+    from fuxi.utils.runtime_conf import get_runtime_root_dir
+    from fuxi.utils.fastapi_tool import run_api
 
-    print(RUNTIME_ROOT_DIR)
+    print(get_runtime_root_dir())
 
     from dynaconf import Dynaconf
 
     cfg = Dynaconf(
         envvar_prefix="FUXI",
-        root_path=RUNTIME_ROOT_DIR,
+        root_path=get_runtime_root_dir(),
         settings_files=['conf/llm_model.yml', 'conf/settings.yaml'],  # 后者优先级高，以一级key覆盖前者（一级key相同的，前者不生效）
     )
 
@@ -262,7 +262,7 @@ def run_model_worker(model_name, port: str = None):
     use_port = model_worker_config.get("port")
 
     # server info
-    with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
+    with open(get_runtime_root_dir() + '/logs/start_info.txt', 'a') as f:
         f.write(f"    FenghouAI Model Worker Server ({model_name}): http://{host}:{use_port}")
 
     if host == "localhost" or host == "127.0.0.1":

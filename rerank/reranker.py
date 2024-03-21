@@ -1,5 +1,5 @@
 from common.conf import Cfg
-from common.utils import RUNTIME_ROOT_DIR
+from common.utils import get_runtime_root_dir()
 from rerank.langchain_reranker import LangchainReranker
 from typing import Any, List, Optional
 
@@ -9,8 +9,8 @@ class _Singleton(object):
 
     def init(self, force: bool = False):
         if force or self.reranker_model is None:
-            print(RUNTIME_ROOT_DIR)
-            cfg = Cfg(RUNTIME_ROOT_DIR + "/conf_rerank.toml")
+            print(get_runtime_root_dir())
+            cfg = Cfg(get_runtime_root_dir() + "/conf_rerank.toml")
             self.reranker_model = LangchainReranker(cfg)
 
     def reranker(self):

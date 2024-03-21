@@ -1,6 +1,6 @@
 from typing import Any, List, Optional, Dict
 from fastapi import FastAPI, Body
-from common.api_base import (BaseResponse, ListResponse)
+from fuxi.utils.api_base import (BaseResponse, ListResponse)
 from dynaconf import Dynaconf
 import os
 import threading
@@ -27,8 +27,8 @@ def mount_controller_routes(app: FastAPI,
                             cfg: Dynaconf,
                             ):
     from fastchat.serve.controller import logger
-    from llm_model.shutdown_serve import shutdown_worker_serve, check_worker_processes
-    from llm_model.launch_all_serve import launch_worker
+    from hpdeploy.llm_model.shutdown_serve import shutdown_worker_serve
+    from hpdeploy.llm_model.launch_all_serve import launch_worker
 
     global global_worker_dict
 
@@ -85,7 +85,7 @@ def mount_controller_routes(app: FastAPI,
         """
         从本地获取configs中配置的online embedding模型列表
         """
-        from llm_model import model_workers
+        from hpdeploy.llm_model import model_workers
         ret = {}
         for k, v in cfg.get("llm.online_model_cfg", {}).items():
             if provider := v.get("provider"):

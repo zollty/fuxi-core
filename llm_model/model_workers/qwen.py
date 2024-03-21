@@ -2,8 +2,8 @@ from fastchat.conversation import Conversation
 from typing import List, Literal, Dict
 
 from fastchat import conversation as conv
-from common.utils import  LOG_VERBOSE, logger
-from llm_model.model_workers.base import *
+from fuxi.utils.runtime_conf import  get_log_verbose, logger
+from hpdeploy.llm_model.model_workers.base import *
 
 
 class QwenWorker(ApiModelWorker):
@@ -26,7 +26,7 @@ class QwenWorker(ApiModelWorker):
     def do_chat(self, params: ApiChatParams) -> Dict:
         import dashscope
         params.load_config(self.model_names[0])
-        if LOG_VERBOSE:
+        if get_log_verbose():
             logger.info(f'{self.__class__.__name__}:params: {params}')
 
         gen = dashscope.Generation()
@@ -63,7 +63,7 @@ class QwenWorker(ApiModelWorker):
     def do_embeddings(self, params: ApiEmbeddingsParams) -> Dict:
         import dashscope
         params.load_config(self.model_names[0])
-        if LOG_VERBOSE:
+        if get_log_verbose():
             logger.info(f'{self.__class__.__name__}:params: {params}')
         result = []
         i = 0
