@@ -58,6 +58,17 @@ def run_controller():
 
     import argparse
 
+    print(get_runtime_root_dir())
+    cfg = Dynaconf(
+        envvar_prefix="HP",
+        root_path=get_runtime_root_dir(),
+        settings_files=['conf/llm_model.yml', 'settings.yaml'],  # 后者优先级高，以一级key覆盖前者（一级key相同的，前者不生效）
+    )
+
+    log_level = cfg.get("llm.controller.log_level", "INFO").upper()
+    host = cfg.get("llm.controller.host", "0.0.0.0")
+    port = cfg.get("llm.controller.port", 21001)
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-rd",
@@ -75,18 +86,16 @@ def run_controller():
         type=bool,
         default=False,
     )
+    parser.add_argument("--host", type=str, default=host)
+    parser.add_argument("--port", type=int, default=port)
+
+    # 初始化消息
     args = parser.parse_args()
+    host = args.host
+    port = args.port
 
-    print(get_runtime_root_dir())
-    cfg = Dynaconf(
-        envvar_prefix="FUXI",
-        root_path=get_runtime_root_dir(),
-        settings_files=['conf/llm_model.yml', 'settings.yaml'],  # 后者优先级高，以一级key覆盖前者（一级key相同的，前者不生效）
-    )
-
-    log_level = cfg.get("llm.controller.log_level", cfg.get("root.log_level", "INFO")).upper()
-    host = cfg.get("llm.controller.host", "0.0.0.0")
-    port = cfg.get("llm.controller.port", 21001)
+    cfg["llm.controller.host"] = host
+    cfg["llm.controller.port"] = port
 
     app = create_controller_app(cfg, log_level)
 

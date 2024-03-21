@@ -55,7 +55,7 @@ def run_openai_api_server():
 
     print(get_runtime_root_dir())
     cfg = Dynaconf(
-        envvar_prefix="FUXI",
+        envvar_prefix="HP",
         root_path=get_runtime_root_dir(),
         settings_files=['conf/llm_model.yml', 'settings.yaml'],  # 后者优先级高，以一级key覆盖前者（一级key相同的，前者不生效）
     )
