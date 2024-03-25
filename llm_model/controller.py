@@ -140,7 +140,7 @@ def mount_controller_routes(app: FastAPI,
     ) -> Dict:
         if ctrl == "start":
             server_str_args = ""
-            if port is not None:
+            if port is not None and port >= 3000:
                 server_str_args = f" --port {port}"
             launch_api_server(server_str_args)
         elif ctrl == "stop":
