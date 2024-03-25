@@ -137,7 +137,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "-a",
         "--all",
         action="store_true",
         help="run fastchat's controller/openai_api/model_worker servers",
@@ -151,8 +150,7 @@ if __name__ == "__main__":
         dest="controller",
     )
     parser.add_argument(
-        "-o",
-        "--openai-api",
+        "--api",
         action="store_true",
         help="run fastchat's openai_api servers",
         dest="openai_api",
