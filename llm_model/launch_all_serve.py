@@ -118,7 +118,7 @@ def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
     worker_sh = base_launch_sh.format(
         "llm_model/hp_worker_launcher.py", worker_str_args, LOGDIR, f"worker_{log_name}"
     )
-    worker_sh = get_gpus(model) + worker_sh
+    worker_sh = get_gpus(model_name) + worker_sh
     worker_check_sh = base_check_model_sh.format(int(wait_times / 2), LOGDIR,
                                                  f"worker_{log_name}",
                                                  "model_worker",
