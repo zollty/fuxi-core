@@ -123,7 +123,7 @@ def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
 
 def launch_api_server(server_str_args: str = ""):
     server_sh = base_launch_sh.format(
-        "llm_model/hp_api_server_launcher.py", server_str_args, LOGDIR, "api_server"
+        "llm_chat/hp_api_server_launcher.py", server_str_args, LOGDIR, "api_server"
     )
     server_sh = "cd ../jian && " + server_sh
     server_check_sh = base_check_sh.format(10, LOGDIR, "api_server", "api_server")
@@ -215,7 +215,7 @@ if __name__ == "__main__":
             controller_str_args = string_args(args, controller_args)
             # "nohup python3 -m fastchat.serve.{0} {1} >{2}/{3}.log 2>&1 &"
             controller_sh = base_launch_sh.format(
-                "llm_chat/hp_controller_launcher.py", controller_str_args, LOGDIR, "controller"
+                "llm_model/hp_controller_launcher.py", controller_str_args, LOGDIR, "controller"
             )
             controller_check_sh = base_check_sh.format(10, LOGDIR, "controller", "controller")
             print(f"executing controller_sh: {controller_sh}")
