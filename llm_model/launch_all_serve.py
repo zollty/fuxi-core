@@ -87,6 +87,18 @@ def string_args(args, args_list):
 from hpdeploy.llm_model.shutdown_serve import check_worker_processes
 
 
+def get_gpus(model_name):
+    from fuxi.utils.runtime_conf import get_runtime_root_dir
+    from dynaconf import Dynaconf
+
+    cfg = Dynaconf(
+        envvar_prefix="HP",
+        root_path=get_runtime_root_dir(),
+        settings_files=['conf/llm_model.yml', 'conf/settings.yaml'],  # 后者优先级高，以一级key覆盖前者（一级key相同的，前者不生效）
+    )
+    gpus = cfg.get("llm.model_cfg")[model_name]["base"]["gpus"]
+    return f"CUDA_VISIBLE_DEVICES={gpus} "
+
 def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
     ret = model.split("@")
     model_name = model
@@ -106,6 +118,7 @@ def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
     worker_sh = base_launch_sh.format(
         "llm_model/hp_worker_launcher.py", worker_str_args, LOGDIR, f"worker_{log_name}"
     )
+    worker_sh = get_gpus(model) + worker_sh
     worker_check_sh = base_check_model_sh.format(int(wait_times / 2), LOGDIR,
                                                  f"worker_{log_name}",
                                                  "model_worker",
