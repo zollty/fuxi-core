@@ -7,8 +7,8 @@ import subprocess
 
 
 def shutdown_serve(key):
-    base_shell = "ps -eo user,pid,cmd|grep fschat_{}|grep -v grep|awk '{{print $2}}'|xargs kill -9"
-    if key == "all" or key == "a":
+    base_shell = "ps -eo user,pid,cmd|grep hp_{}|grep -v grep|awk '{{print $2}}'|xargs kill -9"
+    if key == "all":
         shell_script = base_shell.format("")
     else:
         shell_script = base_shell.format(key)
@@ -22,7 +22,7 @@ def shutdown_worker_serve(model):
     if not check_worker_processes(model):
         print(f"ps grep failed, the {model} worker_processes may not running.")
         return False
-    base_shell = "ps -eo user,pid,cmd|grep fschat_worker_launcher.py|grep {}|grep -v grep|awk '{{print $2}}'|xargs kill -9"
+    base_shell = "ps -eo user,pid,cmd|grep hp_worker_launcher.py|grep {}|grep -v grep|awk '{{print $2}}'|xargs kill -9"
     shell_script = base_shell.format(model)
     print(f"execute shell cmd: {shell_script}")
     try:
@@ -35,7 +35,7 @@ def shutdown_worker_serve(model):
 
 
 def check_worker_processes(model):
-    base_shell = "ps -ef |grep fschat_worker_launcher.py|grep {}| grep -v grep > /dev/null"
+    base_shell = "ps -ef |grep hp_worker_launcher.py|grep {}| grep -v grep > /dev/null"
     shell_script = base_shell.format(model)
     print(f"execute shell cmd: {shell_script}")
     try:
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--down", choices=["all", "controller", "worker", "openai", "a", "c", "w", "o"]
+        "--down", choices=["all", "controller", "worker", "api", "c", "w"]
     )
     parser.add_argument(
         "--model", type=str, default=None

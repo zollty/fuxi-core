@@ -7,7 +7,6 @@ __current_script_path = os.path.abspath(__file__)
 runtime_root_dir = os.path.dirname(os.path.dirname(os.path.dirname(__current_script_path)))
 sys.path.append(runtime_root_dir)
 
-from typing import Any, List, Optional, Dict
 from dynaconf import Dynaconf
 
 

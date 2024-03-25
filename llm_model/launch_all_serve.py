@@ -9,6 +9,7 @@ runtime_root_dir = os.path.dirname(os.path.dirname(os.path.dirname(__current_scr
 sys.path.append(runtime_root_dir)
 
 import subprocess
+from typing import Optional
 from fuxi.utils.runtime_conf import get_default_log_path
 
 LOGDIR = get_default_log_path()
@@ -37,7 +38,7 @@ base_check_sh = """i=0;
 
 base_check_model_sh = """i=0;
                 while [ `grep -c "Uvicorn running on" {1}/{2}.log` -eq '0' ];do
-                        if `ps -ef |grep fschat_worker_launcher.py|grep "{4}"| grep -v grep > /dev/null`
+                        if `ps -ef |grep hp_worker_launcher.py|grep "{4}"| grep -v grep > /dev/null`
                         then c=0;
                         else 
                             echo "process {3}-{4} is exited!";
@@ -103,7 +104,7 @@ def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
     print(worker_str_args)
     # "nohup python3 -m fastchat.serve.{0} {1} >{2}/{3}.log 2>&1 &"
     worker_sh = base_launch_sh.format(
-        "llm_model/fschat_worker_launcher.py", worker_str_args, LOGDIR, f"worker_{log_name}"
+        "llm_model/hp_worker_launcher.py", worker_str_args, LOGDIR, f"worker_{log_name}"
     )
     worker_check_sh = base_check_model_sh.format(int(wait_times / 2), LOGDIR,
                                                  f"worker_{log_name}",
@@ -118,6 +119,16 @@ def launch_worker(model, worker_str_args: str = "", wait_times: int = 60):
     except subprocess.CalledProcessError as e:
         print(e)
         return False, f"start {model} worker fail, see the log for details"
+
+
+def launch_api_server(server_str_args: str = ""):
+    server_sh = base_launch_sh.format(
+        "llm_model/hp_api_server_launcher.py", server_str_args, LOGDIR, "api_server"
+    )
+    server_sh = "cd ../jian && " + server_sh
+    server_check_sh = base_check_sh.format(10, LOGDIR, "api_server", "api_server")
+    subprocess.run(server_sh, shell=True, check=True)
+    subprocess.run(server_check_sh, shell=True, check=True)
 
 
 if __name__ == "__main__":
@@ -164,14 +175,7 @@ if __name__ == "__main__":
     )
     controller_args = ["cp", "verbose"]
 
-    parser.add_argument(
-        "-op",
-        "--openaiapi-config-path",
-        help="custom openai_api config path",
-        dest="op",
-        default=None,
-    )
-    openaiapi_server_args = ["op", "verbose"]
+    openaiapi_server_args = ["verbose"]
 
     parser.add_argument(
         "-wp",
@@ -213,7 +217,7 @@ if __name__ == "__main__":
             controller_str_args = string_args(args, controller_args)
             # "nohup python3 -m fastchat.serve.{0} {1} >{2}/{3}.log 2>&1 &"
             controller_sh = base_launch_sh.format(
-                "llm_model/fschat_controller_launcher.py", controller_str_args, LOGDIR, "controller"
+                "llm_model/hp_controller_launcher.py", controller_str_args, LOGDIR, "controller"
             )
             controller_check_sh = base_check_sh.format(10, LOGDIR, "controller", "controller")
             print(f"executing controller_sh: {controller_sh}")
@@ -232,12 +236,7 @@ if __name__ == "__main__":
 
         if args.openai_api:
             server_str_args = string_args(args, openaiapi_server_args)
-            server_sh = base_launch_sh.format(
-                "llm_model/fschat_openai_api_server_launcher.py", server_str_args, LOGDIR, "openai_api_server"
-            )
-            server_check_sh = base_check_sh.format(10, LOGDIR, "openai_api_server", "openai_api_server")
-            subprocess.run(server_sh, shell=True, check=True)
-            subprocess.run(server_check_sh, shell=True, check=True)
+            launch_api_server(server_str_args)
 
 
     launch_all()

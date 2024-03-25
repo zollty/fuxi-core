@@ -27,12 +27,12 @@ def mount_controller_routes(app: FastAPI,
                             cfg: Dynaconf,
                             ):
     from fastchat.serve.controller import logger
-    from hpdeploy.llm_model.shutdown_serve import shutdown_worker_serve
-    from hpdeploy.llm_model.launch_all_serve import launch_worker
+    from hpdeploy.llm_model.shutdown_serve import shutdown_worker_serve, shutdown_serve
+    from hpdeploy.llm_model.launch_all_serve import launch_worker, launch_api_server
 
     global global_worker_dict
 
-    def check_start_status(model):
+    def check_worker_start_status(model):
         def action():
             nonlocal model
             print(f"-----------------------check status of: {model} -----------------------")
@@ -42,7 +42,6 @@ def mount_controller_routes(app: FastAPI,
                 stop_model(model)
 
         threading.Timer(60, action).start()  # 延时x秒后执行action函数
-
 
     def run_default_models():
         default_run = cfg.get("llm.default_run", [])
@@ -110,7 +109,7 @@ def mount_controller_routes(app: FastAPI,
         if ret:
             return {"success": True, "code": 200, "msg": "success"}
         else:
-            check_start_status(model_name)
+            check_worker_start_status(model_name)
             return {"success": False, "code": 501, "msg": msg}
 
     def stop_model(
@@ -134,7 +133,19 @@ def mount_controller_routes(app: FastAPI,
             return start_model(new_model_name)
         else:
             return ret
-        # return model_worker_ctl(["replace_worker", model_name, new_model_name])
+
+    def api_server_ctrl(
+            ctrl: str = Body("start", description="停止该模型"),
+            port: Optional[int] = Body(None, description="端口号"),
+    ) -> Dict:
+        if ctrl == "start":
+            server_str_args = ""
+            if port is not None:
+                server_str_args = f" --port {port}"
+            launch_api_server(server_str_args)
+        elif ctrl == "stop":
+            shutdown_serve("api")
+        return {"success": False, "code": 500, "msg": f"unknown ctrl: {ctrl}"}
 
     app.post("/start_worker",
              tags=["LLM Management"],
@@ -177,6 +188,12 @@ def mount_controller_routes(app: FastAPI,
              response_model=BaseResponse,
              summary="启动配置的所有llm模型"
              )(run_default_models)
+
+    app.post("/api_server_ctrl",
+             tags=["Agent Management"],
+             response_model=BaseResponse,
+             summary="启停api server"
+             )(api_server_ctrl)
 
     def init_get_registed_workers_info():
         global global_worker_dict
