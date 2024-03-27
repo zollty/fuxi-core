@@ -93,8 +93,11 @@ async def aembed_texts(
     对文本进行向量化。返回数据格式：BaseResponse(data=List[List[float]])
     see: embed_texts，如果是online模型则使用异步线程
     """
+    print("----------------------------------------")
     try:
+        print("--------------------------------222--------")
         embeddings = load_local_embeddings(model=embed_model)
+        print("-----------------------------333-----------")
         print(type(embeddings), embeddings)
         data = await embeddings.async_encode(texts, to_query=to_query)
         print(type(data), data)
