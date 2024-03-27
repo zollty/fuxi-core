@@ -19,7 +19,7 @@ class EmbeddingsService(ABC):
                device: str = None,
                normalize_embeddings: bool = False,
                query_instruction: str = "",
-               ) -> List[float]:
+               ) -> list[list[float]]:
         """ encode the sentences, return embeddings (List[int]) """
 
     async def async_encode(self,
@@ -31,7 +31,7 @@ class EmbeddingsService(ABC):
                            device: str = None,
                            normalize_embeddings: bool = False,
                            query_instruction: str = "",
-                           ) -> List[float]:
+                           ) -> list[list[float]]:
         return await run_in_executor(None, self.encode, sentences,
                                      to_query=to_query,
                                      max_seq_length=max_seq_length,
