@@ -95,7 +95,8 @@ async def aembed_texts(
     """
     try:
         embeddings = load_local_embeddings(model=embed_model)
-        return BaseResponse(data=await embeddings.async_encode(texts, to_query=to_query))
+        data = await embeddings.async_encode(texts, to_query=to_query)
+        return BaseResponse(data=data)
     except Exception as e:
         logger.error(e)
         return BaseResponse(code=500, msg=f"文本向量化过程中出现错误：{e}")
