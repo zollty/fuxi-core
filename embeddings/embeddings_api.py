@@ -57,7 +57,11 @@ def load_local_embeddings(model: str = None, device: str = None):
     """
     从缓存中加载embeddings，可以避免多线程时竞争加载。
     """
-    model = model or get_default_embed_model()
+    if model:
+        if model not in get_config_embed_models():  # 使用本地Embeddings模型
+            raise Exception(f"指定的模型 {model} 不存在")
+    else:
+        model = get_default_embed_model()
     device = device or get_default_embed_device()
     return embeddings_pool.load_embeddings(model=model, device=device)
 
@@ -71,18 +75,9 @@ def embed_texts(
     对文本进行向量化。返回数据格式：BaseResponse(data=List[List[float]])
     """
     try:
-        if embed_model in get_config_embed_models():  # 使用本地Embeddings模型
-            embeddings = load_local_embeddings(model=embed_model)
-            data = embeddings.encode(texts, to_query=to_query)
-            return BaseResponse(data=data)
-
-        # if embed_model in online_embed_models:  # 使用在线API
-        #     worker_class = online_embed_models[embed_model]
-        #     worker = worker_class()
-        #     resp = worker.do_embeddings(texts=texts, to_query=to_query, embed_model=embed_model)
-        #     return BaseResponse(**resp)
-
-        return BaseResponse(code=500, msg=f"指定的模型 {embed_model} 不存在，或者不支持 Embeddings 功能。")
+        embeddings = load_local_embeddings(model=embed_model)
+        data = embeddings.encode(texts, to_query=to_query)
+        return BaseResponse(data=data)
     except Exception as e:
         logger.error(e)
         return BaseResponse(code=500, msg=f"文本向量化过程中出现错误：{e}")
@@ -99,16 +94,8 @@ async def aembed_texts(
     see: embed_texts，如果是online模型则使用异步线程
     """
     try:
-        if embed_model in get_config_embed_models():  # 使用本地Embeddings模型
-            embeddings = load_local_embeddings(model=embed_model)
-            return BaseResponse(data=await embeddings.async_encode(texts, to_query=to_query))
-
-        # if embed_model in online_embed_models:  # 使用在线API
-        #     return await run_in_threadpool(embed_texts,
-        #                                    texts=texts,
-        #                                    embed_model=embed_model,
-        #                                    to_query=to_query)
-        return BaseResponse(code=500, msg=f"指定的模型 {embed_model} 不存在，或者不支持 Embeddings 功能。")
+        embeddings = load_local_embeddings(model=embed_model)
+        return BaseResponse(data=await embeddings.async_encode(texts, to_query=to_query))
     except Exception as e:
         logger.error(e)
         return BaseResponse(code=500, msg=f"文本向量化过程中出现错误：{e}")
