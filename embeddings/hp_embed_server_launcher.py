@@ -102,6 +102,7 @@ def init_api_server():
                                      description='About FenghouAI Embeddings API')
     parser.add_argument("--host", type=str, default=host)
     parser.add_argument("--port", type=int, default=port)
+    parser.add_argument("--cuda", type=int, default=-1)
     parser.add_argument(
         "-v",
         "--verbose",
@@ -121,9 +122,13 @@ def init_api_server():
     cfg["embed.server.host"] = host
     cfg["embed.server.port"] = port
 
-    device = cfg.get("embed.device", None)
-    if device is None or device == "auto":
-        cfg["embed.device"] = detect_device()
+    cuda = args.cuda
+    if cuda >= 0:
+        cfg["embed.device"] = f"cuda:{cuda}"
+    else:
+        device = cfg.get("embed.device", None)
+        if device is None or device == "auto":
+            cfg["embed.device"] = detect_device()
 
     base_init_0(cfg, log_level)
 
