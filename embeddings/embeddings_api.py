@@ -96,6 +96,7 @@ async def aembed_texts(
     try:
         embeddings = load_local_embeddings(model=embed_model)
         data = await embeddings.async_encode(texts, to_query=to_query)
+        print(type(data), data)
         return BaseResponse(data=data)
     except Exception as e:
         logger.error(e)
