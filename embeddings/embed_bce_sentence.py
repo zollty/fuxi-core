@@ -6,8 +6,7 @@ from sentence_transformers import SentenceTransformer
 class BCE_Sentence_Embeddings(EmbeddingsService):
     def __init__(self, model_path: str, device: str, max_seq_length: Optional[int] = None):
         super().__init__(model_path, device, max_seq_length)
-        self.model = SentenceTransformer(model_path, device=device)
-        self.model.trust_remote_code = True
+        self.model = SentenceTransformer(model_path, trust_remote_code=True, device=device)
 
     def encode(self,
                sentences: Union[str, List[str]],
