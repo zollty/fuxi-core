@@ -29,7 +29,7 @@ def create_controller_app(cfg: Dynaconf, log_level):
     sys.modules["fastchat.serve.controller"].controller = controller
     app._controller = controller
 
-    app.title = "FastChat Controller"
+    app.title = "伏羲AI Controller Server"
     app.version = fastchat.__version__
 
     mount_controller_routes(app, cfg)
