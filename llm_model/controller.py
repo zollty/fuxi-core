@@ -138,14 +138,20 @@ def mount_controller_routes(app: FastAPI,
             ctrl: str = Body("start", description="停止该模型"),
             port: Optional[int] = Body(None, description="端口号"),
     ) -> Dict:
+        if ctrl == "restart":
+            shutdown_serve("api")
+            ctrl = "start"
         if ctrl == "start":
             server_str_args = ""
             if port is not None and port >= 3000:
                 server_str_args = f" --port {port}"
             launch_api_server(server_str_args)
+            return {"success": True, "code": 200, "msg": "success"}
         elif ctrl == "stop":
             shutdown_serve("api")
-        return {"success": False, "code": 500, "msg": f"unknown ctrl: {ctrl}"}
+            return {"success": True, "code": 200, "msg": "success"}
+        else:
+            return {"success": False, "code": 500, "msg": f"unknown ctrl: {ctrl}"}
 
     app.post("/start_worker",
              tags=["LLM Management"],
