@@ -124,6 +124,9 @@ def init_api_server():
         if device is None or device == "auto":
             cfg["rerank.device"] = detect_device()
 
+    device = cfg["rerank.device"]
+    print(f"-----------------------------use device: {device}")
+
     base_init_0(cfg, log_level)
 
 
