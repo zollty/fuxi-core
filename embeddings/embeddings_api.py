@@ -92,12 +92,8 @@ async def aembed_texts(
     """
     see: embed_texts，如果是online模型则使用异步线程
     """
-    print("----------------------------------------")
     try:
-        print("--------------------------------222--------")
         embeddings = load_local_embedding(model=embed_model)
-        print("-----------------------------333-----------")
-        print(type(embeddings), embeddings)
         data = await embeddings.async_encode(texts, to_query=to_query)
         print(type(data), data)
         return BaseResponse(data=data)

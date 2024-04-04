@@ -70,12 +70,8 @@ async def apredict(
     """
     see: predict，如果是online模型则使用异步线程
     """
-    print("----------------------------------------")
     try:
-        print("--------------------------------222--------")
         reranker = load_local_reranker(model=rerank_model)
-        print("-----------------------------333-----------")
-        print(type(reranker), reranker)
         data = await reranker.async_predict(query, passages)
         print(type(data), data)
         return BaseResponse(data=data)
