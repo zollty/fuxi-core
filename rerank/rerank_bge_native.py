@@ -20,7 +20,7 @@ class BgeNativeReranker(RerankService):
             # apply_softmax=apply_softmax
         )
         if model_name == "bge-reranker-v2-m3":
-            self._model = FlagReranker(model_path, use_fp16=True, max_length=max_length, device=device)
+            self._model = FlagReranker(model_path, use_fp16=True, device=device)
         elif model_name == "bge-reranker-v2-gemma":
             self._model = FlagLLMReranker(model_path, use_fp16=True, max_length=max_length, device=device)
         elif model_name == "bge-reranker-v2-minicpm-layerwise":
