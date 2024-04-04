@@ -4,8 +4,8 @@ from langchain.embeddings import HuggingFaceBgeEmbeddings
 
 
 class BGE_Huggingface_Embeddings(EmbeddingsService):
-    def __init__(self, model_path: str, device: str, max_seq_length: Optional[int] = None):
-        super().__init__(model_path, device, max_seq_length)
+    def __init__(self, model_name: str, model_path: str, device: str, max_seq_length: Optional[int] = None):
+        super().__init__(model_name, model_path, device, max_seq_length)
         self.instruction = ""
         if 'zh' in model_path:
             # for chinese model

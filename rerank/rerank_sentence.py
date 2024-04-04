@@ -6,10 +6,10 @@ from .rerank_base import RerankService
 class SentenceReranker(RerankService):
     """Document compressor that uses `Cohere Rerank API`."""
 
-    def __init__(self, model_path: str, device: str, max_length: int | None = None):
-        self._model = CrossEncoder(model_name=model_path, max_length=max_length, device=device)
+    def __init__(self, model_name: str, model_path: str, device: str, max_length: int | None = None):
         super().__init__(
             # top_n=top_n,
+            model_name=model_name,
             model_path=model_path,
             device=device,
             max_length=max_length,
@@ -19,6 +19,7 @@ class SentenceReranker(RerankService):
             # activation_fct=activation_fct,
             # apply_softmax=apply_softmax
         )
+        self._model = CrossEncoder(model_name=model_path, max_length=max_length, device=device)
 
     def predict(
             self,

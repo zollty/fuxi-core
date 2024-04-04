@@ -36,13 +36,13 @@ class EmbeddingsPool(CachePool):
                 else:
                     for name, vals in DEFAULT_EMBED_SERVICE.items():
                         if name in model:
-                            embeddings = vals(model_path, device)
+                            embeddings = vals(model, model_path, device)
                     if not embeddings:
                         # from langchain.embeddings.huggingface import HuggingFaceEmbeddings
                         # from hpdeploy.embeddings.langchain_embed import Langchain_Embeddings
                         # embeddings = Langchain_Embeddings(HuggingFaceEmbeddings(model_name=get_embed_model_path(model),
                         #                                    model_kwargs={'device': device}))
-                        embeddings = BCE_Sentence_Embeddings(model_path, device)
+                        embeddings = BCE_Sentence_Embeddings(model, model_path, device)
                 item.obj = embeddings
                 item.finish_loading()
         else:

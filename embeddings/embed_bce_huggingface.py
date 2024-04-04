@@ -4,8 +4,8 @@ from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 
 
 class BCE_Huggingface_Embeddings(EmbeddingsService):
-    def __init__(self, model_path: str, device: str, max_seq_length: Optional[int] = None):
-        super().__init__(model_path, device, max_seq_length)
+    def __init__(self, model_name: str, model_path: str, device: str, max_seq_length: Optional[int] = None):
+        super().__init__(model_name, model_path, device, max_seq_length)
         embedding_model_kwargs = {'device': device}  # cuda or cuda:0
         embedding_encode_kwargs = {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False}
         self.model = HuggingFaceEmbeddings(

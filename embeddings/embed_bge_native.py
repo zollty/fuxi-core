@@ -4,8 +4,8 @@ from FlagEmbedding import FlagModel
 
 
 class BGE_Native_Embeddings(EmbeddingsService):
-    def __init__(self, model_path: str, device: str, max_seq_length: Optional[int] = None):
-        super().__init__(model_path, device, max_seq_length)
+    def __init__(self, model_name: str, model_path: str, device: str, max_seq_length: Optional[int] = None):
+        super().__init__(model_name, model_path, device, max_seq_length)
         if 'zh' in model_path:
             # for chinese model
             self.instruction = "为这个句子生成表示以用于检索相关文章："

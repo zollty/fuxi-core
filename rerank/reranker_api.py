@@ -8,7 +8,6 @@ from hpdeploy.rerank.config import get_default_rerank_device, \
     get_default_rerank_model, get_rerank_model_path, get_config_rerank_models
 from hpdeploy.rerank import *
 
-
 class RerankerPool(CachePool):
     def load_reranker(self, model: str, device: str) -> RerankService:
         self.atomic.acquire()
@@ -20,7 +19,10 @@ class RerankerPool(CachePool):
                 item.start_loading()
                 self.atomic.release()
                 model_path = get_rerank_model_path(model)
-                reranker = SentenceReranker(model_path, device)
+                if model.startswith("bge") and model != "bge-reranker-large":
+                    reranker = BgeNativeReranker(model, model_path, device)
+                else:
+                    reranker = SentenceReranker(model, model_path, device)
                 item.obj = reranker
                 item.finish_loading()
         else:

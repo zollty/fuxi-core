@@ -4,7 +4,8 @@ from fuxi.utils.thread_helper import run_in_executor
 
 
 class EmbeddingsService(ABC):
-    def __init__(self, model_path: str, device: str, max_seq_length: Optional[int] = None):
+    def __init__(self, model_name: str, model_path: str, device: str, max_seq_length: Optional[int] = None):
+        self.model_name = model_name
         self.model_path = model_path
         self.device = device
         self.max_seq_length = max_seq_length

@@ -4,8 +4,8 @@ from sentence_transformers import SentenceTransformer
 
 
 class Jina_Sentence_Embeddings(EmbeddingsService):
-    def __init__(self, model_path: str, device: str, max_seq_length: Optional[int] = None):
-        super().__init__(model_path, device, max_seq_length)
+    def __init__(self, model_name: str, model_path: str, device: str, max_seq_length: Optional[int] = None):
+        super().__init__(model_name, model_path, device, max_seq_length)
         self.model = SentenceTransformer(model_path, trust_remote_code=True, device=device)
 
     def encode(self,
