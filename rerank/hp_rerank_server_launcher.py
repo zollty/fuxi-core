@@ -84,7 +84,7 @@ def init_api_server():
         root_path=get_runtime_root_dir(),
         settings_files=['conf/llm_model.yml', 'conf/settings.yaml'],
     )
-    import hpdeploy.embeddings.config as bc
+    import hpdeploy.rerank.config as bc
     bc.cfg = cfg
 
     log_level = cfg.get("rerank.server.log_level", "info")
