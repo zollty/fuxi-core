@@ -32,7 +32,8 @@ class EmbeddingsService(ABC):
                            normalize_embeddings: bool = False,
                            query_instruction: str = "",
                            ) -> list[list[float]]:
-        return await run_in_executor(None, self.encode, sentences,
+        return await run_in_executor(None, self.encode,
+                                     sentences,
                                      to_query=to_query,
                                      max_seq_length=max_seq_length,
                                      device=device,

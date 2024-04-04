@@ -1,6 +1,6 @@
-from common.conf import Cfg
-from common.utils import get_runtime_root_dir()
-from rerank.langchain_reranker import LangchainReranker
+# from common.conf import Cfg
+# from common.utils import get_runtime_root_dir
+from hpdeploy.rerank.langchain_reranker import LangchainReranker
 from typing import Any, List, Optional
 
 
@@ -9,9 +9,10 @@ class _Singleton(object):
 
     def init(self, force: bool = False):
         if force or self.reranker_model is None:
-            print(get_runtime_root_dir())
-            cfg = Cfg(get_runtime_root_dir() + "/conf_rerank.toml")
-            self.reranker_model = LangchainReranker(cfg)
+            # print(get_runtime_root_dir())
+            # cfg = Cfg(get_runtime_root_dir() + "/conf_rerank.toml")
+            # self.reranker_model = LangchainReranker(cfg)
+            pass
 
     def reranker(self):
         if self.reranker_model is None:

@@ -17,7 +17,7 @@ DEFAULT_EMBED_SERVICE = {"bce": BCE_Sentence_Embeddings,
 
 
 class EmbeddingsPool(CachePool):
-    def load_embeddings(self, model: str, device: str) -> EmbeddingsService:
+    def load_embedding(self, model: str, device: str) -> EmbeddingsService:
         self.atomic.acquire()
         key = model
         if not self.get(key):
@@ -53,7 +53,7 @@ class EmbeddingsPool(CachePool):
 embeddings_pool = EmbeddingsPool(cache_num=5)
 
 
-def load_local_embeddings(model: str = None, device: str = None):
+def load_local_embedding(model: str = None, device: str = None):
     """
     从缓存中加载embeddings，可以避免多线程时竞争加载。
     """
@@ -63,7 +63,7 @@ def load_local_embeddings(model: str = None, device: str = None):
     else:
         model = get_default_embed_model()
     device = device or get_default_embed_device()
-    return embeddings_pool.load_embeddings(model=model, device=device)
+    return embeddings_pool.load_embedding(model=model, device=device)
 
 
 def embed_texts(
@@ -75,7 +75,7 @@ def embed_texts(
     对文本进行向量化。返回数据格式：BaseResponse(data=List[List[float]])
     """
     try:
-        embeddings = load_local_embeddings(model=embed_model)
+        embeddings = load_local_embedding(model=embed_model)
         data = embeddings.encode(texts, to_query=to_query)
         return BaseResponse(data=data)
     except Exception as e:
@@ -90,13 +90,12 @@ async def aembed_texts(
         to_query: bool = Body(False, description="向量是否用于查询。有些模型如Minimax对存储/查询的向量进行了区分优化。"),
 ) -> BaseResponse:
     """
-    对文本进行向量化。返回数据格式：BaseResponse(data=List[List[float]])
     see: embed_texts，如果是online模型则使用异步线程
     """
     print("----------------------------------------")
     try:
         print("--------------------------------222--------")
-        embeddings = load_local_embeddings(model=embed_model)
+        embeddings = load_local_embedding(model=embed_model)
         print("-----------------------------333-----------")
         print(type(embeddings), embeddings)
         data = await embeddings.async_encode(texts, to_query=to_query)
