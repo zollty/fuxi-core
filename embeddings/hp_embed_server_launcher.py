@@ -40,10 +40,10 @@ def mount_more_routes(app):
 
 
 def init_before_mount_routes(cfg: Dynaconf, app):
-    from hpdeploy.embeddings.embeddings_api import load_local_embeddings
+    from hpdeploy.embeddings.embeddings_api import load_local_embedding
     default_run = cfg.get("embed.default_run", [])
     for embed in default_run:
-        load_local_embeddings(embed)
+        load_local_embedding(embed)
 
 
 def base_init_1(cfg: Dynaconf):
