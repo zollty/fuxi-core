@@ -1,7 +1,7 @@
 from fastapi import Body
 from typing import Dict, List
-from asyncache import cached as acached
-from cachetools import cached, TTLCache
+# from asyncache import cached as acached
+# from cachetools import cached, TTLCache
 
 from fuxi.utils.api_base import (BaseResponse, ListResponse)
 from fuxi.utils.runtime_conf import get_log_verbose, logger
@@ -68,7 +68,7 @@ def load_local_embedding(model: str = None, device: str = None):
     return embeddings_pool.load_embedding(model=model, device=device)
 
 
-@cached(TTLCache(100, 600))
+# @cached(TTLCache(100, 600))
 def embed_texts(
         texts: List[str] = Body(..., description="要嵌入的文本列表", examples=[["hello", "world"]]),
         embed_model: str = Body(None, description=f"使用的嵌入模型。"),
@@ -87,7 +87,7 @@ def embed_texts(
 
 
 # 如果是online模型则使用异步线程
-@acached(TTLCache(100, 600))
+# @acached(TTLCache(100, 600))
 async def aembed_texts(
         texts: List[str] = Body(..., description="要嵌入的文本列表", examples=[["hello", "world"]]),
         embed_model: str = Body(None, description=f"使用的嵌入模型。"),
