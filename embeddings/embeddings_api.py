@@ -61,7 +61,7 @@ def load_local_embedding(model: str = None, device: str = None):
         if model not in get_config_embed_models():  # 使用本地Embeddings模型
             raise Exception(f"指定的模型 {model} 不存在")
     else:
-        model = get_default_embed_model()
+        model = get_default_embed_model()[0]
     device = device or get_default_embed_device()
     return embeddings_pool.load_embedding(model=model, device=device)
 
