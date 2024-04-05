@@ -48,12 +48,14 @@ def load_local_reranker(model: str = None, device: str = None):
 
 def predict(
         rerank_model: str = Body(None, description=f"使用的Reranker模型。"),
-        query: str = Body(False, description="查询字符串"),
+        query: str = Body(..., description="查询字符串"),
         passages: List[str] = Body(..., description="要排序的文本列表", examples=[["hello", "world"]]),
 ) -> BaseResponse:
     """
     对文本进行重排序检索。返回数据格式：BaseResponse(data=List[float])
     """
+    if not rerank_model:
+        rerank_model = get_default_rerank_model()[0]
     try:
         reranker = load_local_reranker(model=rerank_model)
         data = reranker.predict(query, passages)
@@ -66,12 +68,14 @@ def predict(
 # 如果是online模型则使用异步线程
 async def apredict(
         rerank_model: str = Body(None, description=f"使用的Reranker模型。"),
-        query: str = Body(False, description="查询字符串"),
+        query: str = Body(..., description="查询字符串"),
         passages: List[str] = Body(..., description="要排序的文本列表", examples=[["hello", "world"]]),
 ) -> BaseResponse:
     """
     see: predict，如果是online模型则使用异步线程
     """
+    if not rerank_model:
+        rerank_model = get_default_rerank_model()[0]
     try:
         reranker = load_local_reranker(model=rerank_model)
         data = await reranker.async_predict(query, passages)
