@@ -79,6 +79,66 @@ def create_vllm_worker(cfg: Dynaconf, model_worker_config, log_level):
     return app, worker
 
 
+def create_sglang_worker(cfg: Dynaconf, model_worker_config, log_level: str):
+    from fastchat.serve.sglang_worker import SGLWorker, app, worker_id
+    import multiprocessing
+    import sglang as sgl
+    from sglang.srt.hf_transformers_utils import get_tokenizer, get_config
+    from sglang.srt.utils import load_image, is_multimodal_model
+
+    import argparse
+
+    sglang_args = cfg.get("llm.worker.base") + cfg.get("llm.worker.sglang") + model_worker_config.get("base")
+    if model_worker_config.get("sglang"):
+        sglang_args = sglang_args + model_worker_config.get("sglang")
+
+    set_common_args(sglang_args)
+
+    if not sglang_args.get("tokenizer_path"):
+        sglang_args["tokenizer_path"] = sglang_args["model_path"]
+
+    if sglang_args.num_gpus > 1:
+        sglang_args["tp_size"] = sglang_args.num_gpus
+
+    parser = argparse.ArgumentParser()
+    args = parser.parse_args([])
+    for k, v in sglang_args.items():
+        setattr(args, k, v)
+    logger.info("---------------------vllm_args------------------------")
+    logger.info(sglang_args)
+    logger.info("---------------------vllm_args------------------------")
+
+    multiprocessing.set_start_method("spawn", force=True)
+    runtime = sgl.Runtime(
+        model_path=args.model_path,
+        tokenizer_path=args.tokenizer_path,
+        trust_remote_code=args.trust_remote_code,
+        mem_fraction_static=args.mem_fraction_static,
+        tp_size=args.tp_size,
+        log_level=log_level.lower(),
+    )
+    sgl.set_default_backend(runtime)
+
+    worker = SGLWorker(
+        args.controller_addr,
+        args.worker_addr,
+        worker_id,
+        args.model_path,
+        args.tokenizer_path,
+        args.model_names,
+        args.limit_worker_concurrency,
+        args.no_register,
+        args.conv_template,
+        runtime,
+        args.trust_remote_code,
+    )
+
+    sys.modules["fastchat.serve.sglang_worker"].worker = worker
+    sys.modules["fastchat.serve.sglang_worker"].logger.setLevel(log_level)
+
+    return app, worker
+
+
 def create_plain_worker(cfg: Dynaconf, model_worker_config, log_level):
     from fastchat.serve.model_worker import app, GptqConfig, AWQConfig, ModelWorker, worker_id
     gptq_args = None
@@ -207,6 +267,9 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     else:
         if model_worker_config.get("infer_turbo") == "vllm":
             app, worker = create_vllm_worker(cfg, model_worker_config, log_level)
+
+        elif model_worker_config.get("infer_turbo") == "sglang":
+            app, worker = create_sglang_worker(cfg, model_worker_config, log_level)
 
         else:
             app, worker = create_plain_worker(cfg, model_worker_config, log_level)
