@@ -238,6 +238,8 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     log_level = log_level.upper()
     logger.setLevel(log_level)
 
+    set_httpx_config()
+
     model_name = model_worker_config.get("model_name")
     worker_port = model_worker_config.get("port")
     if not worker_port:
@@ -284,8 +286,6 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
             allow_methods=["*"],
             allow_headers=["*"],
         )
-
-    set_httpx_config()
 
     app.title = f"伏羲AI LLM Worker Server ({model_name})"
     app.version = fastchat.__version__
