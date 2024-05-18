@@ -13,7 +13,7 @@ from dynaconf import Dynaconf
 def create_openai_api_server_app(cfg: Dynaconf, log_level):
     from fastapi.middleware.cors import CORSMiddleware
     from fuxi.utils.runtime_conf import get_default_log_path
-    from fuxi.utils.fastapi_tool import set_httpx_config, MakeFastAPIOffline
+    from fuxi.utils.fastapi_tool import MakeFastAPIOffline
     import sys
     import fastchat.constants
     fastchat.constants.LOGDIR = get_default_log_path()
@@ -42,8 +42,6 @@ def create_openai_api_server_app(cfg: Dynaconf, log_level):
             allow_headers=["*"],
         )
 
-    set_httpx_config()
-
     MakeFastAPIOffline(app)
 
     return app
@@ -63,6 +61,9 @@ def run_openai_api_server():
     log_level = cfg.get("llm.openai_api_server.log_level", "info")
     host = cfg.get("llm.openai_api_server.host", "0.0.0.0")
     port = cfg.get("llm.openai_api_server.port", 8000)
+
+    from fuxi.utils.fastapi_tool import set_httpx_config
+    set_httpx_config()
 
     app = create_openai_api_server_app(cfg, log_level)
 
