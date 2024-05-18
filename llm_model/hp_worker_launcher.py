@@ -228,7 +228,7 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
         device:`LLM_DEVICE`
     """
     from fuxi.utils.runtime_conf import get_default_log_path
-    from fuxi.utils.fastapi_tool import set_httpx_config, MakeFastAPIOffline
+    from fuxi.utils.fastapi_tool import MakeFastAPIOffline
     import sys
     import fastchat.constants
     from fastchat.serve.model_worker import logger
@@ -237,8 +237,6 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     fastchat.constants.LOGDIR = get_default_log_path()
     log_level = log_level.upper()
     logger.setLevel(log_level)
-
-    set_httpx_config()
 
     model_name = model_worker_config.get("model_name")
     worker_port = model_worker_config.get("port")
@@ -318,6 +316,9 @@ def run_model_worker(model_name, port: str = None):
 
     if port and int(port) > 1000:
         model_worker_config["port"] = int(port)
+
+    from fuxi.utils.fastapi_tool import set_httpx_config
+    set_httpx_config()
 
     app = create_worker_app(cfg, model_worker_config, log_level)
 

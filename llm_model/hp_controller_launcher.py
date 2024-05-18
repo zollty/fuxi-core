@@ -12,7 +12,7 @@ from dynaconf import Dynaconf
 
 def create_controller_app(cfg: Dynaconf, log_level):
     from fuxi.utils.runtime_conf import get_default_log_path
-    from fuxi.utils.fastapi_tool import set_httpx_config, MakeFastAPIOffline
+    from fuxi.utils.fastapi_tool import MakeFastAPIOffline
     import sys
     import fastchat.constants
     from fastchat.serve.controller import app, Controller, logger
@@ -42,8 +42,6 @@ def create_controller_app(cfg: Dynaconf, log_level):
             allow_methods=["*"],
             allow_headers=["*"],
         )
-
-    set_httpx_config()
 
     MakeFastAPIOffline(app)
 
@@ -95,6 +93,9 @@ def run_controller():
 
     cfg["llm.controller.host"] = host
     cfg["llm.controller.port"] = port
+
+    from fuxi.utils.fastapi_tool import set_httpx_config
+    set_httpx_config()
 
     app = create_controller_app(cfg, log_level)
 
