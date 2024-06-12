@@ -51,9 +51,9 @@ def create_vllm_worker(cfg: Dynaconf, model_worker_config, log_level):
     #     vllm_args.tensor_parallel_size = vllm_args.num_gpus
 
     parser = argparse.ArgumentParser()
-    parser = AsyncEngineArgs.add_cli_args(parser)
-    # args = parser.parse_args([])
-    args = parser.parse_args()
+    # parser = AsyncEngineArgs.add_cli_args(parser)
+    args = parser.parse_args([])
+    # args = parser.parse_args()
     for k, v in vllm_args.items():
         setattr(args, k, v)
     logger.info("---------------------vllm_args------------------------")
