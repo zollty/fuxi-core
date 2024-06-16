@@ -5,17 +5,19 @@
 [English](README.md) | 简体中文
 
 </div>
+**HP**-deploy的目标是成为一个优秀的模型部署平台，它建立在多种高性能开源推理框架之上，提供多模型实例、多推理框架、多云、自动扩缩容与可观测性等能力。   
 
 ______________________________________________________________________
 
 ## 功能更新 🎉
- - 支持多模型、多卡、多机分布式推理服务。
+ - 支持sglang等模型运行框架，支持Qwen2等模型
+ - 支持多模型、多卡、多机分布式推理服务
  - 支持Huggingface、vllm等模型运行框架
  - 支持PyTorch、TurboMind等推理引擎
  - 具备动态拆分和融合，张量并行，高效计算等特性
  - 支持flash-attention2、Paged Attention、attention kernel、GQA等技术
  - 支持使用 [AWQ](https://arxiv.org/abs/2306.00978) 算法进行 4-bit 量化
- - 支持 Llama-2 7B/13B/70B、Baichuan2-7B、 InternLM-20B等模型（参见附表）
+ - 支持 Llama-2 7B/13B/70B、Baichuan2-7B、InternLM-20B等模型（参见附表）
  - 支持 Qwen-7B，Qwen-14B等，支持动态NTK-RoPE缩放，动态logN缩放
  - 计划支持多模态，包括：视觉-语言模型（VLM）
 
