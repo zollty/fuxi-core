@@ -78,7 +78,7 @@ def mount_controller_routes(app: FastAPI,
         """
         从本地获取configs中配置的embedding模型列表
         """
-        return BaseResponse(data=cfg.get("llm.embed_model_cfg", {}))
+        return BaseResponse(data=cfg.get("embed.model_cfg", {}))
 
     def list_online_embed_models() -> BaseResponse:
         """
@@ -92,6 +92,24 @@ def mount_controller_routes(app: FastAPI,
                 if worker_class is not None and worker_class.can_embedding():
                     ret[k] = provider
         return BaseResponse(data=ret)
+
+    def list_running_models() -> BaseResponse:
+        """
+        获取运行中的模型列表
+        """
+        return BaseResponse(data=app._controller.list_models())
+
+    def list_embed_models_api() -> BaseResponse:
+        """
+        从本地获取configs中配置的embedding模型列表
+        """
+        return BaseResponse(data=list(cfg.get("embed.model_cfg", {}).keys()))
+
+    def list_rerank_models_api() -> BaseResponse:
+        """
+        从本地获取configs中配置的embedding模型列表
+        """
+        return BaseResponse(data=list(cfg.get("rerank.model_cfg", {}).keys()))
 
     def start_model(
             model_name: str = Body(None, description="启动该模型"),
@@ -152,6 +170,24 @@ def mount_controller_routes(app: FastAPI,
             return {"success": True, "code": 200, "msg": "success"}
         else:
             return {"success": False, "code": 500, "msg": f"unknown ctrl: {ctrl}"}
+
+    app.post("/llm/list-running-models",
+             tags=["MaaS"],
+             response_model=BaseResponse,
+             summary="查看运行中的所有模型"
+             )(list_running_models)
+
+    app.post("/embed/list-all-models",
+             tags=["MaaS"],
+             response_model=BaseResponse,
+             summary="查看配置的所有模型"
+             )(list_embed_models_api)
+
+    app.post("/rerank/list-all-models",
+             tags=["MaaS"],
+             response_model=BaseResponse,
+             summary="查看配置的所有模型"
+             )(list_rerank_models_api)
 
     app.post("/start_worker",
              tags=["LLM Management"],
