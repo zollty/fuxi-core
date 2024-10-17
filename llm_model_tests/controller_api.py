@@ -76,6 +76,7 @@ def mount_controller_routes(app: FastAPI,
     #          tags=["Chat"],
     #          summary="与知识库对话")(knowledge_base_chat)
 
+
 def create_controller_app(
         dispatch_method: str,
         log_level: str = "INFO",
