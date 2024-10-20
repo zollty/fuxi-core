@@ -43,12 +43,12 @@ def mount_more_routes(app):
              )(aembed_texts)
 
     app.post("/embed/list-all-models",
-             tags=["MaaS"],
+             tags=["Embeddings"],
              response_model=BaseResponse,
              summary="查看配置的所有模型"
              )(list_embed_models_api)
 
-    app.post("/list_embed_models",
+    app.post("/list-embed-models",
              tags=["Embeddings"],
              response_model=BaseResponse,
              summary="查看配置的所有embeddings模型"
