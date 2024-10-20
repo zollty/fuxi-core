@@ -99,11 +99,11 @@ def mount_controller_routes(app: FastAPI,
         """
         return BaseResponse(data=app._controller.list_models())
 
-    def list_embed_models_api() -> BaseResponse:
-        """
-        从本地获取configs中配置的embedding模型列表
-        """
-        return BaseResponse(data=list(cfg.get("embed.model_cfg", {}).keys()))
+    # def list_embed_models_api() -> BaseResponse:
+    #     """
+    #     从本地获取configs中配置的embedding模型列表
+    #     """
+    #     return BaseResponse(data=list(cfg.get("embed.model_cfg", {}).keys()))
 
     def list_rerank_models_api() -> BaseResponse:
         """
@@ -177,11 +177,11 @@ def mount_controller_routes(app: FastAPI,
              summary="查看运行中的所有模型"
              )(list_running_models)
 
-    app.post("/embed/list-all-models",
-             tags=["MaaS"],
-             response_model=BaseResponse,
-             summary="查看配置的所有模型"
-             )(list_embed_models_api)
+    # app.post("/embed/list-all-models",
+    #          tags=["MaaS"],
+    #          response_model=BaseResponse,
+    #          summary="查看配置的所有模型"
+    #          )(list_embed_models_api)
 
     app.post("/rerank/list-all-models",
              tags=["MaaS"],

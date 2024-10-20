@@ -11,7 +11,7 @@ from dynaconf import Dynaconf
 
 
 def mount_more_routes(app):
-    from hpdeploy.embeddings.embeddings_api import aembed_texts
+    from hpdeploy.embeddings.embeddings_api import aembed_texts, embed_texts
     from fuxi.utils.api_base import (BaseResponse, ListResponse)
     from hpdeploy.embeddings.config import get_config_embed_models
 
@@ -21,13 +21,35 @@ def mount_more_routes(app):
         """
         return BaseResponse(data=get_config_embed_models())
 
+    def list_embed_models_api() -> BaseResponse:
+        """
+        从本地获取configs中配置的embedding模型列表
+        """
+        return BaseResponse(data=list(get_config_embed_models().keys()))
+
     app.post("/embed/encode",
-             tags=["Embed"],
+             tags=["Embeddings"],
              summary="call embeddings to encode texts, return List[List[float]]"
              )(aembed_texts)
 
+    app.post("/embed/embeddings",
+             tags=["Embeddings"],
+             summary="call embeddings to encode texts, return List[List[float]]"
+             )(embed_texts)
+
+    app.post("/embed/async-embeddings",
+             tags=["Embeddings"],
+             summary="call embeddings to async encode texts, return List[List[float]]"
+             )(aembed_texts)
+
+    app.post("/embed/list-all-models",
+             tags=["MaaS"],
+             response_model=BaseResponse,
+             summary="查看配置的所有模型"
+             )(list_embed_models_api)
+
     app.post("/list_embed_models",
-             tags=["Embed"],
+             tags=["Embeddings"],
              response_model=BaseResponse,
              summary="查看配置的所有embeddings模型"
              )(list_embed_models)
