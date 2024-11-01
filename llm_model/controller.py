@@ -111,6 +111,13 @@ def mount_controller_routes(app: FastAPI,
         """
         return BaseResponse(data=list(cfg.get("rerank.model_cfg", {}).keys()))
 
+    def list_llm_models_api() -> BaseResponse:
+        """
+        从本地获取configs中配置的模型列表
+        """
+        # 本地模型
+        return BaseResponse(data=list(cfg.get("llm.model_cfg", {}).keys()))
+
     def start_model(
             model_name: str = Body(None, description="启动该模型"),
             placeholder: str = Body(None, description="占位用，无实际效果"),
@@ -177,6 +184,12 @@ def mount_controller_routes(app: FastAPI,
              summary="查看运行中的所有模型"
              )(list_running_models)
 
+    app.post("/llm/list-all-models",
+             tags=["MaaS"],
+             response_model=BaseResponse,
+             summary="查看配置的所有本地模型"
+             )(list_llm_models_api)
+    
     # app.post("/embed/list-all-models",
     #          tags=["MaaS"],
     #          response_model=BaseResponse,
