@@ -10,6 +10,7 @@
 ______________________________________________________________________
 
 ## 功能更新 🎉
+ - 支持DeepSeek V3/R1，且为DeepSeek定制参数优化
  - 支持sglang等模型运行框架，支持Qwen2等模型
  - 支持多模型、多卡、多机分布式推理服务
  - 支持Huggingface、vllm等模型运行框架
@@ -55,26 +56,29 @@ HP-deploy使用各种底层优化技术，例如TurboMind 引擎的卓越推理�
 
 # 支持的模型
 
-|    Model     |    Size    |
-|:------------:|:----------:|
-|    Llama     |  7B - 65B  |
-|    Llama2    |  7B - 70B  |
-|   ChatGLM2   |     6B     |
-|   ChatGLM3   |     6B     |
-|     QWen     |  7B - 72B  |
-|   QWen-VL    |     7B     |
-|   QWen1.5    | 0.5B - 72B |
-|   Baichuan   |  7B - 13B  |
-|  Baichuan2   |  7B - 13B  |
-|   InternLM   |  7B - 20B  |
-|  InternLM2   |  7B - 20B  |
-|  Code Llama  |  7B - 34B  |
-|    Falcon    | 7B - 180B  |
-|      YI      |  6B - 34B  |
-|   Mistral    |     7B     |
-| DeepSeek-MoE |    16B     |
-|   Mixtral    |    8x7B    |
-|    Gemma     |   2B-7B    |
+|    Model     |       Size        |
+|:------------:|:-----------------:|
+|    Llama     |     7B - 65B      |
+|    Llama2    |     7B - 70B      |
+|   ChatGLM2   |        6B         |
+|   ChatGLM3   |        6B         |
+|     QWen     |     7B - 72B      |
+|   QWen-VL    |        7B         |
+|   QWen1.5    |    0.5B - 72B     |
+|   Baichuan   |     7B - 13B      |
+|  Baichuan2   |     7B - 13B      |
+|   InternLM   |     7B - 20B      |
+|  InternLM2   |     7B - 20B      |
+|  Code Llama  |     7B - 34B      |
+|    Falcon    |     7B - 180B     |
+|      YI      |     6B - 34B      |
+|   Mistral    |        7B         |
+| DeepSeek-MoE |        16B        |
+|   Mixtral    |       8x7B        |
+|    Gemma     |       2B-7B       |
+| DeepSeek-V3  |       671B        |
+| DeepSeek-R1  |       671B        |
+| DeepSeek-R1  |    Distill-Qwen   |
 
 HP-deploy 支持 2 种推理引擎： TurboMind 和 PyTorch，它们侧重不同。前者追求推理性能的极致优化，后者纯用python开发，着重降低开发者的门槛。 
 它们在支持的模型类别、计算精度方面有所差别。
