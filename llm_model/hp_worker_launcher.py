@@ -210,7 +210,7 @@ def create_plain_worker(cfg: Dynaconf, model_worker_config, log_level):
     return app, worker
 
 
-def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
+def create_worker_app(cfg: Dynaconf, model_worker_config, log_level, infer_turbo: str = None) -> FastAPI:
     """
     kwargs包含的字段如下：
     host:
@@ -267,10 +267,13 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
         sys.modules["fastchat.serve.base_model_worker"].logger.setLevel(log_level)
     # 本地模型
     else:
-        if model_worker_config.get("infer_turbo") == "vllm":
+        infer_turbo_to_use = infer_turbo
+        if not infer_turbo_to_use:
+            infer_turbo_to_use = model_worker_config.get("infer_turbo")
+        if infer_turbo_to_use == "vllm":
             app, worker = create_vllm_worker(cfg, model_worker_config, log_level)
 
-        elif model_worker_config.get("infer_turbo") == "sglang":
+        elif infer_turbo_to_use == "sglang":
             app, worker = create_sglang_worker(cfg, model_worker_config, log_level)
 
         else:
@@ -294,7 +297,7 @@ def create_worker_app(cfg: Dynaconf, model_worker_config, log_level) -> FastAPI:
     return app
 
 
-def run_model_worker(model_name, port: str = None):
+def run_model_worker(model_name, port: str = None, infer_turbo: str = None):
     from fuxi.utils.runtime_conf import get_runtime_root_dir
     from fuxi.utils.fastapi_tool import run_api
 
@@ -322,7 +325,7 @@ def run_model_worker(model_name, port: str = None):
     from fuxi.utils.fastapi_tool import set_httpx_config
     set_httpx_config()
 
-    app = create_worker_app(cfg, model_worker_config, log_level)
+    app = create_worker_app(cfg, model_worker_config, log_level, infer_turbo)
 
     host = cfg.get("llm.worker.host")
     use_port = model_worker_config.get("port")
@@ -353,6 +356,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str)
     # parser.add_argument("--port", type=int, default=0)
+    parser.add_argument(
+        "-turbo",
+        "--infer-turbo",
+        help="custom model worker infer turbo",
+        dest="infer_turbo",
+        default=None,
+    )
     parser.add_argument("--custom-config", type=str, default=None)
     parser.add_argument(
         "-v",
@@ -372,4 +382,4 @@ if __name__ == "__main__":
     # run_worker("langchain_model")
     # run_worker("chatglm3-6b-32k")
     # run_model_worker("Qwen1.5-7B-Chat")
-    run_model_worker(model_name, port)
+    run_model_worker(model_name, port, args.infer_turbo)

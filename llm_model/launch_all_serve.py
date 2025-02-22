@@ -69,7 +69,7 @@ def string_args(args, args_list):
         if key == "op" or key == "wp" or key == "cp":
             key = "custom-config"
         # 1==True ->  True
-        elif isinstance(value, bool) and value == True:
+        if isinstance(value, bool) and value == True:
             args_str += f" --{key} "
         elif (
                 isinstance(value, list)
@@ -205,6 +205,13 @@ if __name__ == "__main__":
         default=None,
     )
     parser.add_argument(
+        "-turbo",
+        "--infer-turbo",
+        help="custom model worker infer turbo",
+        dest="infer_turbo",
+        default=None,
+    )
+    parser.add_argument(
         "-v",
         "--verbose",
         help="增加log信息",
@@ -212,7 +219,7 @@ if __name__ == "__main__":
         type=bool,
         default=False,
     )
-    model_worker_args = ["wp", "verbose"]
+    model_worker_args = ["wp", "infer-turbo", "verbose"]
 
     # ---------------------------------------------MAIN---------------------------------------------------
     args = parser.parse_args()
