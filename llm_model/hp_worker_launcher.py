@@ -85,8 +85,6 @@ def create_sglang_worker(cfg: Dynaconf, model_worker_config, log_level: str):
     from fastchat.serve.sglang_worker import SGLWorker, app, worker_id
     import multiprocessing
     import sglang as sgl
-    from sglang.srt.hf_transformers_utils import get_tokenizer, get_config
-    from sglang.srt.utils import load_image, is_multimodal_model
 
     import argparse
 
